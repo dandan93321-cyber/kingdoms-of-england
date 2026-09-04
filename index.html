@@ -2,544 +2,685 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kingdoms of England</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:#07141b;
+  color:#f5ead0;
+  font-family:Georgia,"Times New Roman",serif;
+}
 
 body{
-margin:0;
-background:#07141b;
-color:#f5ead0;
-font-family:Georgia,"Times New Roman",serif
+  min-height:100vh;
+}
+
+button,
+input{
+  font-family:inherit;
 }
 
 button{
-cursor:pointer;
-font-family:inherit
+  cursor:pointer;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 header{
-height:70px;
-background:linear-gradient(#17261f,#0c1715);
-border-bottom:2px solid #9e7c3f;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column
+  background:linear-gradient(#17261f,#0b1715);
+  border-bottom:2px solid #9e7c3f;
+  text-align:center;
+  padding:18px 10px 14px;
 }
 
 header h1{
-margin:0;
-font-size:27px;
-color:#e5c875
+  margin:0;
+  color:#e5c875;
+  font-size:32px;
 }
 
 header p{
-margin:2px 0 0;
-font-size:13px;
-opacity:.8
+  margin:4px 0 0;
+  font-size:16px;
+  color:#f5ead0;
 }
 
+/* =========================
+   MAIN LAYOUT
+========================= */
+
 .layout{
-display:grid;
-grid-template-columns:210px minmax(500px,1fr) 285px;
-gap:8px;
-max-width:1550px;
-margin:auto;
-padding:8px
+  display:grid;
+  grid-template-columns:210px minmax(500px,1fr) 290px;
+  gap:10px;
+  width:100%;
+  max-width:1600px;
+  margin:auto;
+  padding:10px;
 }
 
 .panel{
-background:#15221f;
-border:1px solid #816b3e;
-border-radius:8px;
-padding:10px;
-margin-bottom:8px;
-box-shadow:0 3px 12px #0007
+  background:#15221f;
+  border:1px solid #927343;
+  border-radius:10px;
+  padding:11px;
+  margin-bottom:10px;
+  box-shadow:0 3px 12px #0008;
 }
 
 .panel h2{
-font-size:14px;
-margin:0 0 8px;
-color:#e3c878;
-border-bottom:1px solid #665636;
-padding-bottom:5px
+  margin:0 0 9px;
+  padding-bottom:6px;
+  border-bottom:1px solid #665636;
+  color:#e3c878;
+  font-size:16px;
+}
+
+/* =========================
+   LEFT
+========================= */
+
+.status{
+  line-height:1.5;
+  font-size:14px;
 }
 
 .player{
-display:flex;
-justify-content:space-between;
-padding:7px 2px;
-border-bottom:1px solid #35433d
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 2px;
+  border-bottom:1px solid #35433d;
 }
 
 .dot{
-display:inline-block;
-width:12px;
-height:12px;
-border-radius:50%;
-margin-right:6px
+  display:inline-block;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  margin-right:6px;
 }
 
-.red{background:#bd382f}
-.blue{background:#3479bd}
-.green{background:#4e9849}
-.yellow{background:#d5a927}
+.red{background:#bd382f;}
+.blue{background:#3479bd;}
+.green{background:#4e9849;}
+.yellow{background:#d5a927;}
 
 .guide div{
-padding:4px 0
+  padding:5px 0;
 }
 
+/* =========================
+   MAP
+========================= */
+
 .map{
-position:relative;
-aspect-ratio:1.42;
-min-height:600px;
-overflow:hidden;
-border:2px solid #927343;
-border-radius:9px;
-background:#174d5b
+  position:relative;
+  width:100%;
+  aspect-ratio:1.42;
+  min-height:620px;
+  overflow:hidden;
+  border:2px solid #927343;
+  border-radius:10px;
+  background:#174d5b;
 }
 
 .mapImage{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:1
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#174d5b;
+  z-index:1;
 }
 
 .mapShade{
-position:absolute;
-inset:0;
-background:linear-gradient(
-90deg,
-#00140a22,
-transparent 50%,
-#00140a22
-);
-z-index:2;
-pointer-events:none
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    90deg,
+    #00140a18,
+    transparent 50%,
+    #00140a18
+  );
+  z-index:2;
+  pointer-events:none;
 }
 
+/* 標題 */
 .mapTitle{
-position:absolute;
-top:10px;
-left:10px;
-z-index:20;
-background:#0b1714dd;
-border:1px solid #b08b49;
-border-radius:6px;
-padding:7px 10px;
-font-weight:bold;
-font-size:13px
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:30;
+  padding:8px 12px;
+  border:1px solid #b08b49;
+  border-radius:7px;
+  background:#0b1714e8;
+  color:#f5ead0;
+  font-weight:bold;
+  font-size:14px;
 }
 
-/*
-六角形遊戲格
-這些透明六角形疊在英格蘭地圖上。
-玩家可以點擊它們。
-*/
+/* =========================
+   HEX
+========================= */
 
 .hexGrid{
-position:absolute;
-inset:0;
-z-index:5;
-pointer-events:none
+  position:absolute;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
 }
 
 .hex{
-position:absolute;
-width:13.2%;
-aspect-ratio:1.155;
-clip-path:polygon(
-25% 3%,
-75% 3%,
-98% 50%,
-75% 97%,
-25% 97%,
-2% 50%
-);
-background:#ffffff12;
-border:0;
-pointer-events:auto;
-display:flex;
-align-items:center;
-justify-content:center;
-transition:.15s;
-cursor:pointer
+  position:absolute;
+  width:13.2%;
+  aspect-ratio:1.155;
+
+  clip-path:polygon(
+    25% 3%,
+    75% 3%,
+    98% 50%,
+    75% 97%,
+    25% 97%,
+    2% 50%
+  );
+
+  border:0;
+  background:#ffffff08;
+
+  pointer-events:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:white;
+  transition:.15s;
 }
 
 .hex:hover{
-background:#fff5a033;
-filter:brightness(1.2)
+  background:#fff5a044;
+  filter:brightness(1.2);
 }
 
 .hex.selected{
-background:#f4d36b45;
-box-shadow:inset 0 0 0 3px #f3d67b
+  background:#f4d36b55;
+  box-shadow:inset 0 0 0 3px #f3d67b;
 }
 
 .hexInfo{
-text-align:center;
-font-weight:bold;
-font-size:11px;
-text-shadow:0 2px 4px #000;
-pointer-events:none
+  text-align:center;
+  font-weight:bold;
+  font-size:11px;
+  text-shadow:0 2px 5px #000;
+  pointer-events:none;
 }
 
 .hexInfo small{
-display:block;
-font-size:9px;
-margin-top:2px
+  display:block;
+  margin-top:2px;
 }
 
 .number{
-display:inline-block;
-background:#f2e6bd;
-color:#30271b;
-border:2px solid #725a35;
-border-radius:50%;
-width:28px;
-height:28px;
-line-height:24px;
-font-size:13px;
-margin-top:3px
+  display:inline-block;
+  width:28px;
+  height:28px;
+  margin-top:3px;
+  line-height:24px;
+  border:2px solid #725a35;
+  border-radius:50%;
+  background:#f2e6bd;
+  color:#30271b;
+  font-size:13px;
 }
 
-/* 六角位置 */
+/* HEX位置 */
 
-.h1{left:24%;top:8%}
-.h2{left:38%;top:8%}
-.h3{left:52%;top:8%}
+.h1{left:24%;top:8%;}
+.h2{left:38%;top:8%;}
+.h3{left:52%;top:8%;}
 
-.h4{left:17%;top:23%}
-.h5{left:31%;top:23%}
-.h6{left:45%;top:23%}
-.h7{left:59%;top:23%}
+.h4{left:17%;top:23%;}
+.h5{left:31%;top:23%;}
+.h6{left:45%;top:23%;}
+.h7{left:59%;top:23%;}
 
-.h8{left:24%;top:38%}
-.h9{left:38%;top:38%}
-.h10{left:52%;top:38%}
-.h11{left:66%;top:38%}
+.h8{left:24%;top:38%;}
+.h9{left:38%;top:38%;}
+.h10{left:52%;top:38%;}
+.h11{left:66%;top:38%;}
 
-.h12{left:31%;top:53%}
-.h13{left:45%;top:53%}
-.h14{left:59%;top:53%}
+.h12{left:31%;top:53%;}
+.h13{left:45%;top:53%;}
+.h14{left:59%;top:53%;}
 
-.h15{left:38%;top:68%}
-.h16{left:52%;top:68%}
+.h15{left:38%;top:68%;}
+.h16{left:52%;top:68%;}
+
+/* =========================
+   ROADS
+========================= */
 
 .road{
-position:absolute;
-height:6px;
-background:#b57a3b;
-border:1px solid #4b301d;
-border-radius:10px;
-transform-origin:left center;
-z-index:10;
-box-shadow:0 1px 3px #000
+  position:absolute;
+  height:6px;
+  background:#b57a3b;
+  border:1px solid #4b301d;
+  border-radius:10px;
+  transform-origin:left center;
+  z-index:18;
+  box-shadow:0 1px 4px #000;
+  display:none;
+}
+
+.road.show{
+  display:block;
 }
 
 .r1{
-left:31%;
-top:34%;
-width:11%;
-transform:rotate(0deg)
+  left:31%;
+  top:34%;
+  width:11%;
 }
 
 .r2{
-left:45%;
-top:49%;
-width:11%;
-transform:rotate(0deg)
+  left:45%;
+  top:49%;
+  width:11%;
 }
 
 .r3{
-left:52%;
-top:64%;
-width:11%;
-transform:rotate(0deg)
+  left:52%;
+  top:64%;
+  width:11%;
 }
 
+/* =========================
+   BUILD NODES
+========================= */
+
 .node{
-position:absolute;
-width:16px;
-height:16px;
-border-radius:50%;
-background:#f5e6bd;
-border:3px solid #493622;
-z-index:12;
-cursor:pointer;
-box-shadow:0 1px 4px #000
+  position:absolute;
+  width:17px;
+  height:17px;
+  border-radius:50%;
+  background:#f5e6bd;
+  border:3px solid #493622;
+  z-index:22;
+  cursor:pointer;
+  box-shadow:0 1px 5px #000;
 }
 
 .node:hover{
-transform:scale(1.35);
-background:#fff0a6
+  transform:scale(1.3);
+  background:#fff0a6;
 }
 
-.n1{left:29%;top:33%}
-.n2{left:43%;top:33%}
-.n3{left:57%;top:33%}
-.n4{left:41%;top:48%}
-.n5{left:55%;top:48%}
-.n6{left:69%;top:48%}
-.n7{left:48%;top:63%}
-.n8{left:62%;top:63%}
-.n9{left:55%;top:78%}
+.node.built{
+  background:#d5a927;
+  border-color:#fff0a6;
+  box-shadow:0 0 12px #e5c875;
+}
+
+.n1{left:29%;top:33%;}
+.n2{left:43%;top:33%;}
+.n3{left:57%;top:33%;}
+.n4{left:41%;top:48%;}
+.n5{left:55%;top:48%;}
+.n6{left:69%;top:48%;}
+.n7{left:48%;top:63%;}
+.n8{left:62%;top:63%;}
+.n9{left:55%;top:78%;}
+
+/* =========================
+   CITIES
+========================= */
 
 .city{
-position:absolute;
-z-index:15;
-background:#f0dfb5ee;
-color:#292016;
-border:2px solid #62472b;
-border-radius:5px;
-padding:3px 6px;
-font-size:10px;
-font-weight:bold;
-box-shadow:0 2px 5px #0008;
-cursor:pointer;
-white-space:nowrap
+  position:absolute;
+  z-index:25;
+  padding:4px 7px;
+  border:2px solid #62472b;
+  border-radius:6px;
+  background:#f0dfb5ee;
+  color:#292016;
+  font-size:10px;
+  font-weight:bold;
+  white-space:nowrap;
+  cursor:pointer;
+  box-shadow:0 2px 5px #0008;
 }
 
 .city:hover{
-background:#fff0bc
+  background:#fff0bc;
+  transform:scale(1.04);
 }
 
-.c-newcastle{left:61%;top:7%}
-.c-leeds{left:64%;top:18%}
-.c-manchester{left:29%;top:28%}
-.c-sheffield{left:46%;top:31%}
-.c-liverpool{left:10%;top:31%}
-.c-nottingham{left:35%;top:40%}
-.c-birmingham{left:39%;top:52%}
-.c-bristol{left:25%;top:63%}
-.c-bridgwater{left:28%;top:76%}
-.c-oxford{left:48%;top:60%}
-.c-london{left:65%;top:77%}
-.c-plymouth{left:17%;top:86%}
+.c-newcastle{left:61%;top:7%;}
+.c-leeds{left:64%;top:18%;}
+.c-manchester{left:29%;top:28%;}
+.c-sheffield{left:46%;top:31%;}
+.c-liverpool{left:10%;top:31%;}
+.c-nottingham{left:35%;top:40%;}
+.c-birmingham{left:39%;top:52%;}
+.c-bristol{left:25%;top:63%;}
+.c-bridgwater{left:28%;top:76%;}
+.c-oxford{left:48%;top:60%;}
+.c-london{left:65%;top:77%;}
+.c-plymouth{left:17%;top:86%;}
+
+/* =========================
+   PIRATE
+========================= */
 
 .pirate{
-position:absolute;
-right:7%;
-top:15%;
-z-index:20;
-width:54px;
-height:54px;
-border-radius:50%;
-background:#071c23dd;
-border:3px solid #bd8a3d;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:30px;
-cursor:pointer;
-box-shadow:0 3px 12px #000
+  position:absolute;
+  right:7%;
+  top:15%;
+  z-index:30;
+
+  width:55px;
+  height:55px;
+
+  border-radius:50%;
+  border:3px solid #bd8a3d;
+  background:#071c23dd;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:29px;
+  cursor:pointer;
+
+  box-shadow:0 3px 12px #000;
+  transition:.2s;
 }
 
 .pirate:hover{
-transform:scale(1.1)
+  transform:scale(1.1);
 }
+
+.pirate.moving{
+  animation:pulse .5s ease;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.25);}
+  100%{transform:scale(1);}
+}
+
+/* =========================
+   SEA
+========================= */
 
 .seaLabel{
-position:absolute;
-z-index:3;
-font-style:italic;
-color:#d0e0dd;
-opacity:.8;
-font-size:13px
+  position:absolute;
+  z-index:4;
+  color:#d0e0dd;
+  opacity:.8;
+  font-size:13px;
+  font-style:italic;
+  pointer-events:none;
 }
 
-.irish{left:5%;top:47%}
-.north{right:6%;top:29%}
-.channel{left:47%;bottom:2%}
+.irish{
+  left:5%;
+  top:47%;
+}
+
+.north{
+  right:6%;
+  top:29%;
+}
+
+.channel{
+  left:47%;
+  bottom:2%;
+}
+
+/* =========================
+   RIGHT
+========================= */
 
 .turn{
-background:#68352b;
-border:1px solid #b57d45;
-padding:10px;
-border-radius:6px;
-text-align:center;
-font-weight:bold;
-margin-bottom:9px
+  padding:11px;
+  margin-bottom:10px;
+  border:1px solid #b57d45;
+  border-radius:7px;
+  background:#68352b;
+  text-align:center;
+  font-weight:bold;
+  font-size:17px;
 }
 
 .dice{
-display:flex;
-justify-content:center;
-gap:10px;
-font-size:37px;
-padding:5px
+  min-height:48px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:9px;
+  padding:5px;
+  font-size:35px;
 }
 
 .roll{
-background:#486b52;
-color:white;
-border:1px solid #9bb095;
-width:100%;
-padding:11px;
-border-radius:6px;
-font-weight:bold;
-font-size:15px
+  width:100%;
+  padding:12px;
+  border:1px solid #9bb095;
+  border-radius:7px;
+  background:#486b52;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
 }
 
+.roll:hover{
+  background:#5b7f62;
+}
+
+/* =========================
+   RESOURCES
+========================= */
+
 .resources{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:6px
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
 }
 
 .resource{
-background:#eee3cc;
-color:#332a20;
-border-radius:6px;
-padding:7px;
-text-align:center
+  padding:7px;
+  border-radius:6px;
+  background:#eee3cc;
+  color:#332a20;
+  text-align:center;
 }
 
 .resource span{
-display:block;
-font-size:20px
+  display:block;
+  font-size:20px;
 }
 
 .resource b{
-font-size:18px
+  font-size:18px;
 }
 
+/* =========================
+   BUILD
+========================= */
+
 .build button{
-width:100%;
-background:#31553d;
-color:white;
-border:1px solid #6e8e76;
-padding:9px 6px;
-border-radius:6px;
-margin:3px 0;
-font-weight:bold
+  width:100%;
+  margin:4px 0;
+  padding:10px 6px;
+  border:1px solid #6e8e76;
+  border-radius:7px;
+  background:#31553d;
+  color:white;
+  font-weight:bold;
+  font-size:14px;
 }
 
 .build button:hover{
-background:#406a4c
+  background:#406a4c;
 }
 
-.log,.chat{
-background:#eee3cf;
-color:#2e271e;
-border-radius:6px;
-padding:7px;
-font-family:Arial,sans-serif;
-font-size:12px;
-height:120px;
-overflow:auto
+/* =========================
+   LOG / CHAT
+========================= */
+
+.log,
+.chat{
+  height:145px;
+  overflow:auto;
+  padding:8px;
+  border-radius:7px;
+  background:#eee3cf;
+  color:#2e271e;
+  font-family:Arial,sans-serif;
+  font-size:12px;
+  line-height:1.5;
 }
 
 .chatInput{
-display:flex;
-gap:5px;
-margin-top:5px
+  display:flex;
+  gap:5px;
+  margin-top:6px;
 }
 
 .chatInput input{
-flex:1;
-min-width:0;
-border-radius:5px;
-border:1px solid #aaa;
-padding:8px
+  flex:1;
+  min-width:0;
+  padding:9px;
+  border:1px solid #aaa;
+  border-radius:6px;
+  background:#f8f0dc;
+  color:#222;
 }
 
 .chatInput button{
-width:42px;
-border:0;
-border-radius:5px;
-background:#b58b43;
-color:white;
-font-weight:bold
+  width:45px;
+  border:0;
+  border-radius:6px;
+  background:#b58b43;
+  color:white;
+  font-weight:bold;
 }
 
-.status{
-font-size:12px;
-line-height:1.5
-}
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:1100px){
 
-.layout{
-grid-template-columns:175px 1fr
-}
+  .layout{
+    grid-template-columns:180px 1fr;
+  }
 
-.right{
-grid-column:1/-1;
-display:grid;
-grid-template-columns:1fr 1fr
-}
+  .right{
+    grid-column:1/-1;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
 
-.map{
-min-height:500px
-}
+  .right .panel{
+    margin-bottom:0;
+  }
 
+  .map{
+    min-height:520px;
+  }
 }
 
 @media(max-width:700px){
 
-header{
-height:62px
-}
+  header{
+    padding:13px 8px;
+  }
 
-header h1{
-font-size:20px
-}
+  header h1{
+    font-size:22px;
+  }
 
-.layout{
-display:flex;
-flex-direction:column;
-padding:4px
-}
+  header p{
+    font-size:13px;
+  }
 
-.left{
-order:2
-}
+  .layout{
+    display:flex;
+    flex-direction:column;
+    padding:4px;
+  }
 
-.map{
-order:1;
-min-height:420px;
-aspect-ratio:1.15
-}
+  .left{
+    order:2;
+  }
 
-.right{
-order:3;
-display:block
-}
+  .map{
+    order:1;
+    width:100%;
+    min-height:0;
+    aspect-ratio:1.05;
+  }
 
-.hexInfo{
-font-size:8px
-}
+  .right{
+    order:3;
+    display:block;
+  }
 
-.number{
-width:22px;
-height:22px;
-line-height:18px;
-font-size:10px
-}
+  .right .panel{
+    margin-bottom:8px;
+  }
 
-.city{
-font-size:7px;
-padding:2px 4px
-}
+  .hexInfo{
+    font-size:7px;
+  }
 
-.node{
-width:13px;
-height:13px
-}
+  .number{
+    width:22px;
+    height:22px;
+    line-height:18px;
+    font-size:10px;
+  }
 
-.pirate{
-width:43px;
-height:43px;
-font-size:24px
-}
+  .city{
+    font-size:7px;
+    padding:2px 4px;
+  }
 
+  .node{
+    width:13px;
+    height:13px;
+  }
+
+  .pirate{
+    width:43px;
+    height:43px;
+    font-size:23px;
+  }
+
+  .mapTitle{
+    font-size:10px;
+    padding:6px 8px;
+  }
+
+  .seaLabel{
+    font-size:9px;
+  }
 }
 </style>
 </head>
@@ -547,461 +688,526 @@ font-size:24px
 <body>
 
 <header>
-<h1>♜ Kingdoms of England</h1>
-<p>Build • Trade • Conquer</p>
+  <h1>♜ Kingdoms of England</h1>
+  <p>Build • Trade • Conquer</p>
 </header>
 
 <div class="layout">
 
-<!-- 左側 -->
+<!-- =====================================
+     LEFT PANEL
+===================================== -->
 
 <aside class="left">
 
-<div class="panel">
-<h2>ROOM • ENGLAND-001</h2>
+  <div class="panel">
 
-<div class="status">
-Players: <b>4 / 4</b>
-</div>
+    <h2>ROOM • ENGLAND-001</h2>
 
-<div class="player">
-<span><i class="dot red"></i>Raven</span>
-<b>5 VP</b>
-</div>
+    <div class="status">
+      Players: <b>4 / 4</b>
+    </div>
 
-<div class="player">
-<span><i class="dot blue"></i>Lion</span>
-<b>4 VP</b>
-</div>
+    <div class="player">
+      <span>
+        <i class="dot red"></i>
+        Raven
+      </span>
+      <b id="ravenVP">5 VP</b>
+    </div>
 
-<div class="player">
-<span><i class="dot green"></i>Stag</span>
-<b>4 VP</b>
-</div>
+    <div class="player">
+      <span>
+        <i class="dot blue"></i>
+        Lion
+      </span>
+      <b>4 VP</b>
+    </div>
 
-<div class="player">
-<span><i class="dot yellow"></i>Falcon</span>
-<b>4 VP</b>
-</div>
-</div>
+    <div class="player">
+      <span>
+        <i class="dot green"></i>
+        Stag
+      </span>
+      <b>4 VP</b>
+    </div>
 
+    <div class="player">
+      <span>
+        <i class="dot yellow"></i>
+        Falcon
+      </span>
+      <b>4 VP</b>
+    </div>
 
-<div class="panel guide">
-<h2>RESOURCE GUIDE</h2>
+  </div>
 
-<div>🌲 Timber</div>
-<div>🌾 Grain</div>
-<div>🐑 Wool</div>
-<div>⛏️ Iron</div>
-<div>🪨 Stone</div>
-<div>🪙 Gold</div>
-</div>
+  <div class="panel guide">
 
+    <h2>RESOURCE GUIDE</h2>
 
-<div class="panel">
-<h2>🏴‍☠️ PIRATE</h2>
+    <div>🌲 Timber</div>
+    <div>🌾 Grain</div>
+    <div>🐑 Wool</div>
+    <div>⛏️ Iron</div>
+    <div>🪨 Stone</div>
+    <div>🪙 Gold</div>
 
-<div style="font-size:35px;text-align:center">
-🏴‍☠️
-</div>
+  </div>
 
-<div class="status">
-Roll <b>7</b> to move the Pirate.
-</div>
-</div>
+  <div class="panel">
+
+    <h2>🏴‍☠️ PIRATE</h2>
+
+    <div style="font-size:35px;text-align:center">
+      🏴‍☠️
+    </div>
+
+    <div class="status">
+      Current sea:
+      <b id="pirateLocation">North Sea</b>
+    </div>
+
+    <br>
+
+    <div class="status">
+      Roll <b>7</b> to activate the Pirate.
+    </div>
+
+  </div>
 
 </aside>
 
 
-<!-- 英格蘭地圖 -->
+<!-- =====================================
+     MAP
+===================================== -->
 
 <main class="map">
 
-<img
-class="mapImage"
-src="9EE7C46A-D813-43D1-BD12-E5A638559595.png"
-alt="Kingdoms of England Map">
+  <!-- 你的 GitHub 圖片 -->
+  <img
+    class="mapImage"
+    src="9EE7C46A-D813-43D1-BD12-E5A638559595.png"
+    alt="Kingdoms of England Game Board"
+  >
 
-<div class="mapShade"></div>
+  <div class="mapShade"></div>
 
-<div class="mapTitle">
-🇬🇧 ENGLAND • STRATEGIC MAP
-</div>
+  <div class="mapTitle">
+    🗺️ ENGLAND • STRATEGIC MAP
+  </div>
 
-<div class="seaLabel irish">
-Irish Sea
-</div>
+  <div class="seaLabel irish">
+    Irish Sea
+  </div>
 
-<div class="seaLabel north">
-North Sea
-</div>
+  <div class="seaLabel north">
+    North Sea
+  </div>
 
-<div class="seaLabel channel">
-English Channel
-</div>
-
-
-<!-- 六角遊戲板塊 -->
-
-<div class="hexGrid">
-
-<button class="hex h1"
-onclick="selectHex('Northumberland','Timber',8)">
-<div class="hexInfo">
-🌲 Northumberland
-<span class="number">8</span>
-</div>
-</button>
-
-<button class="hex h2"
-onclick="selectHex('Durham','Grain',6)">
-<div class="hexInfo">
-🌾 Durham
-<span class="number">6</span>
-</div>
-</button>
-
-<button class="hex h3"
-onclick="selectHex('Yorkshire','Wool',9)">
-<div class="hexInfo">
-🐑 Yorkshire
-<span class="number">9</span>
-</div>
-</button>
-
-<button class="hex h4"
-onclick="selectHex('Cumbria','Stone',5)">
-<div class="hexInfo">
-🪨 Cumbria
-<span class="number">5</span>
-</div>
-</button>
-
-<button class="hex h5"
-onclick="selectHex('Lancashire','Timber',8)">
-<div class="hexInfo">
-🌲 Lancashire
-<span class="number">8</span>
-</div>
-</button>
-
-<button class="hex h6"
-onclick="selectHex('Pennines','Iron',10)">
-<div class="hexInfo">
-⛏️ Pennines
-<span class="number">10</span>
-</div>
-</button>
-
-<button class="hex h7"
-onclick="selectHex('Yorkshire Wolds','Wool',9)">
-<div class="hexInfo">
-🐑 Yorkshire Wolds
-<span class="number">9</span>
-</div>
-</button>
-
-<button class="hex h8"
-onclick="selectHex('Shropshire','Wool',9)">
-<div class="hexInfo">
-🐑 Shropshire
-<span class="number">9</span>
-</div>
-</button>
-
-<button class="hex h9"
-onclick="selectHex('Staffordshire','Iron',3)">
-<div class="hexInfo">
-⛏️ Staffordshire
-<span class="number">3</span>
-</div>
-</button>
-
-<button class="hex h10"
-onclick="selectHex('Nottinghamshire','Timber',4)">
-<div class="hexInfo">
-🌲 Nottinghamshire
-<span class="number">4</span>
-</div>
-</button>
-
-<button class="hex h11"
-onclick="selectHex('Norfolk','Grain',9)">
-<div class="hexInfo">
-🌾 Norfolk
-<span class="number">9</span>
-</div>
-</button>
-
-<button class="hex h12"
-onclick="selectHex('Somerset','Grain',6)">
-<div class="hexInfo">
-🌾 Somerset
-<span class="number">6</span>
-</div>
-</button>
-
-<button class="hex h13"
-onclick="selectHex('Gloucestershire','Timber',4)">
-<div class="hexInfo">
-🌲 Gloucestershire
-<span class="number">4</span>
-</div>
-</button>
-
-<button class="hex h14"
-onclick="selectHex('Cambridgeshire','Grain',5)">
-<div class="hexInfo">
-🌾 Cambridgeshire
-<span class="number">5</span>
-</div>
-</button>
-
-<button class="hex h15"
-onclick="selectHex('Devon','Grain',8)">
-<div class="hexInfo">
-🌾 Devon
-<span class="number">8</span>
-</div>
-</button>
-
-<button class="hex h16"
-onclick="selectHex('Kent','Grain',10)">
-<div class="hexInfo">
-🌾 Kent
-<span class="number">10</span>
-</div>
-</button>
-
-</div>
+  <div class="seaLabel channel">
+    English Channel
+  </div>
 
 
-<!-- 道路 -->
+  <!-- =====================================
+       HEXES
+  ===================================== -->
 
-<div class="road r1"></div>
-<div class="road r2"></div>
-<div class="road r3"></div>
+  <div class="hexGrid">
+
+    <button class="hex h1"
+      onclick="selectHex(this,'Northumberland','Timber',8)">
+      <div class="hexInfo">
+        🌲 Northumberland
+        <span class="number">8</span>
+      </div>
+    </button>
+
+    <button class="hex h2"
+      onclick="selectHex(this,'Durham','Grain',6)">
+      <div class="hexInfo">
+        🌾 Durham
+        <span class="number">6</span>
+      </div>
+    </button>
+
+    <button class="hex h3"
+      onclick="selectHex(this,'Yorkshire','Wool',9)">
+      <div class="hexInfo">
+        🐑 Yorkshire
+        <span class="number">9</span>
+      </div>
+    </button>
+
+    <button class="hex h4"
+      onclick="selectHex(this,'Cumbria','Stone',5)">
+      <div class="hexInfo">
+        🪨 Cumbria
+        <span class="number">5</span>
+      </div>
+    </button>
+
+    <button class="hex h5"
+      onclick="selectHex(this,'Lancashire','Timber',8)">
+      <div class="hexInfo">
+        🌲 Lancashire
+        <span class="number">8</span>
+      </div>
+    </button>
+
+    <button class="hex h6"
+      onclick="selectHex(this,'Pennines','Iron',10)">
+      <div class="hexInfo">
+        ⛏️ Pennines
+        <span class="number">10</span>
+      </div>
+    </button>
+
+    <button class="hex h7"
+      onclick="selectHex(this,'Yorkshire Wolds','Wool',9)">
+      <div class="hexInfo">
+        🐑 Yorkshire Wolds
+        <span class="number">9</span>
+      </div>
+    </button>
+
+    <button class="hex h8"
+      onclick="selectHex(this,'Shropshire','Wool',9)">
+      <div class="hexInfo">
+        🐑 Shropshire
+        <span class="number">9</span>
+      </div>
+    </button>
+
+    <button class="hex h9"
+      onclick="selectHex(this,'Staffordshire','Iron',3)">
+      <div class="hexInfo">
+        ⛏️ Staffordshire
+        <span class="number">3</span>
+      </div>
+    </button>
+
+    <button class="hex h10"
+      onclick="selectHex(this,'Nottinghamshire','Timber',4)">
+      <div class="hexInfo">
+        🌲 Nottinghamshire
+        <span class="number">4</span>
+      </div>
+    </button>
+
+    <button class="hex h11"
+      onclick="selectHex(this,'Norfolk','Grain',9)">
+      <div class="hexInfo">
+        🌾 Norfolk
+        <span class="number">9</span>
+      </div>
+    </button>
+
+    <button class="hex h12"
+      onclick="selectHex(this,'Somerset','Grain',6)">
+      <div class="hexInfo">
+        🌾 Somerset
+        <span class="number">6</span>
+      </div>
+    </button>
+
+    <button class="hex h13"
+      onclick="selectHex(this,'Gloucestershire','Timber',4)">
+      <div class="hexInfo">
+        🌲 Gloucestershire
+        <span class="number">4</span>
+      </div>
+    </button>
+
+    <button class="hex h14"
+      onclick="selectHex(this,'Cambridgeshire','Grain',5)">
+      <div class="hexInfo">
+        🌾 Cambridgeshire
+        <span class="number">5</span>
+      </div>
+    </button>
+
+    <button class="hex h15"
+      onclick="selectHex(this,'Devon','Grain',8)">
+      <div class="hexInfo">
+        🌾 Devon
+        <span class="number">8</span>
+      </div>
+    </button>
+
+    <button class="hex h16"
+      onclick="selectHex(this,'Kent','Grain',10)">
+      <div class="hexInfo">
+        🌾 Kent
+        <span class="number">10</span>
+      </div>
+    </button>
+
+  </div>
 
 
-<!-- 建設節點 -->
+  <!-- =====================================
+       ROADS
+  ===================================== -->
 
-<div class="node n1" onclick="buildNode(1)"></div>
-<div class="node n2" onclick="buildNode(2)"></div>
-<div class="node n3" onclick="buildNode(3)"></div>
-<div class="node n4" onclick="buildNode(4)"></div>
-<div class="node n5" onclick="buildNode(5)"></div>
-<div class="node n6" onclick="buildNode(6)"></div>
-<div class="node n7" onclick="buildNode(7)"></div>
-<div class="node n8" onclick="buildNode(8)"></div>
-<div class="node n9" onclick="buildNode(9)"></div>
+  <div class="road r1" id="road1"></div>
+  <div class="road r2" id="road2"></div>
+  <div class="road r3" id="road3"></div>
 
 
-<!-- 城市 -->
+  <!-- =====================================
+       BUILDING NODES
+  ===================================== -->
 
-<div class="city c-newcastle"
-onclick="cityInfo('Newcastle')">
-Newcastle
-</div>
-
-<div class="city c-leeds"
-onclick="cityInfo('Leeds')">
-Leeds
-</div>
-
-<div class="city c-manchester"
-onclick="cityInfo('Manchester')">
-Manchester
-</div>
-
-<div class="city c-sheffield"
-onclick="cityInfo('Sheffield')">
-Sheffield
-</div>
-
-<div class="city c-liverpool"
-onclick="cityInfo('Liverpool')">
-Liverpool
-</div>
-
-<div class="city c-nottingham"
-onclick="cityInfo('Nottingham')">
-Nottingham
-</div>
-
-<div class="city c-birmingham"
-onclick="cityInfo('Birmingham')">
-Birmingham
-</div>
-
-<div class="city c-bristol"
-onclick="cityInfo('Bristol')">
-Bristol
-</div>
-
-<div class="city c-bridgwater"
-onclick="cityInfo('Bridgwater')">
-Bridgwater
-</div>
-
-<div class="city c-oxford"
-onclick="cityInfo('Oxford')">
-Oxford
-</div>
-
-<div class="city c-london"
-onclick="cityInfo('London')">
-👑 London
-</div>
-
-<div class="city c-plymouth"
-onclick="cityInfo('Plymouth')">
-Plymouth
-</div>
+  <div class="node n1" onclick="buildNode(1)"></div>
+  <div class="node n2" onclick="buildNode(2)"></div>
+  <div class="node n3" onclick="buildNode(3)"></div>
+  <div class="node n4" onclick="buildNode(4)"></div>
+  <div class="node n5" onclick="buildNode(5)"></div>
+  <div class="node n6" onclick="buildNode(6)"></div>
+  <div class="node n7" onclick="buildNode(7)"></div>
+  <div class="node n8" onclick="buildNode(8)"></div>
+  <div class="node n9" onclick="buildNode(9)"></div>
 
 
-<!-- 海盜 -->
+  <!-- =====================================
+       CITIES
+  ===================================== -->
 
-<div class="pirate"
-onclick="movePirate()"
-title="Move Pirate">
-🏴‍☠️
-</div>
+  <div class="city c-newcastle"
+       onclick="cityInfo('Newcastle')">
+    Newcastle
+  </div>
+
+  <div class="city c-leeds"
+       onclick="cityInfo('Leeds')">
+    Leeds
+  </div>
+
+  <div class="city c-manchester"
+       onclick="cityInfo('Manchester')">
+    Manchester
+  </div>
+
+  <div class="city c-sheffield"
+       onclick="cityInfo('Sheffield')">
+    Sheffield
+  </div>
+
+  <div class="city c-liverpool"
+       onclick="cityInfo('Liverpool')">
+    Liverpool
+  </div>
+
+  <div class="city c-nottingham"
+       onclick="cityInfo('Nottingham')">
+    Nottingham
+  </div>
+
+  <div class="city c-birmingham"
+       onclick="cityInfo('Birmingham')">
+    Birmingham
+  </div>
+
+  <div class="city c-bristol"
+       onclick="cityInfo('Bristol')">
+    Bristol
+  </div>
+
+  <div class="city c-bridgwater"
+       onclick="cityInfo('Bridgwater')">
+    Bridgwater
+  </div>
+
+  <div class="city c-oxford"
+       onclick="cityInfo('Oxford')">
+    Oxford
+  </div>
+
+  <div class="city c-london"
+       onclick="cityInfo('London')">
+    👑 London
+  </div>
+
+  <div class="city c-plymouth"
+       onclick="cityInfo('Plymouth')">
+    Plymouth
+  </div>
+
+
+  <!-- =====================================
+       PIRATE
+  ===================================== -->
+
+  <div
+    class="pirate"
+    id="pirate"
+    onclick="movePirate()"
+    title="Move Pirate">
+    🏴‍☠️
+  </div>
 
 </main>
 
 
-<!-- 右側 -->
+<!-- =====================================
+     RIGHT PANEL
+===================================== -->
 
 <aside class="right">
 
-<div class="panel">
+  <!-- TURN + DICE -->
 
-<div class="turn">
-👑 Raven's Turn
-</div>
+  <div class="panel">
 
-<h2>🎲 DICE</h2>
+    <div class="turn">
+      👑 Raven's Turn
+    </div>
 
-<div class="dice" id="dice">
-⚀ ⚀
-</div>
+    <h2>🎲 DICE</h2>
 
-<button class="roll" onclick="rollDice()">
-🎲 Roll Dice
-</button>
+    <div class="dice" id="dice">
+      ⚀ ⚀
+    </div>
 
-</div>
+    <button class="roll" onclick="rollDice()">
+      🎲 Roll Dice
+    </button>
 
-
-<div class="panel">
-
-<h2>📦 RESOURCES</h2>
-
-<div class="resources">
-
-<div class="resource">
-<span>🌲</span>
-<b id="wood">3</b>
-Timber
-</div>
-
-<div class="resource">
-<span>🌾</span>
-<b id="grain">2</b>
-Grain
-</div>
-
-<div class="resource">
-<span>🐑</span>
-<b id="wool">1</b>
-Wool
-</div>
-
-<div class="resource">
-<span>🪨</span>
-<b id="stone">2</b>
-Stone
-</div>
-
-<div class="resource">
-<span>⛏️</span>
-<b id="iron">2</b>
-Iron
-</div>
-
-<div class="resource">
-<span>🪙</span>
-<b id="gold">0</b>
-Gold
-</div>
-
-</div>
-
-</div>
+  </div>
 
 
-<div class="panel build">
+  <!-- RESOURCES -->
 
-<h2>🏗️ BUILD</h2>
+  <div class="panel">
 
-<button onclick="buildRoad()">
-🛣️ Road<br>
-1 Timber + 1 Stone
-</button>
+    <h2>📦 RESOURCES</h2>
 
-<button onclick="buildVillage()">
-🏘️ Village<br>
-1 Timber + 1 Stone + 1 Grain + 1 Wool
-</button>
+    <div class="resources">
 
-<button onclick="buildTown()">
-🏰 Town<br>
-2 Grain + 3 Iron
-</button>
+      <div class="resource">
+        <span>🌲</span>
+        <b id="wood">3</b>
+        <br>
+        Timber
+      </div>
 
-<button onclick="trade()">
-🤝 Trade<br>
-2 Timber → 1 Grain
-</button>
+      <div class="resource">
+        <span>🌾</span>
+        <b id="grain">2</b>
+        <br>
+        Grain
+      </div>
 
-</div>
+      <div class="resource">
+        <span>🐑</span>
+        <b id="wool">1</b>
+        <br>
+        Wool
+      </div>
+
+      <div class="resource">
+        <span>🪨</span>
+        <b id="stone">2</b>
+        <br>
+        Stone
+      </div>
+
+      <div class="resource">
+        <span>⛏️</span>
+        <b id="iron">2</b>
+        <br>
+        Iron
+      </div>
+
+      <div class="resource">
+        <span>🪙</span>
+        <b id="gold">0</b>
+        <br>
+        Gold
+      </div>
+
+    </div>
+
+  </div>
 
 
-<div class="panel">
+  <!-- BUILD -->
 
-<h2>GAME LOG</h2>
+  <div class="panel build">
 
-<div class="log" id="log">
-🇬🇧 Welcome to Kingdoms of England!<br>
-🗺️ Select a hex to inspect its resources.<br>
-</div>
+    <h2>🏗️ BUILD</h2>
 
-</div>
+    <button onclick="buildRoad()">
+      🛣️ Build Road<br>
+      1 Timber + 1 Stone
+    </button>
+
+    <button onclick="buildVillage()">
+      🏘️ Build Village<br>
+      1 Timber + 1 Stone + 1 Grain + 1 Wool
+    </button>
+
+    <button onclick="buildTown()">
+      🏰 Build Town<br>
+      2 Grain + 3 Iron
+    </button>
+
+    <button onclick="trade()">
+      🤝 Trade<br>
+      2 Timber → 1 Grain
+    </button>
+
+  </div>
 
 
-<div class="panel">
+  <!-- LOG -->
 
-<h2>💬 CHAT</h2>
+  <div class="panel">
 
-<div class="chat" id="chat">
-🔴 Raven: Good luck everyone!<br>
-🔵 Lion: Let's build a strong kingdom!<br>
-🟢 Stag: I need Iron.<br>
-🟡 Falcon: Watch out for the pirate!<br>
-</div>
+    <h2>GAME LOG</h2>
 
-<div class="chatInput">
+    <div class="log" id="log">
+      🇬🇧 Welcome to Kingdoms of England!<br>
+      🗺️ Click a Hex to inspect its resources.<br>
+      🏙️ Click a city to inspect it.<br>
+    </div>
 
-<input
-id="message"
-placeholder="Type a message..."
-onkeydown="if(event.key==='Enter')sendChat()">
+  </div>
 
-<button onclick="sendChat()">➤</button>
 
-</div>
+  <!-- CHAT -->
 
-</div>
+  <div class="panel">
+
+    <h2>💬 CHAT</h2>
+
+    <div class="chat" id="chat">
+
+      🔴 Raven: Good luck everyone!<br>
+      🔵 Lion: Let's build a strong kingdom!<br>
+      🟢 Stag: I need Iron.<br>
+      🟡 Falcon: Watch out for the pirate!<br>
+
+    </div>
+
+    <div class="chatInput">
+
+      <input
+        id="message"
+        placeholder="Type a message..."
+        onkeydown="if(event.key==='Enter')sendChat()"
+      >
+
+      <button onclick="sendChat()">
+        ➤
+      </button>
+
+    </div>
+
+  </div>
 
 </aside>
 
@@ -1010,279 +1216,526 @@ onkeydown="if(event.key==='Enter')sendChat()">
 
 <script>
 
+/* =====================================
+   GAME DATA
+===================================== */
+
 let resources={
-wood:3,
-grain:2,
-wool:1,
-stone:2,
-iron:2,
-gold:0
+  wood:3,
+  grain:2,
+  wool:1,
+  stone:2,
+  iron:2,
+  gold:0
 };
 
 let vp=5;
+
 let selectedHex=null;
+
 let pirateRegion="North Sea";
 
+let roadCount=0;
+let villageCount=0;
+let townCount=0;
+
+
+/* =====================================
+   RESOURCE UPDATE
+===================================== */
 
 function updateResources(){
 
-Object.keys(resources).forEach(key=>{
+  Object.keys(resources).forEach(key=>{
 
-let el=document.getElementById(key);
+    const el=document.getElementById(key);
 
-if(el){
-el.textContent=resources[key];
+    if(el){
+      el.textContent=resources[key];
+    }
+
+  });
+
+  document.getElementById("ravenVP").textContent=
+    vp+" VP";
 }
 
-});
 
-}
-
+/* =====================================
+   GAME LOG
+===================================== */
 
 function log(message){
 
-let box=document.getElementById("log");
+  const box=document.getElementById("log");
 
-box.innerHTML=message+"<br>"+box.innerHTML;
-
+  box.innerHTML=
+    message+
+    "<br>"+
+    box.innerHTML;
 }
 
+
+/* =====================================
+   DICE
+===================================== */
 
 function rollDice(){
 
-let a=Math.floor(Math.random()*6)+1;
-let b=Math.floor(Math.random()*6)+1;
-let total=a+b;
+  const a=Math.floor(Math.random()*6)+1;
+  const b=Math.floor(Math.random()*6)+1;
 
-let faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+  const total=a+b;
 
-document.getElementById("dice").textContent=
-faces[a-1]+" "+faces[b-1]+" = "+total;
+  const faces=[
+    "⚀",
+    "⚁",
+    "⚂",
+    "⚃",
+    "⚄",
+    "⚅"
+  ];
 
-log("🎲 Raven rolled "+total);
+  document.getElementById("dice").textContent=
+    faces[a-1]+" "+faces[b-1]+" = "+total;
 
-if(total===7){
+  log("🎲 Raven rolled "+total+".");
 
-log("🏴‍☠️ Pirate Attack! Choose a sea region.");
+  /* 7 = Pirate */
 
-alert("🎲 你擲出了 7！\n🏴‍☠️ 請點擊地圖上的海盜移動它。");
+  if(total===7){
 
-return;
+    log("🏴‍☠️ Pirate Attack!");
+
+    alert(
+      "🎲 你擲出了 7！\n\n"+
+      "🏴‍☠️ 請點擊地圖上的海盜移動它。"
+    );
+
+    return;
+  }
+
+  /* 資源生產 */
+
+  const production={
+
+    3:"iron",
+    4:"wood",
+    5:"iron",
+    6:"grain",
+    8:"wood",
+    9:"wool",
+    10:"stone",
+    11:"grain",
+    12:"gold"
+
+  };
+
+  const resource=production[total];
+
+  if(resource){
+
+    resources[resource]++;
+
+    updateResources();
+
+    log(
+      "📦 +1 "+
+      resource+
+      " 來自骰子 "+total
+    );
+
+  }else{
+
+    log("沒有對應資源。");
+
+  }
 
 }
 
-let production={
-4:"wood",
-5:"iron",
-6:"grain",
-8:"wood",
-9:"wool",
-10:"stone",
-11:"grain",
-12:"gold"
-};
 
-let resource=production[total];
-
-if(resource){
-
-resources[resource]++;
-
-log("📦 +1 "+resource);
-
-updateResources();
-
-}else{
-
-log("沒有對應資源。");
-
-}
-
-}
-
+/* =====================================
+   SPEND RESOURCES
+===================================== */
 
 function spend(cost){
 
-for(let key in cost){
+  for(const key in cost){
 
-if(resources[key]<cost[key]){
+    if(resources[key]<cost[key]){
 
-return false;
+      return false;
 
+    }
+
+  }
+
+  for(const key in cost){
+
+    resources[key]-=cost[key];
+
+  }
+
+  updateResources();
+
+  return true;
 }
 
-}
 
-for(let key in cost){
-
-resources[key]-=cost[key];
-
-}
-
-updateResources();
-
-return true;
-
-}
-
+/* =====================================
+   BUILD ROAD
+===================================== */
 
 function buildRoad(){
 
-if(spend({wood:1,stone:1})){
+  if(
+    spend({
+      wood:1,
+      stone:1
+    })
+  ){
 
-vp++;
+    vp++;
+    roadCount++;
 
-log("🛣️ Raven built a Road! +1 VP");
+    const road=
+      document.getElementById(
+        "road"+
+        Math.min(roadCount,3)
+      );
 
-}else{
+    if(road){
+      road.classList.add("show");
+    }
 
-log("❌ Not enough resources for Road.");
+    log(
+      "🛣️ Raven built a Road! +1 VP"
+    );
+
+  }else{
+
+    log(
+      "❌ Not enough resources for Road."
+    );
+
+  }
 
 }
 
-}
 
+/* =====================================
+   BUILD VILLAGE
+===================================== */
 
 function buildVillage(){
 
-if(spend({
-wood:1,
-stone:1,
-grain:1,
-wool:1
-})){
+  if(
+    spend({
+      wood:1,
+      stone:1,
+      grain:1,
+      wool:1
+    })
+  ){
 
-vp++;
+    vp++;
+    villageCount++;
 
-log("🏘️ Raven built a Village! +1 VP");
+    log(
+      "🏘️ Raven built a Village! +1 VP"
+    );
 
-}else{
+    /* 自動標記一個節點 */
 
-log("❌ Not enough resources for Village.");
+    const nodes=
+      document.querySelectorAll(".node");
+
+    if(villageCount<=nodes.length){
+
+      nodes[
+        villageCount-1
+      ].classList.add("built");
+
+    }
+
+  }else{
+
+    log(
+      "❌ Not enough resources for Village."
+    );
+
+  }
 
 }
 
-}
 
+/* =====================================
+   BUILD TOWN
+===================================== */
 
 function buildTown(){
 
-if(spend({
-grain:2,
-iron:3
-})){
+  if(
+    spend({
+      grain:2,
+      iron:3
+    })
+  ){
 
-vp+=2;
+    vp+=2;
+    townCount++;
 
-log("🏰 Raven upgraded to a Town! +2 VP");
+    log(
+      "🏰 Raven upgraded to a Town! +2 VP"
+    );
 
-}else{
+  }else{
 
-log("❌ Not enough resources for Town.");
+    log(
+      "❌ Not enough resources for Town."
+    );
+
+  }
 
 }
 
-}
 
+/* =====================================
+   TRADE
+===================================== */
 
 function trade(){
 
-if(spend({wood:2})){
+  if(
+    spend({
+      wood:2
+    })
+  ){
 
-resources.grain++;
+    resources.grain++;
 
-updateResources();
+    updateResources();
 
-log("🤝 Traded 2 Timber → 1 Grain.");
+    log(
+      "🤝 Traded 2 Timber → 1 Grain."
+    );
 
-}else{
+  }else{
 
-log("❌ Need 2 Timber.");
+    log(
+      "❌ Need 2 Timber."
+    );
 
-}
-
-}
-
-
-function selectHex(name,resource,number){
-
-selectedHex={
-name:name,
-resource:resource,
-number:number
-};
-
-log(
-"🗺️ Selected "+name+
-" • "+resource+
-" • Dice "+number
-);
+  }
 
 }
 
+
+/* =====================================
+   HEX CLICK
+===================================== */
+
+function selectHex(
+  element,
+  name,
+  resource,
+  number
+){
+
+  /* 清除上一個 */
+
+  document
+    .querySelectorAll(".hex")
+    .forEach(hex=>{
+      hex.classList.remove("selected");
+    });
+
+  /* 選取 */
+
+  element.classList.add("selected");
+
+  selectedHex={
+    name:name,
+    resource:resource,
+    number:number
+  };
+
+  log(
+    "🗺️ Selected "+
+    name+
+    " • "+
+    resource+
+    " • Dice "+
+    number
+  );
+
+}
+
+
+/* =====================================
+   NODE
+===================================== */
 
 function buildNode(number){
 
-log(
-"📍 Building node "+number+
-" selected. Future version: place your Road or Village here."
-);
+  const node=
+    document.querySelector(
+      ".n"+number
+    );
+
+  if(node.classList.contains("built")){
+
+    log(
+      "🏘️ Node "+number+
+      " 已經有建築。"
+    );
+
+    return;
+  }
+
+  node.classList.add("built");
+
+  log(
+    "📍 Node "+
+    number+
+    " selected."
+  );
 
 }
 
+
+/* =====================================
+   CITY
+===================================== */
 
 function cityInfo(city){
 
-log("🏙️ Selected city: "+city);
+  const cityData={
+
+    Newcastle:"Northern port • Timber",
+    Leeds:"Yorkshire trade city • Wool",
+    Manchester:"Industrial region • Iron",
+    Sheffield:"Steel region • Iron",
+    Liverpool:"Western port • Grain",
+    Nottingham:"Central England • Timber",
+    Birmingham:"Central trade hub • Iron",
+    Bristol:"Western port • Grain",
+    Bridgwater:"Southern settlement • Grain",
+    Oxford:"University city • Gold",
+    London:"Capital • Gold",
+    Plymouth:"Southern port • Grain"
+
+  };
+
+  log(
+    "🏙️ "+
+    city+
+    " — "+
+    (cityData[city] || "City")
+  );
 
 }
 
+
+/* =====================================
+   PIRATE
+===================================== */
 
 function movePirate(){
 
-let regions=[
-"North Sea",
-"Irish Sea",
-"Celtic Sea",
-"English Channel"
-];
+  const regions=[
 
-let current=regions.indexOf(pirateRegion);
+    "North Sea",
+    "Irish Sea",
+    "Celtic Sea",
+    "English Channel"
 
-pirateRegion=
-regions[(current+1)%regions.length];
+  ];
 
-log("🏴‍☠️ Pirate moved to "+pirateRegion);
+  const current=
+    regions.indexOf(pirateRegion);
 
-alert(
-"🏴‍☠️ Pirate moved!\n\n"+
-pirateRegion
-);
+  pirateRegion=
+    regions[
+      (current+1)%regions.length
+    ];
+
+  document.getElementById(
+    "pirateLocation"
+  ).textContent=pirateRegion;
+
+  const pirate=
+    document.getElementById("pirate");
+
+  pirate.classList.remove("moving");
+
+  void pirate.offsetWidth;
+
+  pirate.classList.add("moving");
+
+  log(
+    "🏴‍☠️ Pirate moved to "+
+    pirateRegion
+  );
 
 }
 
+
+/* =====================================
+   CHAT
+===================================== */
 
 function sendChat(){
 
-let input=document.getElementById("message");
+  const input=
+    document.getElementById(
+      "message"
+    );
 
-let message=input.value.trim();
+  const message=
+    input.value.trim();
 
-if(!message)return;
+  if(!message){
+    return;
+  }
 
-let chat=document.getElementById("chat");
+  const chat=
+    document.getElementById(
+      "chat"
+    );
 
-chat.innerHTML+=
-"🔴 Raven: "+
-message+
-"<br>";
+  chat.innerHTML+=
+    "🔴 Raven: "+
+    escapeHTML(message)+
+    "<br>";
 
-input.value="";
+  input.value="";
 
-chat.scrollTop=chat.scrollHeight;
+  chat.scrollTop=
+    chat.scrollHeight;
 
 }
 
+
+/* =====================================
+   SECURITY
+===================================== */
+
+function escapeHTML(text){
+
+  const div=
+    document.createElement("div");
+
+  div.textContent=text;
+
+  return div.innerHTML;
+
+}
+
+
+/* =====================================
+   START GAME
+===================================== */
 
 updateResources();
 

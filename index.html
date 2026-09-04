@@ -1,2624 +1,785 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
 
-<title>MONOPOLY UK - Multiplayer</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
 
-<!-- =========================================================
-     MODULE 01：SUPABASE LIBRARY
-     ========================================================= -->
+    <meta name="theme-color" content="#07111f">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>MONOPOLY UK</title>
 
-<style>
+    <!-- =====================================================
+         CSS 模組
+         ===================================================== -->
+    <link rel="stylesheet" href="./css/style.css">
 
-/* =========================================================
-   MODULE 02：GLOBAL STYLE
-   ========================================================= */
-
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
-    margin: 0;
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-    background:
-        radial-gradient(circle at top, #244b36, #07150e 70%);
-
-    color: #fff;
-    min-height: 100vh;
-}
-
-button,
-input {
-    font: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-button:disabled {
-    cursor: not-allowed;
-    opacity: .45;
-}
-
-
-/* =========================================================
-   MODULE 03：APP LAYOUT
-   ========================================================= */
-
-.app {
-    width: 100%;
-    max-width: 1400px;
-    margin: auto;
-    padding: 12px;
-}
-
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 1px;
-}
-
-.connection {
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.12);
-    font-size: 13px;
-}
-
-.layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 330px;
-    gap: 14px;
-}
-
-@media(max-width:900px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-/* =========================================================
-   MODULE 04：ROOM / LOGIN
-   ========================================================= */
-
-.screen {
-    display: none;
-}
-
-.screen.active {
-    display: block;
-}
-
-.panel {
-    background: rgba(10,25,18,.92);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 12px 40px rgba(0,0,0,.3);
-}
-
-.login {
-    max-width: 500px;
-    margin: 60px auto;
-}
-
-h1,
-h2,
-h3 {
-    margin-top: 0;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,.18);
-    background: rgba(255,255,255,.08);
-    color: #fff;
-    outline: none;
-}
-
-input::placeholder {
-    color: rgba(255,255,255,.5);
-}
-
-.primary-btn {
-    width: 100%;
-    padding: 14px;
-    border: 0;
-    border-radius: 10px;
-    background: #f3c94b;
-    color: #17130a;
-    font-weight: 900;
-}
-
-.secondary-btn {
-    padding: 11px 15px;
-    border: 1px solid rgba(255,255,255,.2);
-    border-radius: 10px;
-    background: rgba(255,255,255,.08);
-    color: #fff;
-}
-
-.danger-btn {
-    padding: 11px 15px;
-    border: 0;
-    border-radius: 10px;
-    background: #b93636;
-    color: #fff;
-}
-
-
-/* =========================================================
-   MODULE 05：GAME BOARD
-   ========================================================= */
-
-.board-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.board {
-    width: min(94vw, 760px);
-    aspect-ratio: 1 / 1;
-
-    display: grid;
-    grid-template-columns: repeat(11, 1fr);
-    grid-template-rows: repeat(11, 1fr);
-
-    background: #d8e9d5;
-    border: 8px solid #111;
-    border-radius: 4px;
-
-    position: relative;
-    overflow: hidden;
-
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.45);
-}
-
-.center {
-    grid-column: 2 / 11;
-    grid-row: 2 / 11;
-
-    background:
-        linear-gradient(
-            135deg,
-            #d7e7d3,
-            #bcd6b8
-        );
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    color: #183221;
-    text-align: center;
-
-    border: 2px solid #183221;
-}
-
-.center-title {
-    font-size: clamp(30px, 7vw, 65px);
-    font-weight: 1000;
-    letter-spacing: 4px;
-    transform: rotate(-25deg);
-}
-
-.center-sub {
-    margin-top: 20px;
-    font-size: 14px;
-    opacity: .7;
-}
-
-
-/* =========================================================
-   MODULE 06：BOARD SPACE
-   ========================================================= */
-
-.space {
-    position: relative;
-    background: #f5f1df;
-    color: #171717;
-
-    border: 1px solid #222;
-
-    display: flex;
-    flex-direction: column;
-
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 3px;
-
-    overflow: hidden;
-}
-
-.space-color {
-    width: 100%;
-    height: 15%;
-    background: #8b5e3c;
-}
-
-.space-name {
-    font-size: clamp(7px, 1.35vw, 13px);
-    font-weight: 800;
-    text-align: center;
-    line-height: 1.05;
-}
-
-.space-price {
-    font-size: clamp(6px, 1vw, 10px);
-}
-
-.space-icon {
-    font-size: clamp(13px, 2vw, 22px);
-}
-
-.space.owned {
-    box-shadow: inset 0 0 0 4px #e3a928;
-}
-
-
-/* =========================================================
-   MODULE 07：PLAYER PIECES
-   ========================================================= */
-
-.pieces {
-    position: absolute;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-
-    display: flex;
-    justify-content: center;
-    gap: 2px;
-
-    pointer-events: none;
-}
-
-.piece {
-    width: clamp(12px, 2vw, 22px);
-    height: clamp(12px, 2vw, 22px);
-
-    border-radius: 50%;
-
-    border: 2px solid #111;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: #111;
-    font-size: 8px;
-    font-weight: 900;
-}
-
-
-/* =========================================================
-   MODULE 08：SIDE PANEL
-   ========================================================= */
-
-.side {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.card {
-    background: rgba(10,25,18,.92);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 16px;
-    padding: 15px;
-}
-
-.turn-banner {
-    padding: 13px;
-    border-radius: 12px;
-    background: #e3b63b;
-    color: #17130a;
-    font-weight: 900;
-    text-align: center;
-}
-
-.dice {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin: 12px 0;
-}
-
-.die {
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #fff;
-    color: #111;
-
-    border-radius: 12px;
-
-    font-size: 30px;
-    font-weight: 900;
-
-    box-shadow: 0 5px 12px rgba(0,0,0,.3);
-}
-
-.action {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.action button {
-    width: 100%;
-}
-
-
-/* =========================================================
-   MODULE 09：PLAYER LIST
-   ========================================================= */
-
-.player-row {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    padding: 9px;
-
-    margin-bottom: 6px;
-
-    background: rgba(255,255,255,.06);
-    border-radius: 10px;
-}
-
-.player-dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 2px solid #111;
-    flex-shrink: 0;
-}
-
-.player-info {
-    flex: 1;
-}
-
-.player-name {
-    font-weight: 800;
-}
-
-.player-money {
-    font-size: 12px;
-    opacity: .7;
-}
-
-.current {
-    outline: 2px solid #f3c94b;
-}
-
-
-/* =========================================================
-   MODULE 10：EVENT LOG
-   ========================================================= */
-
-.log {
-    max-height: 220px;
-    overflow-y: auto;
-    font-size: 13px;
-}
-
-.log-item {
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-}
-
-
-/* =========================================================
-   MODULE 11：MODAL
-   ========================================================= */
-
-.modal {
-    position: fixed;
-    inset: 0;
-
-    display: none;
-
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(0,0,0,.7);
-
-    z-index: 1000;
-
-    padding: 20px;
-}
-
-.modal.show {
-    display: flex;
-}
-
-.modal-box {
-    width: min(500px, 100%);
-
-    background: #10261a;
-
-    border: 1px solid rgba(255,255,255,.15);
-
-    border-radius: 18px;
-
-    padding: 22px;
-
-    box-shadow: 0 20px 70px rgba(0,0,0,.5);
-}
-
-.modal-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 18px;
-}
-
-.modal-actions button {
-    flex: 1;
-}
-
-
-/* =========================================================
-   MODULE 12：CARD DISPLAY
-   ========================================================= */
-
-.event-card {
-    background: #f6f0d9;
-    color: #171717;
-
-    border-radius: 14px;
-
-    padding: 20px;
-
-    text-align: center;
-
-    border: 5px solid #b99c53;
-}
-
-.event-card-title {
-    font-size: 24px;
-    font-weight: 1000;
-    margin-bottom: 12px;
-}
-
-.event-card-text {
-    line-height: 1.6;
-}
-
-
-/* =========================================================
-   MODULE 13：WAITING
-   ========================================================= */
-
-.waiting-list {
-    margin-top: 15px;
-}
-
-.small {
-    font-size: 13px;
-    opacity: .65;
-}
-
-.hidden {
-    display: none !important;
-}
-
-</style>
+    <!-- =====================================================
+         Supabase
+         ===================================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 
 <body>
 
-<div class="app">
-
 <!-- =========================================================
-     MODULE 14：TOP BAR
+     APP
      ========================================================= -->
 
-<div class="topbar">
+<div id="app">
 
-    <div class="logo">
-        MONOPOLY UK
-    </div>
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
 
-    <div class="connection" id="connectionStatus">
-        連線中...
-    </div>
+    <header class="topbar">
 
-</div>
+        <div class="brand">
 
+            <div class="brand-logo">
+                M
+            </div>
 
-<!-- =========================================================
-     MODULE 15：LOGIN / ROOM SCREEN
-     ========================================================= -->
-
-<section id="roomScreen" class="screen active">
-
-    <div class="panel login">
-
-        <h1>多人遊戲</h1>
-
-        <p class="small">
-            建立房間或加入朋友的房間。
-        </p>
-
-        <input
-            id="roomCodeInput"
-            placeholder="房間代碼，例如 LONDON01"
-            autocomplete="off"
-        >
-
-        <input
-            id="playerNameInput"
-            placeholder="你的玩家名稱"
-            autocomplete="off"
-        >
-
-        <button
-            class="primary-btn"
-            onclick="joinOrCreateRoom()"
-        >
-            建立 / 加入房間
-        </button>
-
-        <div
-            id="roomMessage"
-            style="margin-top:15px"
-        ></div>
-
-        <div
-            id="waitingArea"
-            class="waiting-list hidden"
-        >
-
-            <h3>等待其他玩家</h3>
-
-            <div id="waitingPlayers"></div>
-
-            <button
-                id="startButton"
-                class="primary-btn hidden"
-                onclick="startGame()"
-            >
-                開始遊戲
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     MODULE 16：GAME SCREEN
-     ========================================================= -->
-
-<section id="gameScreen" class="screen">
-
-    <div class="layout">
-
-        <!-- ================= BOARD ================= -->
-
-        <div class="board-wrap">
-
-            <div id="board" class="board">
-
-                <div class="center">
-
-                    <div class="center-title">
-                        MONOPOLY
-                    </div>
-
-                    <div class="center-sub">
-                        UK EDITION
-                    </div>
-
+            <div class="brand-text">
+                <div class="brand-title">
+                    MONOPOLY UK
                 </div>
 
+                <div class="brand-subtitle">
+                    Supabase Multiplayer Edition
+                </div>
             </div>
 
         </div>
 
+        <div id="connectionStatus" class="connection-status offline">
+            <span class="status-dot"></span>
+            <span id="connectionText">
+                Supabase 連線中...
+            </span>
+        </div>
 
-        <!-- ================= SIDE ================= -->
-
-        <div class="side">
+    </header>
 
 
-            <!-- CURRENT TURN -->
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
 
-            <div class="card">
+    <main class="main-container">
+
+        <!-- =================================================
+             SCREEN 1
+             大廳 / 建立或加入房間
+             ================================================= -->
+
+        <section
+            id="lobbyScreen"
+            class="screen active"
+        >
+
+            <div class="lobby-card">
+
+                <div class="lobby-icon">
+                    🎲
+                </div>
+
+                <h1>
+                    MONOPOLY UK
+                </h1>
+
+                <p class="lobby-description">
+                    Supabase 多人即時版
+                </p>
+
+                <p class="lobby-description">
+                    每位玩家使用自己的手機或瀏覽器加入同一個房間。
+                    <br>
+                    遊戲狀態由 Supabase 控制並即時同步。
+                </p>
+
+
+                <!-- =========================================
+                     系統提示
+                     ========================================= -->
 
                 <div
-                    id="turnBanner"
-                    class="turn-banner"
+                    id="lobbyMessage"
+                    class="message-box"
+                    hidden
+                >
+                </div>
+
+
+                <!-- =========================================
+                     玩家名稱
+                     ========================================= -->
+
+                <div class="form-group">
+
+                    <label for="playerName">
+                        玩家名稱
+                    </label>
+
+                    <input
+                        id="playerName"
+                        type="text"
+                        maxlength="20"
+                        autocomplete="off"
+                        placeholder="輸入你的名字"
+                    >
+
+                </div>
+
+
+                <!-- =========================================
+                     房間代碼
+                     ========================================= -->
+
+                <div class="form-group">
+
+                    <label for="roomCode">
+                        房間代碼
+                    </label>
+
+                    <input
+                        id="roomCode"
+                        type="text"
+                        maxlength="12"
+                        autocomplete="off"
+                        autocapitalize="characters"
+                        placeholder="例如 ABC123"
+                    >
+
+                </div>
+
+
+                <!-- =========================================
+                     房間操作
+                     ========================================= -->
+
+                <div class="button-row">
+
+                    <button
+                        id="createRoomBtn"
+                        class="btn btn-primary"
+                        type="button"
+                    >
+                        建立房間
+                    </button>
+
+                    <button
+                        id="joinRoomBtn"
+                        class="btn btn-secondary"
+                        type="button"
+                    >
+                        加入房間
+                    </button>
+
+                </div>
+
+
+                <!-- =========================================
+                     Loading
+                     ========================================= -->
+
+                <div
+                    id="lobbyLoading"
+                    class="loading"
+                    hidden
+                >
+                    <div class="spinner"></div>
+                    <span>處理中...</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SCREEN 2
+             等待玩家
+             ================================================= -->
+
+        <section
+            id="waitingScreen"
+            class="screen"
+        >
+
+            <div class="waiting-card">
+
+                <div class="waiting-icon">
+                    👥
+                </div>
+
+                <h2>
+                    等待其他玩家
+                </h2>
+
+                <p>
+                    房間代碼
+                </p>
+
+                <div
+                    id="waitingRoomCode"
+                    class="room-code"
+                >
+                    ------
+                </div>
+
+
+                <button
+                    id="copyRoomCodeBtn"
+                    class="btn btn-secondary"
+                    type="button"
+                >
+                    複製房間代碼
+                </button>
+
+
+                <div class="player-list-container">
+
+                    <h3>
+                        玩家
+                    </h3>
+
+                    <div
+                        id="waitingPlayerList"
+                        class="player-list"
+                    >
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="waitingStatus"
+                    class="waiting-status"
+                >
+                    等待玩家加入...
+                </div>
+
+
+                <button
+                    id="startGameBtn"
+                    class="btn btn-primary"
+                    type="button"
+                    hidden
+                >
+                    開始遊戲
+                </button>
+
+
+                <button
+                    id="leaveRoomBtn"
+                    class="btn btn-danger-outline"
+                    type="button"
+                >
+                    離開房間
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SCREEN 3
+             遊戲
+             ================================================= -->
+
+        <section
+            id="gameScreen"
+            class="screen"
+        >
+
+            <!-- =============================================
+                 GAME HEADER
+                 ============================================= -->
+
+            <div class="game-header">
+
+                <div>
+
+                    <div class="game-room">
+                        房間：
+                        <span id="gameRoomCode">
+                            ------
+                        </span>
+                    </div>
+
+                    <div class="turn-info">
+                        第
+                        <span id="turnNumber">
+                            0
+                        </span>
+                        回合
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="currentTurnBadge"
+                    class="turn-badge"
                 >
                     等待遊戲開始
                 </div>
 
-                <div class="dice">
+            </div>
 
-                    <div
-                        id="dice1"
-                        class="die"
-                    >
-                        -
-                    </div>
 
-                    <div
-                        id="dice2"
-                        class="die"
-                    >
-                        -
-                    </div>
+            <!-- =============================================
+                 PLAYER BAR
+                 ============================================= -->
+
+            <div
+                id="playerBar"
+                class="player-bar"
+            >
+            </div>
+
+
+            <!-- =============================================
+                 BOARD
+                 ============================================= -->
+
+            <div class="board-wrapper">
+
+                <div
+                    id="gameBoard"
+                    class="monopoly-board"
+                >
+
+                    <!--
+                        棋盤由 JS 模組建立。
+
+                        40 格：
+                        0  = GO
+                        1  = Bridgwater
+                        2  = Community Chest
+                        ...
+                        39 = Plymouth
+
+                        不把 40 格硬寫死在 index.html。
+                    -->
 
                 </div>
 
+            </div>
 
-                <div class="action">
+
+            <!-- =============================================
+                 GAME CONTROL PANEL
+                 ============================================= -->
+
+            <div
+                id="gameControlPanel"
+                class="game-control-panel"
+            >
+
+                <!-- =========================================
+                     當前玩家
+                     ========================================= -->
+
+                <div
+                    id="myTurnPanel"
+                    class="turn-panel"
+                >
+
+                    <div
+                        id="turnPlayerName"
+                        class="turn-player-name"
+                    >
+                        等待中
+                    </div>
+
+                    <div
+                        id="turnHint"
+                        class="turn-hint"
+                    >
+                        等待遊戲狀態...
+                    </div>
+
+
+                    <!-- =====================================
+                         骰子
+                         ===================================== -->
+
+                    <div class="dice-area">
+
+                        <div
+                            id="dice1"
+                            class="dice"
+                        >
+                            ⚀
+                        </div>
+
+                        <div
+                            id="dice2"
+                            class="dice"
+                        >
+                            ⚀
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="diceResult"
+                        class="dice-result"
+                    >
+                    </div>
+
+
+                    <!-- =====================================
+                         擲骰子
+                         ===================================== -->
 
                     <button
-                        id="rollButton"
-                        class="primary-btn"
-                        onclick="rollDice()"
+                        id="rollDiceBtn"
+                        class="btn btn-roll"
+                        type="button"
                     >
                         🎲 擲骰子
                     </button>
 
-                    <button
-                        id="endTurnButton"
-                        class="secondary-btn"
-                        onclick="endTurn()"
-                        disabled
+
+                    <!-- =====================================
+                         回合操作
+                         ===================================== -->
+
+                    <div
+                        id="turnActions"
+                        class="turn-actions"
+                        hidden
                     >
-                        結束回合
-                    </button>
+
+                        <button
+                            id="buyPropertyBtn"
+                            class="btn btn-buy"
+                            type="button"
+                            disabled
+                        >
+                            🏠 購買地產
+                        </button>
+
+                        <button
+                            id="skipPropertyBtn"
+                            class="btn btn-secondary"
+                            type="button"
+                            disabled
+                        >
+                            略過購買
+                        </button>
+
+                        <button
+                            id="drawChanceBtn"
+                            class="btn btn-chance"
+                            type="button"
+                            disabled
+                        >
+                            ❓ 機會卡
+                        </button>
+
+                        <button
+                            id="drawCommunityBtn"
+                            class="btn btn-community"
+                            type="button"
+                            disabled
+                        >
+                            🎁 福利卡
+                        </button>
+
+                        <button
+                            id="endTurnBtn"
+                            class="btn btn-end-turn"
+                            type="button"
+                            disabled
+                        >
+                            ➡️ 結束回合
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     非當前玩家
+                     ========================================= -->
+
+                <div
+                    id="waitingTurnPanel"
+                    class="waiting-turn-panel"
+                    hidden
+                >
+
+                    <div class="waiting-turn-icon">
+                        ⏳
+                    </div>
+
+                    <div>
+                        <strong>
+                            等待其他玩家
+                        </strong>
+
+                        <p id="waitingTurnText">
+                            等待對方完成回合...
+                        </p>
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- PLAYER INFO -->
+            <!-- =============================================
+                 CURRENT SPACE
+                 ============================================= -->
 
-            <div class="card">
+            <div
+                id="currentSpacePanel"
+                class="current-space-panel"
+            >
 
-                <h3>玩家</h3>
+                <div class="panel-title">
+                    📍 目前位置
+                </div>
 
-                <div id="playersList"></div>
+                <div
+                    id="currentSpaceName"
+                    class="current-space-name"
+                >
+                    GO
+                </div>
+
+                <div
+                    id="currentSpaceDescription"
+                    class="current-space-description"
+                >
+                </div>
 
             </div>
 
 
-            <!-- EVENT LOG -->
+            <!-- =============================================
+                 EVENT / CARD RESULT
+                 ============================================= -->
 
-            <div class="card">
-
-                <h3>遊戲紀錄</h3>
+            <div
+                id="eventPanel"
+                class="event-panel"
+                hidden
+            >
 
                 <div
-                    id="eventLog"
-                    class="log"
-                ></div>
+                    id="eventIcon"
+                    class="event-icon"
+                >
+                    🎴
+                </div>
 
+                <div>
+
+                    <div
+                        id="eventTitle"
+                        class="event-title"
+                    >
+                    </div>
+
+                    <div
+                        id="eventMessage"
+                        class="event-message"
+                    >
+                    </div>
+
+                </div>
+
+                <button
+                    id="closeEventBtn"
+                    class="event-close"
+                    type="button"
+                >
+                    確定
+                </button>
+
+            </div>
+
+
+            <!-- =============================================
+                 PLAYERS DETAIL
+                 ============================================= -->
+
+            <div class="players-panel">
+
+                <div class="panel-title">
+                    👥 玩家狀態
+                </div>
+
+                <div
+                    id="playersDetail"
+                    class="players-detail"
+                >
+                </div>
+
+            </div>
+
+
+            <!-- =============================================
+                 GAME LOG
+                 ============================================= -->
+
+            <div class="game-log-panel">
+
+                <div class="panel-title">
+                    📜 遊戲紀錄
+                </div>
+
+                <div
+                    id="gameLog"
+                    class="game-log"
+                >
+                    <div class="log-empty">
+                        遊戲紀錄會顯示在這裡
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- =============================================
+                 LEAVE GAME
+                 ============================================= -->
+
+            <button
+                id="leaveGameBtn"
+                class="btn btn-danger-outline leave-game-btn"
+                type="button"
+            >
+                離開遊戲
+            </button>
+
+        </section>
+
+
+        <!-- =================================================
+             SCREEN 4
+             遊戲結束
+             ================================================= -->
+
+        <section
+            id="finishScreen"
+            class="screen"
+        >
+
+            <div class="finish-card">
+
+                <div class="finish-icon">
+                    🏆
+                </div>
+
+                <h1>
+                    遊戲結束
+                </h1>
+
+                <div
+                    id="winnerName"
+                    class="winner-name"
+                >
+                </div>
+
+                <div
+                    id="finalRanking"
+                    class="final-ranking"
+                >
+                </div>
+
+                <button
+                    id="backToLobbyBtn"
+                    class="btn btn-primary"
+                    type="button"
+                >
+                    回到大廳
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         GLOBAL TOAST
+         ===================================================== -->
+
+    <div
+        id="toast"
+        class="toast"
+        hidden
+    >
+        <span id="toastMessage"></span>
+    </div>
+
+
+    <!-- =====================================================
+         MODAL
+         ===================================================== -->
+
+    <div
+        id="modalOverlay"
+        class="modal-overlay"
+        hidden
+    >
+
+        <div
+            id="modal"
+            class="modal"
+        >
+
+            <div
+                id="modalIcon"
+                class="modal-icon"
+            >
+                🎲
+            </div>
+
+            <h2
+                id="modalTitle"
+                class="modal-title"
+            >
+            </h2>
+
+            <div
+                id="modalContent"
+                class="modal-content"
+            >
+            </div>
+
+            <div
+                id="modalButtons"
+                class="modal-buttons"
+            >
             </div>
 
         </div>
 
     </div>
-
-</section>
 
 
 </div>
 
 
 <!-- =========================================================
-     MODULE 17：ACTION MODAL
+     JAVASCRIPT
      ========================================================= -->
 
-<div
-    id="actionModal"
-    class="modal"
->
-
-    <div class="modal-box">
-
-        <div id="modalContent"></div>
-
-        <div
-            id="modalActions"
-            class="modal-actions"
-        ></div>
-
-    </div>
-
-</div>
-
-
-<script>
-
-/* =========================================================
-   MODULE 18：SUPABASE CONFIG
-   ========================================================= */
-
-const SUPABASE_URL =
-    "https://aeqhrcdlmpqncddridaj.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-/* =========================================================
-   MODULE 19：GAME CONSTANTS
-   ========================================================= */
-
-const PLAYER_COLORS = [
-    "#ff5959",
-    "#4da6ff",
-    "#5ee18a",
-    "#ffd84d"
-];
-
-const BOARD_SIZE = 40;
-
-
-/* =========================================================
-   MODULE 20：GAME STATE
-   ========================================================= */
-
-let room = null;
-let game = null;
-let me = null;
-
-let players = [];
-let boardSpaces = [];
-
-let realtimeChannel = null;
-
-let hasRolledThisTurn = false;
-let actionRequired = false;
-
-
-/* =========================================================
-   MODULE 21：BOARD DATA FALLBACK
-   ========================================================= */
-
-const FALLBACK_BOARD = [
-
-    ["GO","go"],
-    ["Bridgwater","property"],
-    ["Community Chest","community_chest"],
-    ["Bath","property"],
-    ["Income Tax","tax"],
-    ["Bristol Railway","railroad"],
-    ["Cardiff","property"],
-    ["Chance","chance"],
-    ["Swansea","property"],
-    ["Newport","property"],
-    ["Jail","jail"],
-
-    ["Oxford","property"],
-    ["Electric Company","utility"],
-    ["Cambridge","property"],
-    ["London","property"],
-    ["London Victoria","railroad"],
-    ["Birmingham","property"],
-    ["Community Chest","community_chest"],
-    ["Manchester","property"],
-    ["Liverpool","property"],
-
-    ["Free Parking","free_parking"],
-
-    ["Leeds","property"],
-    ["Chance","chance"],
-    ["Sheffield","property"],
-    ["Nottingham","property"],
-    ["Edinburgh Railway","railroad"],
-    ["Glasgow","property"],
-    ["Edinburgh","property"],
-    ["Water Works","utility"],
-    ["Aberdeen","property"],
-
-    ["Go To Jail","go_to_jail"],
-
-    ["Belfast","property"],
-    ["Derry","property"],
-    ["Community Chest","community_chest"],
-    ["Bournemouth","property"],
-    ["Bristol Temple Meads","railroad"],
-    ["Chance","chance"],
-    ["Brighton","property"],
-    ["Luxury Tax","tax"],
-    ["Plymouth","property"]
-];
-
-
-/* =========================================================
-   MODULE 22：CHANCE CARDS
-   之後要改「機會卡」只需要修改這裡
-   ========================================================= */
-
-const CHANCE_CARDS = [
-
-    {
-        title: "前進到 GO",
-        text: "前進到 GO，並領取 £200。",
-        type: "goto",
-        position: 0,
-        money: 200
-    },
-
-    {
-        title: "銀行發放紅利",
-        text: "銀行發放紅利 £100。",
-        type: "money",
-        money: 100
-    },
-
-    {
-        title: "支付維修費",
-        text: "支付 £50。",
-        type: "money",
-        money: -50
-    },
-
-    {
-        title: "前往最近的火車站",
-        text: "前進到下一個火車站。",
-        type: "nearest_railroad"
-    },
-
-    {
-        title: "退稅",
-        text: "收到退稅 £150。",
-        type: "money",
-        money: 150
-    },
-
-    {
-        title: "進入監獄",
-        text: "直接前往監獄，不經過 GO。",
-        type: "jail"
-    }
-
-];
-
-
-/* =========================================================
-   MODULE 23：COMMUNITY CHEST / 福利卡
-   之後要改「福利卡」只需要修改這裡
-   ========================================================= */
-
-const COMMUNITY_CHEST_CARDS = [
-
-    {
-        title: "銀行錯誤",
-        text: "銀行誤把 £200 存入你的帳戶。",
-        type: "money",
-        money: 200
-    },
-
-    {
-        title: "醫療費",
-        text: "支付醫療費 £50。",
-        type: "money",
-        money: -50
-    },
-
-    {
-        title: "生日禮物",
-        text: "每位其他玩家支付你 £10。",
-        type: "birthday",
-        money: 10
-    },
-
-    {
-        title: "所得稅退款",
-        text: "收到 £100。",
-        type: "money",
-        money: 100
-    },
-
-    {
-        title: "直接入獄",
-        text: "直接前往監獄。",
-        type: "jail"
-    }
-
-];
-
-
-/* =========================================================
-   MODULE 24：UTILITY FUNCTIONS
-   ========================================================= */
-
-function $(id) {
-    return document.getElementById(id);
-}
-
-
-function showScreen(id) {
-
-    document
-        .querySelectorAll(".screen")
-        .forEach(el => el.classList.remove("active"));
-
-    $(id).classList.add("active");
-}
-
-
-function showMessage(message, error = false) {
-
-    const el = $("roomMessage");
-
-    el.innerHTML =
-        `<div style="color:${error ? "#ff8d8d" : "#8df0a7"}">
-            ${escapeHtml(message)}
-        </div>`;
-}
-
-
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-/* =========================================================
-   MODULE 25：CONNECTION
-   ========================================================= */
-
-function setConnection(text) {
-    $("connectionStatus").textContent = text;
-}
-
-
-/* =========================================================
-   MODULE 26：CREATE / JOIN ROOM
-   ========================================================= */
-
-async function joinOrCreateRoom() {
-
-    const roomCode =
-        $("roomCodeInput").value.trim();
-
-    const name =
-        $("playerNameInput").value.trim();
-
-    if (!roomCode) {
-        showMessage("請輸入房間代碼", true);
-        return;
-    }
-
-    if (!name) {
-        showMessage("請輸入玩家名稱", true);
-        return;
-    }
-
-    try {
-
-        setConnection("連線中...");
-
-        let result =
-            await supabaseClient.rpc(
-                "join_room",
-                {
-                    p_room_code: roomCode,
-                    p_name: name
-                }
-            );
-
-
-        /*
-         * 如果房間不存在，就建立房間後再加入。
-         */
-
-        if (result.error) {
-
-            const createResult =
-                await supabaseClient.rpc(
-                    "create_room",
-                    {
-                        p_room_code: roomCode
-                    }
-                );
-
-            if (createResult.error) {
-                throw createResult.error;
-            }
-
-            result =
-                await supabaseClient.rpc(
-                    "join_room",
-                    {
-                        p_room_code: roomCode,
-                        p_name: name
-                    }
-                );
-        }
-
-        if (result.error) {
-            throw result.error;
-        }
-
-        const data = result.data;
-
-        me = data;
-
-        await loadGame(data.game_id);
-
-        subscribeRealtime(data.game_id);
-
-        showScreen("gameScreen");
-
-        setConnection("已連線");
-
-    } catch (error) {
-
-        console.error(error);
-
-        setConnection("連線失敗");
-
-        showMessage(
-            error.message || "加入房間失敗",
-            true
-        );
-    }
-}
-
-
-/* =========================================================
-   MODULE 27：LOAD GAME STATE
-   ========================================================= */
-
-async function loadGame(gameId) {
-
-    const { data, error } =
-        await supabaseClient.rpc(
-            "get_game_state",
-            {
-                p_game_id: gameId
-            }
-        );
-
-    if (error) {
-        throw error;
-    }
-
-    if (!data) {
-        throw new Error("沒有取得遊戲資料");
-    }
-
-    game = data.game;
-
-    players = data.players || [];
-
-    boardSpaces = data.board || [];
-
-    room = {
-        id: players[0]?.room_id || null
-    };
-
-    renderBoard();
-
-    renderPlayers();
-
-    updateTurnUI();
-
-    await loadEvents();
-
-}
-
-
-/* =========================================================
-   MODULE 28：REALTIME
-   ========================================================= */
-
-function subscribeRealtime(gameId) {
-
-    if (realtimeChannel) {
-
-        supabaseClient
-            .removeChannel(realtimeChannel);
-    }
-
-
-    realtimeChannel =
-        supabaseClient
-            .channel("monopoly-game-" + gameId)
-
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "games",
-                    filter: `id=eq.${gameId}`
-                },
-                async () => {
-
-                    await loadGame(gameId);
-
-                }
-            )
-
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "players",
-                    filter: `game_id=eq.${gameId}`
-                },
-                async () => {
-
-                    await loadGame(gameId);
-
-                }
-            )
-
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "INSERT",
-                    schema: "public",
-                    table: "game_events",
-                    filter: `game_id=eq.${gameId}`
-                },
-                async () => {
-
-                    await loadEvents();
-
-                }
-            )
-
-
-            .subscribe(
-                status => {
-
-                    console.log(
-                        "Realtime:",
-                        status
-                    );
-
-                    if (
-                        status === "SUBSCRIBED"
-                    ) {
-                        setConnection("Realtime 已連線");
-                    }
-                }
-            );
-}
-
-
-/* =========================================================
-   MODULE 29：BOARD RENDER
-   ========================================================= */
-
-function renderBoard() {
-
-    const board = $("board");
-
-    board.innerHTML = `
-
-        <div class="center">
-
-            <div class="center-title">
-                MONOPOLY
-            </div>
-
-            <div class="center-sub">
-                UK EDITION
-            </div>
-
-        </div>
-    `;
-
-
-    const spaces =
-        boardSpaces.length
-            ? boardSpaces
-            : FALLBACK_BOARD.map(
-                (x, i) => ({
-                    position: i,
-                    name: x[0],
-                    type: x[1],
-                    price: 0,
-                    color_group: null
-                })
-            );
-
-
-    spaces.forEach(space => {
-
-        const el =
-            document.createElement("div");
-
-        el.className = "space";
-
-        el.dataset.position =
-            space.position;
-
-
-        const coord =
-            getBoardCoordinate(
-                space.position
-            );
-
-        el.style.gridColumn =
-            coord.column;
-
-        el.style.gridRow =
-            coord.row;
-
-
-        const color =
-            getColorGroup(
-                space.color_group
-            );
-
-
-        el.innerHTML = `
-
-            <div
-                class="space-color"
-                style="background:${color}"
-            ></div>
-
-            <div class="space-icon">
-                ${getSpaceIcon(space.type)}
-            </div>
-
-            <div class="space-name">
-                ${escapeHtml(space.name)}
-            </div>
-
-            ${
-                space.price > 0
-                ?
-                `<div class="space-price">
-                    £${space.price}
-                </div>`
-                :
-                ""
-            }
-
-            <div
-                class="pieces"
-                data-piece-position="${space.position}"
-            ></div>
-
-        `;
-
-
-        board.appendChild(el);
-
-    });
-
-
-    renderPieces();
-}
-
-
-/* =========================================================
-   MODULE 30：CLASSIC BOARD COORDINATE
-   ========================================================= */
-
-function getBoardCoordinate(position) {
-
-    /*
-     * 0 = 右下 GO
-     * 1~10 = 下方
-     * 11~20 = 左方
-     * 21~30 = 上方
-     * 31~39 = 右方
-     */
-
-    if (position === 0) {
-
-        return {
-            column: "11",
-            row: "11"
-        };
-
-    }
-
-    if (position <= 10) {
-
-        return {
-            column: String(11 - position),
-            row: "11"
-        };
-
-    }
-
-    if (position <= 20) {
-
-        return {
-            column: "1",
-            row: String(11 - (position - 10))
-        };
-
-    }
-
-    if (position <= 30) {
-
-        return {
-            column: String(position - 20 + 1),
-            row: "1"
-        };
-
-    }
-
-    return {
-
-        column: "11",
-
-        row:
-            String(
-                position - 30 + 1
-            )
-
-    };
-
-}
-
-
-/* =========================================================
-   MODULE 31：BOARD ICONS
-   ========================================================= */
-
-function getSpaceIcon(type) {
-
-    switch(type) {
-
-        case "go":
-            return "💷";
-
-        case "chance":
-            return "❓";
-
-        case "community_chest":
-            return "🎁";
-
-        case "railroad":
-            return "🚂";
-
-        case "utility":
-            return "⚡";
-
-        case "tax":
-            return "💰";
-
-        case "jail":
-            return "🔒";
-
-        case "go_to_jail":
-            return "🚔";
-
-        case "free_parking":
-            return "🅿️";
-
-        default:
-            return "";
-
-    }
-
-}
-
-
-function getColorGroup(group) {
-
-    const colors = {
-
-        brown: "#8b5e3c",
-
-        light_blue: "#80c8df",
-
-        pink: "#d783b8",
-
-        orange: "#e68c3b",
-
-        red: "#d74b4b",
-
-        yellow: "#e4c94d",
-
-        green: "#4d9b63",
-
-        dark_blue: "#3f5ca8"
-
-    };
-
-    return colors[group] || "#444";
-
-}
-
-
-/* =========================================================
-   MODULE 32：PLAYER PIECES
-   ========================================================= */
-
-function renderPieces() {
-
-    document
-        .querySelectorAll(".pieces")
-        .forEach(el => {
-            el.innerHTML = "";
-        });
-
-
-    players.forEach(
-        (player, index) => {
-
-            const container =
-                document.querySelector(
-                    `.pieces[data-piece-position="${player.position}"]`
-                );
-
-            if (!container) return;
-
-
-            const piece =
-                document.createElement("div");
-
-            piece.className = "piece";
-
-            piece.style.background =
-                PLAYER_COLORS[
-                    (player.player_number - 1)
-                    % PLAYER_COLORS.length
-                ];
-
-
-            piece.textContent =
-                player.player_number;
-
-
-            piece.title =
-                player.name;
-
-
-            container.appendChild(piece);
-
-        }
-    );
-}
-
-
-/* =========================================================
-   MODULE 33：PLAYER LIST
-   ========================================================= */
-
-function renderPlayers() {
-
-    const list =
-        $("playersList");
-
-    list.innerHTML = "";
-
-
-    players.forEach(
-        (player, index) => {
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "player-row";
-
-
-            if (
-                game &&
-                game.current_player_id === player.id
-            ) {
-                div.classList.add("current");
-            }
-
-
-            const color =
-                PLAYER_COLORS[
-                    (player.player_number - 1)
-                    % PLAYER_COLORS.length
-                ];
-
-
-            div.innerHTML = `
-
-                <div
-                    class="player-dot"
-                    style="background:${color}"
-                ></div>
-
-                <div class="player-info">
-
-                    <div class="player-name">
-
-                        ${escapeHtml(player.name)}
-
-                        ${
-                            player.id === me?.player_id
-                            ? "（你）"
-                            : ""
-                        }
-
-                    </div>
-
-                    <div class="player-money">
-                        £${player.money}
-                        · 位置 ${player.position}
-                    </div>
-
-                </div>
-
-            `;
-
-
-            list.appendChild(div);
-
-        }
-    );
-}
-
-
-/* =========================================================
-   MODULE 34：TURN UI
-   ========================================================= */
-
-function updateTurnUI() {
-
-    if (!game) return;
-
-
-    const current =
-        players.find(
-            p =>
-                p.id ===
-                game.current_player_id
-        );
-
-
-    if (!current) {
-
-        $("turnBanner").textContent =
-            "等待玩家";
-
-        return;
-    }
-
-
-    const myTurn =
-        current.id === me?.player_id;
-
-
-    $("turnBanner").textContent =
-        myTurn
-            ? "🎲 現在是你的回合"
-            : `等待 ${current.name}...`;
-
-
-    $("rollButton").disabled =
-        !myTurn ||
-        hasRolledThisTurn ||
-        actionRequired;
-
-
-    $("endTurnButton").disabled =
-        !myTurn ||
-        !hasRolledThisTurn ||
-        actionRequired;
-
-
-    if (
-        game.dice_1
-        &&
-        game.dice_2
-    ) {
-
-        $("dice1").textContent =
-            game.dice_1;
-
-        $("dice2").textContent =
-            game.dice_2;
-
-    }
-
-
-}
-
-
-/* =========================================================
-   MODULE 35：ROLL DICE
-   ========================================================= */
-
-async function rollDice() {
-
-    if (!me || !game) return;
-
-
-    if (
-        game.current_player_id
-        !== me.player_id
-    ) {
-
-        alert("現在不是你的回合");
-
-        return;
-    }
-
-
-    if (hasRolledThisTurn) {
-
-        alert(
-            "本回合已經擲過骰子，請先處理落點並結束回合。"
-        );
-
-        return;
-    }
-
-
-    try {
-
-        $("rollButton").disabled =
-            true;
-
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.rpc(
-                "roll_dice",
-                {
-                    p_game_id: game.id,
-                    p_player_id: me.player_id
-                }
-            );
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        hasRolledThisTurn = true;
-
-        actionRequired = true;
-
-
-        $("dice1").textContent =
-            data.dice1;
-
-        $("dice2").textContent =
-            data.dice2;
-
-
-        await loadGame(game.id);
-
-
-        /*
-         * 等資料更新後，再處理落點。
-         */
-
-        await handleLanding(data);
-
-
-    } catch(error) {
-
-        console.error(error);
-
-        alert(
-            error.message ||
-            "擲骰子失敗"
-        );
-
-
-        hasRolledThisTurn =
-            false;
-
-        actionRequired =
-            false;
-
-        updateTurnUI();
-
-    }
-
-}
-
-
-/* =========================================================
-   MODULE 36：LANDING LOGIC
-   ========================================================= */
-
-async function handleLanding(result) {
-
-    const type =
-        result.space_type;
-
-
-    /*
-     * 地產
-     */
-
-    if (type === "property") {
-
-        const space =
-            boardSpaces.find(
-                s =>
-                    s.position ===
-                    result.new_position
-            );
-
-
-        if (!space) {
-
-            actionRequired = false;
-
-            updateTurnUI();
-
-            return;
-        }
-
-
-        /*
-         * 判斷是否已經有人買
-         */
-
-        const owner =
-            await getPropertyOwner(
-                result.new_position
-            );
-
-
-        if (
-            !owner &&
-            space.price > 0
-        ) {
-
-            showPropertyPurchase(
-                space
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * 如果有主人，付租金。
-         */
-
-        if (
-            owner &&
-            owner.id !== me.player_id
-        ) {
-
-            await payRent(
-                space,
-                owner
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * 自己的地產
-         */
-
-        actionRequired =
-            false;
-
-        updateTurnUI();
-
-        return;
-    }
-
-
-    /*
-     * Chance
-     */
-
-    if (type === "chance") {
-
-        drawCard(
-            "chance"
-        );
-
-        return;
-    }
-
-
-    /*
-     * Community Chest
-     */
-
-    if (type === "community_chest") {
-
-        drawCard(
-            "community_chest"
-        );
-
-        return;
-    }
-
-
-    /*
-     * 稅
-     */
-
-    if (type === "tax") {
-
-        await payTax(result);
-
-        return;
-    }
-
-
-    /*
-     * 其他格子
-     */
-
-    actionRequired =
-        false;
-
-    updateTurnUI();
-
-}
-
-
-/* =========================================================
-   MODULE 37：PROPERTY OWNER
-   ========================================================= */
-
-async function getPropertyOwner(position) {
-
-    const { data, error } =
-        await supabaseClient
-            .from("game_events")
-            .select("*")
-            .eq("game_id", game.id)
-            .eq(
-                "event_type",
-                "property_purchase"
-            );
-
-
-    if (error) {
-
-        console.error(error);
-
-        return null;
-    }
-
-
-    /*
-     * 找最後一次購買這個位置的人
-     */
-
-    const purchases =
-        (data || [])
-            .filter(
-                event =>
-                    Number(
-                        event.data?.position
-                    ) === position
-            )
-            .sort(
-                (a,b) =>
-                    new Date(b.created_at)
-                    -
-                    new Date(a.created_at)
-            );
-
-
-    if (!purchases.length) {
-        return null;
-    }
-
-
-    return players.find(
-        p =>
-            p.id ===
-            purchases[0].player_id
-    ) || null;
-}
-
-
-/* =========================================================
-   MODULE 38：BUY PROPERTY UI
-   ========================================================= */
-
-function showPropertyPurchase(space) {
-
-    actionRequired = true;
-
-    updateTurnUI();
-
-
-    showModal(
-
-        `
-        <div class="event-card">
-
-            <div class="event-card-title">
-                🏠 ${escapeHtml(space.name)}
-            </div>
-
-            <div class="event-card-text">
-
-                這塊地產目前沒有人購買。
-
-                <br><br>
-
-                價格：
-                <strong>£${space.price}</strong>
-
-                <br><br>
-
-                要購買這塊地產嗎？
-
-            </div>
-
-        </div>
-        `,
-
-        [
-
-            {
-                text: "購買地產",
-                className: "primary-btn",
-                action: async () => {
-
-                    await buyProperty(
-                        space
-                    );
-
-                }
-            },
-
-            {
-                text: "暫不購買",
-                className: "secondary-btn",
-                action: () => {
-
-                    closeModal();
-
-                    actionRequired =
-                        false;
-
-                    updateTurnUI();
-
-                }
-            }
-
-        ]
-
-    );
-}
-
-
-/* =========================================================
-   MODULE 39：BUY PROPERTY RPC
-   ========================================================= */
-
-async function buyProperty(space) {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.rpc(
-                "buy_property",
-                {
-                    p_game_id: game.id,
-                    p_player_id: me.player_id
-                }
-            );
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        closeModal();
-
-
-        actionRequired =
-            false;
-
-
-        await loadGame(
-            game.id
-        );
-
-
-        updateTurnUI();
-
-
-        alert(
-            `你購買了 ${space.name}！`
-        );
-
-
-    } catch(error) {
-
-        console.error(error);
-
-        alert(
-            error.message ||
-            "購買失敗"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   MODULE 40：PAY RENT
-   ========================================================= */
-
-async function payRent(space, owner) {
-
-    /*
-     * 這裡目前只提示租金。
-     *
-     * 你目前的 SQL schema 沒有
-     * 「property owner」欄位，
-     * 因此正式版本建議增加
-     * property_ownership table。
-     */
-
-    showModal(
-
-        `
-        <div class="event-card">
-
-            <div class="event-card-title">
-                💰 支付租金
-            </div>
-
-            <div class="event-card-text">
-
-                ${escapeHtml(space.name)}
-                屬於
-                <strong>${escapeHtml(owner.name)}</strong>
-
-                <br><br>
-
-                租金：
-                <strong>£${space.rent}</strong>
-
-            </div>
-
-        </div>
-        `,
-
-        [
-
-            {
-                text: "確認",
-                className: "primary-btn",
-                action: () => {
-
-                    closeModal();
-
-                    actionRequired =
-                        false;
-
-                    updateTurnUI();
-
-                }
-            }
-
-        ]
-
-    );
-
-}
-
-
-/* =========================================================
-   MODULE 41：TAX
-   ========================================================= */
-
-async function payTax(result) {
-
-    const amount =
-        result.space === "Income Tax"
-            ? 200
-            : 100;
-
-
-    showModal(
-
-        `
-        <div class="event-card">
-
-            <div class="event-card-title">
-                💷 稅務
-            </div>
-
-            <div class="event-card-text">
-
-                你需要支付：
-
-                <br><br>
-
-                <strong>£${amount}</strong>
-
-            </div>
-
-        </div>
-        `,
-
-        [
-
-            {
-                text: "確認支付",
-                className: "primary-btn",
-                action: async () => {
-
-                    closeModal();
-
-                    actionRequired =
-                        false;
-
-                    updateTurnUI();
-
-                }
-            }
-
-        ]
-
-    );
-
-}
-
-
-/* =========================================================
-   MODULE 42：DRAW CARD
-   ========================================================= */
-
-function drawCard(type) {
-
-    const cards =
-        type === "chance"
-            ? CHANCE_CARDS
-            : COMMUNITY_CHEST_CARDS;
-
-
-    const card =
-        cards[
-            Math.floor(
-                Math.random()
-                *
-                cards.length
-            )
-        ];
-
-
-    showModal(
-
-        `
-        <div class="event-card">
-
-            <div class="event-card-title">
-
-                ${
-                    type === "chance"
-                        ? "❓ 機會卡"
-                        : "🎁 福利卡"
-                }
-
-            </div>
-
-            <h3>
-                ${escapeHtml(card.title)}
-            </h3>
-
-            <div class="event-card-text">
-
-                ${escapeHtml(card.text)}
-
-            </div>
-
-        </div>
-        `,
-
-        [
-
-            {
-                text: "領取 / 執行卡片",
-                className: "primary-btn",
-                action: async () => {
-
-                    closeModal();
-
-                    await executeCard(
-                        card
-                    );
-
-                }
-            }
-
-        ]
-
-    );
-
-}
-
-
-/* =========================================================
-   MODULE 43：CARD EFFECT
-   ========================================================= */
-
-async function executeCard(card) {
-
-    try {
-
-        if (card.type === "money") {
-
-            /*
-             * 注意：
-             * 目前 SQL 沒有通用 adjust_money RPC。
-             * 所以正式版本應增加 server-side RPC。
-             */
-
-            alert(
-                card.money > 0
-                    ? `你獲得 £${card.money}`
-                    : `你支付 £${Math.abs(card.money)}`
-            );
-
-        }
-
-
-        if (card.type === "goto") {
-
-            /*
-             * 正式版本應透過 RPC 修改 position。
-             */
-
-            alert(
-                `前往 ${card.position}`
-            );
-
-        }
-
-
-        if (card.type === "jail") {
-
-            alert(
-                "你被送進監獄。"
-            );
-
-        }
-
-
-        actionRequired =
-            false;
-
-        updateTurnUI();
-
-
-    } catch(error) {
-
-        console.error(error);
-
-        alert(
-            error.message ||
-            "卡片執行失敗"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   MODULE 44：END TURN
-   ========================================================= */
-
-async function endTurn() {
-
-    if (!me || !game) return;
-
-
-    if (
-        game.current_player_id
-        !== me.player_id
-    ) {
-
-        alert(
-            "現在不是你的回合"
-        );
-
-        return;
-    }
-
-
-    if (!hasRolledThisTurn) {
-
-        alert(
-            "請先擲骰子"
-        );
-
-        return;
-    }
-
-
-    /*
-     * 非常重要：
-     *
-     * 你目前提供的 Supabase SQL
-     * 沒有 end_turn RPC。
-     *
-     * 因此不能安全地直接從瀏覽器
-     * 修改 current_player_id。
-     *
-     * 這也是之前出現
-     * 「永遠第一個玩家能骰」
-     * 的核心問題之一。
-     */
-
-    alert(
-        "目前資料庫版本需要加入 end_turn RPC，才能安全切換下一位玩家。"
-    );
-
-}
-
-
-/* =========================================================
-   MODULE 45：EVENT LOG
-   ========================================================= */
-
-async function loadEvents() {
-
-    if (!game) return;
-
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from("game_events")
-            .select("*")
-            .eq(
-                "game_id",
-                game.id
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            )
-            .limit(50);
-
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-    }
-
-
-    const log =
-        $("eventLog");
-
-    log.innerHTML = "";
-
-
-    (data || [])
-        .forEach(event => {
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "log-item";
-
-
-            div.textContent =
-                event.message ||
-                event.event_type;
-
-
-            log.appendChild(div);
-
-        });
-
-}
-
-
-/* =========================================================
-   MODULE 46：MODAL
-   ========================================================= */
-
-function showModal(
-    content,
-    buttons = []
-) {
-
-    $("modalContent").innerHTML =
-        content;
-
-
-    const actions =
-        $("modalActions");
-
-    actions.innerHTML = "";
-
-
-    buttons.forEach(
-        button => {
-
-            const el =
-                document.createElement("button");
-
-            el.textContent =
-                button.text;
-
-            el.className =
-                button.className ||
-                "secondary-btn";
-
-
-            el.onclick =
-                button.action;
-
-
-            actions.appendChild(el);
-
-        }
-    );
-
-
-    $("actionModal")
-        .classList.add("show");
-
-}
-
-
-function closeModal() {
-
-    $("actionModal")
-        .classList.remove("show");
-
-}
-
-
-/* =========================================================
-   MODULE 47：START GAME
-   ========================================================= */
-
-async function startGame() {
-
-    if (!game) return;
-
-
-    try {
-
-        const {
-            error
-        } =
-            await supabaseClient.rpc(
-                "start_game",
-                {
-                    p_game_id: game.id
-                }
-            );
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        await loadGame(
-            game.id
-        );
-
-
-    } catch(error) {
-
-        console.error(error);
-
-        alert(
-            error.message ||
-            "開始遊戲失敗"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   MODULE 48：INITIALIZATION
-   ========================================================= */
-
-async function initialize() {
-
-    try {
-
-        setConnection(
-            "Supabase 已載入"
-        );
-
-    } catch(error) {
-
-        console.error(error);
-
-        setConnection(
-            "初始化失敗"
-        );
-
-    }
-
-}
-
-
-initialize();
-
-</script>
+<script type="module" src="./js/app.js"></script>
 
 </body>
 </html>

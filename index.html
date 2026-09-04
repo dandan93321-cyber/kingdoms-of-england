@@ -6,284 +6,293 @@
 <title>Kingdoms of England</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#0c1820;
+  color:#f5ecd8;
+  font-family:Georgia,"Times New Roman",serif;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #e9e2d0;
-  color: #29251f;
+header{
+  text-align:center;
+  padding:14px;
+  background:#101b20;
+  border-bottom:1px solid #9b7c43;
 }
 
-header {
-  background: #26352b;
-  color: white;
-  padding: 16px;
-  text-align: center;
+header h1{
+  margin:0;
+  color:#e8ca79;
+  font-size:28px;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 26px;
+header p{
+  margin:4px 0 0;
 }
 
-header p {
-  margin: 5px 0 0;
-  opacity: .8;
+.app{
+  max-width:1500px;
+  margin:auto;
+  padding:10px;
+  display:grid;
+  grid-template-columns:210px 1fr 280px;
+  gap:10px;
 }
 
-.game {
-  max-width: 1200px;
-  margin: auto;
-  padding: 12px;
+.panel{
+  background:#16241f;
+  border:1px solid #8d7040;
+  border-radius:10px;
+  padding:11px;
+  margin-bottom:10px;
 }
 
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  background: #fffaf0;
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
+.panel h2{
+  margin:0 0 9px;
+  font-size:15px;
+  color:#e8ce8a;
+  border-bottom:1px solid #665536;
+  padding-bottom:6px;
 }
 
-.players {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.player{
+  display:flex;
+  justify-content:space-between;
+  padding:7px 2px;
+  border-bottom:1px solid #34433c;
 }
 
-.player {
-  padding: 8px 12px;
-  border-radius: 20px;
-  background: #ddd;
-  font-size: 14px;
+.dot{
+  display:inline-block;
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  margin-right:6px;
 }
 
-.red { background: #d9a1a1; }
-.blue { background: #9dbbd4; }
-.green { background: #a9c8a0; }
-.yellow { background: #dfcf91; }
+.red{background:#bd4034}
+.blue{background:#477cb5}
+.green{background:#5c994e}
+.yellow{background:#d3a62b}
 
-.layout {
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 12px;
+.map{
+  position:relative;
+  min-height:700px;
+  background:#0c4050;
+  border:1px solid #927849;
+  border-radius:12px;
+  overflow:hidden;
 }
 
-.board {
-  position: relative;
-  min-height: 620px;
-  background: #c7d9c2;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 4px solid #536451;
+.mapTitle{
+  position:absolute;
+  top:12px;
+  left:12px;
+  z-index:10;
+  background:#101c1dcc;
+  border:1px solid #a68a50;
+  border-radius:7px;
+  padding:7px 10px;
 }
 
-.board-title {
-  position: absolute;
-  top: 12px;
-  left: 15px;
-  background: rgba(255,255,255,.85);
-  padding: 7px 10px;
-  border-radius: 8px;
-  font-weight: bold;
+svg{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:700px;
 }
 
-.tile {
-  position: absolute;
-  width: 115px;
-  height: 100px;
-  clip-path: polygon(
-    25% 3%, 75% 3%, 100% 50%,
-    75% 97%, 25% 97%, 0 50%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  transition: transform .15s;
+.hex{
+  stroke:#f0e4bd;
+  stroke-width:3;
+  cursor:pointer;
 }
 
-.tile:hover {
-  transform: scale(1.05);
+.hex:hover{
+  filter:brightness(1.18);
 }
 
-.forest { background: #71936b; }
-.field { background: #d7bd68; }
-.wool { background: #b9c99a; }
-.stone { background: #a8a8a8; }
-.iron { background: #8b7564; }
-.desert { background: #d8b87a; }
-
-.tile span {
-  background: rgba(255,255,255,.85);
-  padding: 5px;
-  border-radius: 8px;
+.hexText{
+  fill:#fff8e5;
+  font-size:12px;
+  font-weight:bold;
+  text-anchor:middle;
+  pointer-events:none;
+  text-shadow:0 2px 3px #000;
 }
 
-.city {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  background: #fffaf0;
-  border: 3px solid #6d5238;
-  padding: 7px 9px;
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 3px 8px rgba(0,0,0,.2);
-  z-index: 5;
+.number{
+  fill:#f3e4b5;
+  stroke:#58462d;
+  stroke-width:2;
 }
 
-.panel {
-  background: #fffaf0;
-  border-radius: 16px;
-  padding: 15px;
+.numberText{
+  fill:#382b1b;
+  font-size:15px;
+  font-weight:bold;
+  text-anchor:middle;
+  dominant-baseline:middle;
 }
 
-.panel h2 {
-  margin-top: 0;
-  font-size: 19px;
+.node{
+  fill:#f3e4bc;
+  stroke:#4e3b24;
+  stroke-width:2;
+  cursor:pointer;
 }
 
-.resources {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 7px;
-  margin-bottom: 15px;
+.node:hover{
+  fill:#fff1bd;
 }
 
-.resource {
-  background: #eee6d5;
-  border-radius: 8px;
-  padding: 9px;
-  text-align: center;
+.road{
+  stroke:#a16c38;
+  stroke-width:7;
+  stroke-linecap:round;
 }
 
-.resource strong {
-  display: block;
-  font-size: 18px;
+.city{
+  fill:#f4e8cf;
+  stroke:#61462a;
+  stroke-width:2;
+  cursor:pointer;
 }
 
-button {
-  width: 100%;
-  border: 0;
-  border-radius: 9px;
-  padding: 12px;
-  margin-top: 7px;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  background: #526c56;
-  color: white;
+.cityText{
+  fill:#2c2116;
+  font-size:11px;
+  font-weight:bold;
+  text-anchor:middle;
+  dominant-baseline:middle;
+  pointer-events:none;
 }
 
-button:active {
-  transform: scale(.98);
+.sea{
+  fill:#9fc5c9;
+  font-style:italic;
+  font-size:16px;
 }
 
-.dice {
-  text-align: center;
-  font-size: 32px;
-  padding: 8px;
+button{
+  width:100%;
+  margin:4px 0;
+  padding:10px;
+  border:1px solid #a88b50;
+  border-radius:7px;
+  background:#294b38;
+  color:white;
+  font-weight:bold;
 }
 
-.log {
-  height: 150px;
-  overflow-y: auto;
-  background: #eee6d5;
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 13px;
-  margin-top: 10px;
+button:active{
+  transform:scale(.98);
 }
 
-.chat {
-  margin-top: 12px;
+.dice{
+  text-align:center;
+  font-size:30px;
+  padding:5px;
 }
 
-.chat-messages {
-  height: 150px;
-  overflow-y: auto;
-  background: #eee6d5;
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 13px;
+.turn{
+  text-align:center;
+  padding:9px;
+  background:#67342b;
+  border-radius:7px;
+  margin-bottom:9px;
 }
 
-.chat-input {
-  display: flex;
-  gap: 5px;
-  margin-top: 5px;
+.resources{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
 }
 
-.chat-input input {
-  flex: 1;
-  min-width: 0;
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  padding: 10px;
+.resource{
+  background:#eee2c9;
+  color:#33291d;
+  padding:8px;
+  border-radius:7px;
+  text-align:center;
 }
 
-.chat-input button {
-  width: 55px;
-  margin: 0;
+.resource b{
+  display:block;
+  font-size:18px;
 }
 
-.turn {
-  background: #d7bd68;
-  padding: 8px;
-  border-radius: 8px;
-  text-align: center;
-  margin-bottom: 10px;
+.log,
+.chat{
+  height:130px;
+  overflow:auto;
+  background:#eee2cf;
+  color:#30291f;
+  padding:7px;
+  border-radius:7px;
+  font-family:Arial,sans-serif;
+  font-size:12px;
 }
 
-@media (max-width: 800px) {
-  .layout {
-    grid-template-columns: 1fr;
+.chatInput{
+  display:flex;
+  gap:5px;
+  margin-top:5px;
+}
+
+.chatInput input{
+  flex:1;
+  min-width:0;
+  padding:9px;
+  border-radius:7px;
+  border:1px solid #aaa;
+}
+
+.chatInput button{
+  width:48px;
+  margin:0;
+}
+
+@media(max-width:1050px){
+  .app{
+    grid-template-columns:170px 1fr;
   }
 
-  .board {
-    min-height: 500px;
-  }
-
-  .tile {
-    width: 85px;
-    height: 75px;
-    font-size: 12px;
-  }
-
-  .city {
-    font-size: 9px;
-    padding: 5px;
+  .right{
+    grid-column:1/-1;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
   }
 }
 
-@media (max-width: 500px) {
-  header h1 {
-    font-size: 21px;
+@media(max-width:700px){
+  .app{
+    display:flex;
+    flex-direction:column;
   }
 
-  .board {
-    min-height: 430px;
+  .map{
+    min-height:520px;
   }
 
-  .tile {
-    width: 68px;
-    height: 60px;
+  svg{
+    min-height:520px;
   }
 
-  .city {
-    font-size: 8px;
-    padding: 4px;
+  .left{
+    order:2;
+  }
+
+  .map{
+    order:1;
+  }
+
+  .right{
+    order:3;
+    display:block;
   }
 }
 </style>
@@ -292,470 +301,732 @@ button:active {
 <body>
 
 <header>
-  <h1>🇬🇧 Kingdoms of England</h1>
-  <p>Build • Trade • Conquer</p>
+<h1>♜ Kingdoms of England</h1>
+<p>Build • Trade • Conquer</p>
 </header>
 
-<div class="game">
+<div class="app">
 
-  <div class="topbar">
-    <div>
-      <strong>Room:</strong> ENGLAND-001
-    </div>
+<!-- LEFT -->
+<aside class="left">
 
-    <div class="players">
-      <div class="player red">🔴 Raven</div>
-      <div class="player blue">🔵 Lion</div>
-      <div class="player green">🟢 Stag</div>
-      <div class="player yellow">🟡 Falcon</div>
-    </div>
-  </div>
+<div class="panel">
+<h2>ROOM • ENGLAND-001</h2>
 
-  <div class="layout">
+<div>Players: <b>4 / 4</b></div>
 
-    <div class="board">
+<div class="player">
+<span><i class="dot red"></i>Raven</span>
+<b>5 VP</b>
+</div>
 
-      <div class="board-title">🗺️ England</div>
+<div class="player">
+<span><i class="dot blue"></i>Lion</span>
+<b>4 VP</b>
+</div>
 
-      <!-- Resource tiles -->
+<div class="player">
+<span><i class="dot green"></i>Stag</span>
+<b>4 VP</b>
+</div>
 
-      <div class="tile forest"
-           style="left:8%; top:22%;"
-           onclick="tileInfo('Forest 🌲')">
-        <span>🌲<br>Timber<br><small>8</small></span>
-      </div>
+<div class="player">
+<span><i class="dot yellow"></i>Falcon</span>
+<b>4 VP</b>
+</div>
 
-      <div class="tile field"
-           style="left:27%; top:12%;"
-           onclick="tileInfo('Farmland 🌾')">
-        <span>🌾<br>Grain<br><small>6</small></span>
-      </div>
+</div>
 
-      <div class="tile wool"
-           style="left:47%; top:20%;"
-           onclick="tileInfo('Sheep Country 🐑')">
-        <span>🐑<br>Wool<br><small>9</small></span>
-      </div>
+<div class="panel">
+<h2>RESOURCE GUIDE</h2>
 
-      <div class="tile iron"
-           style="left:67%; top:12%;"
-           onclick="tileInfo('Iron Country ⛏️')">
-        <span>⛏️<br>Iron<br><small>5</small></span>
-      </div>
+<div>🌲 Timber</div>
+<div>🌾 Grain</div>
+<div>🐑 Wool</div>
+<div>⛏️ Iron</div>
+<div>🪨 Stone</div>
+<div>🪙 Gold</div>
 
-      <div class="tile stone"
-           style="left:82%; top:29%;"
-           onclick="tileInfo('Stone Country 🪨')">
-        <span>🪨<br>Stone<br><small>10</small></span>
-      </div>
+</div>
 
-      <div class="tile field"
-           style="left:31%; top:39%;"
-           onclick="tileInfo('Somerset Fields 🌾')">
-        <span>🌾<br>Grain<br><small>8</small></span>
-      </div>
+<div class="panel">
+<h2>🏴‍☠️ PIRATE</h2>
 
-      <div class="tile forest"
-           style="left:51%; top:39%;"
-           onclick="tileInfo('Forest 🌲')">
-        <span>🌲<br>Timber<br><small>4</small></span>
-      </div>
+<div style="font-size:38px;text-align:center">
+🏴‍☠️
+</div>
 
-      <div class="tile wool"
-           style="left:70%; top:47%;"
-           onclick="tileInfo('Wool Country 🐑')">
-        <span>🐑<br>Wool<br><small>11</small></span>
-      </div>
+<p>Roll 7 to move the Pirate.</p>
 
-      <div class="tile stone"
-           style="left:17%; top:56%;"
-           onclick="tileInfo('Stone Country 🪨')">
-        <span>🪨<br>Stone<br><small>3</small></span>
-      </div>
+</div>
 
-      <div class="tile iron"
-           style="left:39%; top:59%;"
-           onclick="tileInfo('Iron Country ⛏️')">
-        <span>⛏️<br>Iron<br><small>6</small></span>
-      </div>
-
-      <div class="tile field"
-           style="left:59%; top:65%;"
-           onclick="tileInfo('Southern Fields 🌾')">
-        <span>🌾<br>Grain<br><small>5</small></span>
-      </div>
-
-      <div class="tile desert"
-           style="left:76%; top:67%;"
-           onclick="tileInfo('Open Country')">
-        <span>🏞️<br>Open Land</span>
-      </div>
+</aside>
 
 
-      <!-- Cities -->
+<!-- MAP -->
+<main class="map">
 
-      <div class="city"
-           style="left:18%; top:18%;">
-        Liverpool
-      </div>
+<div class="mapTitle">
+🗺️ ENGLAND • HEX MAP
+</div>
 
-      <div class="city"
-           style="left:48%; top:13%;">
-        Manchester
-      </div>
+<svg viewBox="0 0 900 760">
 
-      <div class="city"
-           style="left:72%; top:23%;">
-        Sheffield
-      </div>
+<rect width="900" height="760" fill="#0c4050"/>
 
-      <div class="city"
-           style="left:86%; top:42%;">
-        York
-      </div>
+<text x="50" y="370" class="sea">
+Irish Sea
+</text>
 
-      <div class="city"
-           style="left:60%; top:48%;">
-        Birmingham
-      </div>
+<text x="760" y="260" class="sea">
+North Sea
+</text>
 
-      <div class="city"
-           style="left:40%; top:48%;">
-        Bristol
-      </div>
-
-      <div class="city"
-           style="left:49%; top:69%;">
-        Bridgwater
-      </div>
-
-      <div class="city"
-           style="left:70%; top:78%;">
-        London
-      </div>
-
-      <div class="city"
-           style="left:28%; top:75%;">
-        Exeter
-      </div>
-
-      <div class="city"
-           style="left:16%; top:48%;">
-        Nottingham
-      </div>
-
-    </div>
+<text x="475" y="730" class="sea">
+English Channel
+</text>
 
 
-    <div>
+<!-- HEX BOARD -->
 
-      <div class="panel">
+<g id="hexes">
 
-        <div class="turn">
-          👑 <strong>Raven's Turn</strong>
-        </div>
+<!-- Row 1 -->
 
-        <h2>🎲 Dice</h2>
+<polygon class="hex" fill="#4d704d"
+points="250,70 305,102 305,166 250,198 195,166 195,102"
+onclick="hexInfo('Timber',8)"/>
 
-        <div class="dice" id="dice">
-          ⚀ ⚀
-        </div>
+<polygon class="hex" fill="#aa903f"
+points="360,70 415,102 415,166 360,198 305,166 305,102"
+onclick="hexInfo('Grain',6)"/>
 
-        <button onclick="rollDice()">
-          🎲 Roll Dice
-        </button>
+<polygon class="hex" fill="#91a66f"
+points="470,70 525,102 525,166 470,198 415,166 415,102"
+onclick="hexInfo('Wool',9)"/>
 
-        <h2>📦 Resources</h2>
-
-        <div class="resources">
-          <div class="resource">
-            🌲
-            <strong id="wood">3</strong>
-            Timber
-          </div>
-
-          <div class="resource">
-            🌾
-            <strong id="grain">2</strong>
-            Grain
-          </div>
-
-          <div class="resource">
-            🐑
-            <strong id="wool">2</strong>
-            Wool
-          </div>
-
-          <div class="resource">
-            🪨
-            <strong id="stone">1</strong>
-            Stone
-          </div>
-
-          <div class="resource">
-            ⛏️
-            <strong id="iron">2</strong>
-            Iron
-          </div>
-
-          <div class="resource">
-            🪙
-            <strong id="gold">0</strong>
-            Gold
-          </div>
-        </div>
-
-        <h2>🏗️ Build</h2>
-
-        <button onclick="buildRoad()">
-          🛣️ Road — 1 Timber + 1 Stone
-        </button>
-
-        <button onclick="buildVillage()">
-          🏘️ Village — 1 Timber + 1 Stone + 1 Grain + 1 Wool
-        </button>
-
-        <button onclick="buildTown()">
-          🏰 Town — 2 Grain + 3 Iron
-        </button>
-
-        <button onclick="trade()">
-          🤝 Trade
-        </button>
-
-        <div class="log" id="log">
-          <div>🏝️ Welcome to Kingdoms of England!</div>
-        </div>
-
-      </div>
+<polygon class="hex" fill="#77736a"
+points="580,70 635,102 635,166 580,198 525,166 525,102"
+onclick="hexInfo('Stone',5)"/>
 
 
-      <div class="panel chat">
+<!-- Row 2 -->
 
-        <h2>💬 Chat</h2>
+<polygon class="hex" fill="#91a66f"
+points="195,165 250,197 250,261 195,293 140,261 140,197"
+onclick="hexInfo('Wool',10)"/>
 
-        <div class="chat-messages" id="chat">
-          <div>🔴 Raven: Welcome!</div>
-          <div>🔵 Lion: Good luck!</div>
-        </div>
+<polygon class="hex" fill="#745f50"
+points="305,165 360,197 360,261 305,293 250,261 250,197"
+onclick="hexInfo('Iron',5)"/>
 
-        <div class="chat-input">
-          <input
-            id="message"
-            placeholder="Say something..."
-            onkeydown="if(event.key==='Enter') sendChat()"
-          >
+<polygon class="hex" fill="#4d704d"
+points="415,165 470,197 470,261 415,293 360,261 360,197"
+onclick="hexInfo('Timber',4)"/>
 
-          <button onclick="sendChat()">
-            ➤
-          </button>
-        </div>
+<polygon class="hex" fill="#aa903f"
+points="525,165 580,197 580,261 525,293 470,261 470,197"
+onclick="hexInfo('Grain',6)"/>
 
-      </div>
+<polygon class="hex" fill="#91a66f"
+points="635,165 690,197 690,261 635,293 580,261 580,197"
+onclick="hexInfo('Wool',9)"/>
 
-    </div>
 
-  </div>
+<!-- Row 3 -->
+
+<polygon class="hex" fill="#4d704d"
+points="140,260 195,292 195,356 140,388 85,356 85,292"
+onclick="hexInfo('Timber',8)"/>
+
+<polygon class="hex" fill="#aa903f"
+points="250,260 305,292 305,356 250,388 195,356 195,292"
+onclick="hexInfo('Grain',3)"/>
+
+<polygon class="hex" fill="#745f50"
+points="360,260 415,292 415,356 360,388 305,356 305,292"
+onclick="hexInfo('Iron',4)"/>
+
+<polygon class="hex" fill="#4d704d"
+points="470,260 525,292 525,356 470,388 415,356 415,292"
+onclick="hexInfo('Timber',10)"/>
+
+<polygon class="hex" fill="#aa903f"
+points="580,260 635,292 635,356 580,388 525,356 525,292"
+onclick="hexInfo('Grain',5)"/>
+
+<polygon class="hex" fill="#77736a"
+points="690,260 745,292 745,356 690,388 635,356 635,292"
+onclick="hexInfo('Stone',8)"/>
+
+
+<!-- Row 4 -->
+
+<polygon class="hex" fill="#91a66f"
+points="195,355 250,387 250,451 195,483 140,451 140,387"
+onclick="hexInfo('Wool',9)"/>
+
+<polygon class="hex" fill="#745f50"
+points="305,355 360,387 360,451 305,483 250,451 250,387"
+onclick="hexInfo('Iron',6)"/>
+
+<polygon class="hex" fill="#aa903f"
+points="415,355 470,387 470,451 415,483 360,451 360,387"
+onclick="hexInfo('Grain',11)"/>
+
+<polygon class="hex" fill="#91a66f"
+points="525,355 580,387 580,451 525,483 470,451 470,387"
+onclick="hexInfo('Wool',4)"/>
+
+<polygon class="hex" fill="#4d704d"
+points="635,355 690,387 690,451 635,483 580,451 580,387"
+onclick="hexInfo('Timber',10)"/>
+
+
+<!-- Row 5 -->
+
+<polygon class="hex" fill="#77736a"
+points="250,450 305,482 305,546 250,578 195,546 195,482"
+onclick="hexInfo('Stone',3)"/>
+
+<polygon class="hex" fill="#4d704d"
+points="360,450 415,482 415,546 360,578 305,546 305,482"
+onclick="hexInfo('Timber',8)"/>
+
+<polygon class="hex" fill="#745f50"
+points="470,450 525,482 525,546 470,578 415,546 415,482"
+onclick="hexInfo('Iron',5)"/>
+
+<polygon class="hex" fill="#aa903f"
+points="580,450 635,482 635,546 580,578 525,546 525,482"
+onclick="hexInfo('Grain',9)"/>
+
+
+<!-- Row 6 -->
+
+<polygon class="hex" fill="#aa903f"
+points="305,545 360,577 360,641 305,673 250,641 250,577"
+onclick="hexInfo('Grain',6)"/>
+
+<polygon class="hex" fill="#91a66f"
+points="415,545 470,577 470,641 415,673 360,641 360,577"
+onclick="hexInfo('Wool',8)"/>
+
+<polygon class="hex" fill="#4d704d"
+points="525,545 580,577 580,641 525,673 470,641 470,577"
+onclick="hexInfo('Timber',4)"/>
+
+<polygon class="hex" fill="#77736a"
+points="635,545 690,577 690,641 635,673 580,641 580,577"
+onclick="hexInfo('Stone',10)"/>
+
+</g>
+
+
+<!-- ROADS -->
+
+<g>
+<line class="road" x1="195" y1="292" x2="250" y2="387"/>
+<line class="road" x1="250" y1="387" x2="360" y2="387"/>
+<line class="road" x1="360" y1="387" x2="470" y2="387"/>
+<line class="road" x1="470" y1="387" x2="580" y2="451"/>
+<line class="road" x1="360" y1="482" x2="470" y2="577"/>
+<line class="road" x1="470" y1="577" x2="580" y2="577"/>
+</g>
+
+
+<!-- BUILD NODES -->
+
+<g>
+
+<circle class="node" cx="195" cy="292" r="9"
+onclick="nodeInfo()"/>
+
+<circle class="node" cx="250" cy="387" r="9"
+onclick="nodeInfo()"/>
+
+<circle class="node" cx="360" cy="387" r="9"
+onclick="nodeInfo()"/>
+
+<circle class="node" cx="470" cy="387" r="9"
+onclick="nodeInfo()"/>
+
+<circle class="node" cx="580" cy="451" r="9"
+onclick="nodeInfo()"/>
+
+<circle class="node" cx="360" cy="482" r="9"
+onclick="nodeInfo()"/>
+
+<circle class="node" cx="470" cy="577" r="9"
+onclick="nodeInfo()"/>
+
+<circle class="node" cx="580" cy="577" r="9"
+onclick="nodeInfo()"/>
+
+</g>
+
+
+<!-- CITIES -->
+
+<g onclick="cityInfo('Newcastle')">
+<rect class="city" x="555" y="40" width="90" height="27" rx="7"/>
+<text class="cityText" x="600" y="54">Newcastle</text>
+</g>
+
+<g onclick="cityInfo('Leeds')">
+<rect class="city" x="600" y="125" width="70" height="27" rx="7"/>
+<text class="cityText" x="635" y="139">Leeds</text>
+</g>
+
+<g onclick="cityInfo('Manchester')">
+<rect class="city" x="270" y="230" width="100" height="27" rx="7"/>
+<text class="cityText" x="320" y="244">Manchester</text>
+</g>
+
+<g onclick="cityInfo('Sheffield')">
+<rect class="city" x="410" y="250" width="90" height="27" rx="7"/>
+<text class="cityText" x="455" y="264">Sheffield</text>
+</g>
+
+<g onclick="cityInfo('Liverpool')">
+<rect class="city" x="70" y="250" width="90" height="27" rx="7"/>
+<text class="cityText" x="115" y="264">Liverpool</text>
+</g>
+
+<g onclick="cityInfo('Nottingham')">
+<rect class="city" x="230" y="330" width="105" height="27" rx="7"/>
+<text class="cityText" x="282" y="344">Nottingham</text>
+</g>
+
+<g onclick="cityInfo('Birmingham')">
+<rect class="city" x="320" y="410" width="105" height="27" rx="7"/>
+<text class="cityText" x="372" y="424">Birmingham</text>
+</g>
+
+<g onclick="cityInfo('Bristol')">
+<rect class="city" x="165" y="510" width="75" height="27" rx="7"/>
+<text class="cityText" x="202" y="524">Bristol</text>
+</g>
+
+<g onclick="cityInfo('Bridgwater')">
+<rect class="city" x="240" y="610" width="105" height="27" rx="7"/>
+<text class="cityText" x="292" y="624">Bridgwater</text>
+</g>
+
+<g onclick="cityInfo('Oxford')">
+<rect class="city" x="410" y="500" width="75" height="27" rx="7"/>
+<text class="cityText" x="447" y="514">Oxford</text>
+</g>
+
+<g onclick="cityInfo('London')">
+<rect class="city" x="570" y="620" width="90" height="32" rx="7"/>
+<text class="cityText" x="615" y="636">👑 London</text>
+</g>
+
+<g onclick="cityInfo('Plymouth')">
+<rect class="city" x="120" y="650" width="90" height="27" rx="7"/>
+<text class="cityText" x="165" y="664">Plymouth</text>
+</g>
+
+
+<!-- PIRATE -->
+
+<g onclick="pirateInfo()">
+<circle cx="790" cy="135" r="32"
+fill="#12242b"
+stroke="#c39243"
+stroke-width="3"/>
+
+<text x="790" y="148"
+text-anchor="middle"
+font-size="36">
+🏴‍☠️
+</text>
+</g>
+
+</svg>
+</main>
+
+
+<!-- RIGHT -->
+
+<aside class="right">
+
+<div class="panel">
+
+<div class="turn">
+👑 <b>Raven's Turn</b>
+</div>
+
+<h2>🎲 DICE</h2>
+
+<div class="dice" id="dice">
+⚀ ⚀
+</div>
+
+<button onclick="rollDice()">
+🎲 Roll Dice
+</button>
+
+
+<h2>📦 RESOURCES</h2>
+
+<div class="resources">
+
+<div class="resource">
+🌲
+<b id="wood">3</b>
+Timber
+</div>
+
+<div class="resource">
+🌾
+<b id="grain">2</b>
+Grain
+</div>
+
+<div class="resource">
+🐑
+<b id="wool">1</b>
+Wool
+</div>
+
+<div class="resource">
+🪨
+<b id="stone">2</b>
+Stone
+</div>
+
+<div class="resource">
+⛏️
+<b id="iron">1</b>
+Iron
+</div>
+
+<div class="resource">
+🪙
+<b id="gold">0</b>
+Gold
+</div>
+
+</div>
+
+
+<h2 style="margin-top:10px">
+🏗️ BUILD
+</h2>
+
+<button onclick="buildRoad()">
+🛣️ Road — 1 Timber + 1 Stone
+</button>
+
+<button onclick="buildVillage()">
+🏘️ Village — 1 Timber + 1 Stone + 1 Grain + 1 Wool
+</button>
+
+<button onclick="buildTown()">
+🏰 Town — 2 Grain + 3 Iron
+</button>
+
+<button onclick="trade()">
+🤝 Trade 2 Timber → 1 Grain
+</button>
+
+</div>
+
+
+<div class="panel">
+
+<h2>GAME LOG</h2>
+
+<div class="log" id="log">
+🇬🇧 Welcome to Kingdoms of England!<br>
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>💬 CHAT</h2>
+
+<div class="chat" id="chat">
+🔴 Raven: Good luck everyone!<br>
+🔵 Lion: Let's build a strong kingdom!<br>
+🟢 Stag: I need Iron.<br>
+🟡 Falcon: Watch out for the pirate!<br>
+</div>
+
+<div class="chatInput">
+
+<input
+id="message"
+placeholder="Type a message..."
+onkeydown="if(event.key==='Enter')sendChat()">
+
+<button onclick="sendChat()">➤</button>
+
+</div>
+
+</div>
+
+</aside>
 
 </div>
 
 
 <script>
 
-let resources = {
-  wood: 3,
-  grain: 2,
-  wool: 2,
-  stone: 1,
-  iron: 2,
-  gold: 0
+let resources={
+wood:3,
+grain:2,
+wool:1,
+stone:2,
+iron:1,
+gold:0
 };
 
-let victoryPoints = 0;
+let vp=5;
 
-function updateResources() {
 
-  document.getElementById("wood").textContent = resources.wood;
-  document.getElementById("grain").textContent = resources.grain;
-  document.getElementById("wool").textContent = resources.wool;
-  document.getElementById("stone").textContent = resources.stone;
-  document.getElementById("iron").textContent = resources.iron;
-  document.getElementById("gold").textContent = resources.gold;
+function updateResources(){
+
+for(let key in resources){
+
+let el=document.getElementById(key);
+
+if(el){
+el.textContent=resources[key];
+}
 
 }
 
-function addLog(message) {
+}
 
-  const log = document.getElementById("log");
 
-  const item = document.createElement("div");
+function log(message){
 
-  item.textContent = message;
+let box=document.getElementById("log");
 
-  log.prepend(item);
+box.innerHTML=
+message+"<br>"+box.innerHTML;
 
 }
 
-function rollDice() {
 
-  const a = Math.floor(Math.random() * 6) + 1;
-  const b = Math.floor(Math.random() * 6) + 1;
+function rollDice(){
 
-  const total = a + b;
+let a=Math.floor(Math.random()*6)+1;
+let b=Math.floor(Math.random()*6)+1;
 
-  document.getElementById("dice").textContent =
-    "🎲 " + a + " + " + b + " = " + total;
+let total=a+b;
 
-  addLog("🎲 Raven rolled " + total);
+document.getElementById("dice").textContent=
+"🎲 "+a+" + "+b+" = "+total;
 
-  if (total === 8) {
-    resources.wood++;
-    addLog("🌲 Raven received 1 Timber!");
-  }
+log("🎲 Raven rolled "+total);
 
-  if (total === 6) {
-    resources.grain++;
-    addLog("🌾 Raven received 1 Grain!");
-  }
+if(total===7){
 
-  if (total === 9) {
-    resources.wool++;
-    addLog("🐑 Raven received 1 Wool!");
-  }
+log("🏴‍☠️ PIRATE ATTACK! Move the Pirate.");
 
-  if (total === 5) {
-    resources.iron++;
-    addLog("⛏️ Raven received 1 Iron!");
-  }
-
-  if (total === 10) {
-    resources.stone++;
-    addLog("🪨 Raven received 1 Stone!");
-  }
-
-  updateResources();
+return;
 
 }
 
-function buildRoad() {
+let production={
 
-  if (resources.wood >= 1 && resources.stone >= 1) {
+4:"wood",
+5:"iron",
+6:"grain",
+8:"wood",
+9:"wool",
+10:"stone",
+11:"grain"
 
-    resources.wood--;
-    resources.stone--;
+};
 
-    victoryPoints++;
+let resource=production[total];
 
-    addLog("🛣️ Raven built a Road! +1 VP");
+if(resource){
 
-    updateResources();
+resources[resource]++;
 
-  } else {
+log("+"+1+" "+resource);
 
-    addLog("❌ Not enough resources for a Road.");
-
-  }
-
-}
-
-function buildVillage() {
-
-  if (
-    resources.wood >= 1 &&
-    resources.stone >= 1 &&
-    resources.grain >= 1 &&
-    resources.wool >= 1
-  ) {
-
-    resources.wood--;
-    resources.stone--;
-    resources.grain--;
-    resources.wool--;
-
-    victoryPoints++;
-
-    addLog("🏘️ Raven built a Village! +1 VP");
-
-    updateResources();
-
-  } else {
-
-    addLog("❌ Not enough resources for a Village.");
-
-  }
+updateResources();
 
 }
 
-function buildTown() {
+}
 
-  if (
-    resources.grain >= 2 &&
-    resources.iron >= 3
-  ) {
 
-    resources.grain -= 2;
-    resources.iron -= 3;
+function spend(cost){
 
-    victoryPoints += 2;
+for(let key in cost){
 
-    addLog("🏰 Raven upgraded to a Town! +2 VP");
+if(resources[key]<cost[key]){
 
-    updateResources();
-
-  } else {
-
-    addLog("❌ Not enough resources for a Town.");
-
-  }
+return false;
 
 }
 
-function trade() {
+}
 
-  if (resources.wood >= 2) {
+for(let key in cost){
 
-    resources.wood -= 2;
-    resources.grain++;
-
-    addLog("🤝 Trade completed: 2 Timber → 1 Grain");
-
-    updateResources();
-
-  } else {
-
-    addLog("❌ You need 2 Timber to trade.");
-
-  }
+resources[key]-=cost[key];
 
 }
 
-function tileInfo(name) {
+updateResources();
 
-  addLog("🗺️ Selected: " + name);
+return true;
+
+}
+
+
+function buildRoad(){
+
+if(spend({
+wood:1,
+stone:1
+})){
+
+vp++;
+
+log("🛣️ Raven built a Road! +1 VP");
+
+}else{
+
+log("❌ Not enough resources.");
 
 }
 
-function sendChat() {
+}
 
-  const input = document.getElementById("message");
 
-  const text = input.value.trim();
+function buildVillage(){
 
-  if (!text) return;
+if(spend({
+wood:1,
+stone:1,
+grain:1,
+wool:1
+})){
 
-  const chat = document.getElementById("chat");
+vp++;
 
-  const message = document.createElement("div");
+log("🏘️ Raven built a Village! +1 VP");
 
-  message.textContent = "🔴 Raven: " + text;
+}else{
 
-  chat.appendChild(message);
-
-  chat.scrollTop = chat.scrollHeight;
-
-  input.value = "";
+log("❌ Not enough resources.");
 
 }
+
+}
+
+
+function buildTown(){
+
+if(spend({
+grain:2,
+iron:3
+})){
+
+vp+=2;
+
+log("🏰 Raven upgraded to a Town! +2 VP");
+
+}else{
+
+log("❌ Not enough resources.");
+
+}
+
+}
+
+
+function trade(){
+
+if(spend({
+wood:2
+})){
+
+resources.grain++;
+
+updateResources();
+
+log("🤝 Traded 2 Timber for 1 Grain.");
+
+}else{
+
+log("❌ Need 2 Timber.");
+
+}
+
+}
+
+
+function hexInfo(resource,number){
+
+log(
+"🗺️ "+resource+
+" • Dice "+number
+);
+
+}
+
+
+function cityInfo(city){
+
+log(
+"🏙️ Selected "+city
+);
+
+}
+
+
+function nodeInfo(){
+
+log(
+"📍 Building node selected. Future version: place Road or Village here."
+);
+
+}
+
+
+function pirateInfo(){
+
+log(
+"🏴‍☠️ Pirate selected. Future version: choose a sea region."
+);
+
+}
+
+
+function sendChat(){
+
+let input=document.getElementById("message");
+
+let text=input.value.trim();
+
+if(!text)return;
+
+let chat=document.getElementById("chat");
+
+chat.innerHTML+=
+"🔴 Raven: "+
+text+
+"<br>";
+
+input.value="";
+
+chat.scrollTop=chat.scrollHeight;
+
+}
+
 
 updateResources();
 

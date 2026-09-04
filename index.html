@@ -1,979 +1,919 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8" />
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-
-    <title>UK Monopoly - Supabase</title>
-
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #07111f;
-            --panel: #0d1b2d;
-            --panel2: #12243a;
-            --border: rgba(255,255,255,.12);
-            --text: #f5f7fa;
-            --muted: #9eacbd;
-            --green: #28d17c;
-            --red: #ff5d6c;
-            --yellow: #ffd166;
-            --blue: #4ea8ff;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background:
-                radial-gradient(circle at top, #17304c 0%, #07111f 50%, #040a12 100%);
-            color: var(--text);
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                "Noto Sans TC",
-                sans-serif;
-        }
-
-        button,
-        input {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* =========================
-           TOP BAR
-        ========================= */
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-
-            height: 64px;
-            padding: 0 18px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            background: rgba(5, 12, 22, .92);
-            backdrop-filter: blur(16px);
-
-            border-bottom: 1px solid var(--border);
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            font-weight: 800;
-            font-size: 18px;
-        }
-
-        .brand-icon {
-            width: 34px;
-            height: 34px;
-            display: grid;
-            place-items: center;
-
-            border-radius: 10px;
-            background: linear-gradient(135deg, #28d17c, #168d55);
-            color: #03130b;
-            font-weight: 900;
-        }
-
-        .connection {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #777;
-        }
-
-        .dot.online {
-            background: var(--green);
-            box-shadow: 0 0 12px rgba(40,209,124,.8);
-        }
-
-        .dot.error {
-            background: var(--red);
-        }
-
-        /* =========================
-           SETUP SCREEN
-        ========================= */
-
-        .setup-screen {
-            min-height: calc(100vh - 64px);
-            display: grid;
-            place-items: center;
-            padding: 24px;
-        }
-
-        .setup-card {
-            width: min(520px, 100%);
-            padding: 28px;
-
-            background: rgba(13,27,45,.94);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-
-            box-shadow: 0 25px 80px rgba(0,0,0,.35);
-        }
-
-        .setup-card h1 {
-            margin: 0 0 8px;
-            font-size: 30px;
-        }
-
-        .setup-card > p {
-            margin: 0 0 24px;
-            color: var(--muted);
-            line-height: 1.6;
-        }
-
-        .config-warning {
-            margin-bottom: 18px;
-            padding: 12px 14px;
-
-            border: 1px solid rgba(255,209,102,.3);
-            border-radius: 12px;
-
-            background: rgba(255,209,102,.08);
-            color: #ffe7a6;
-
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .field {
-            margin-bottom: 14px;
-        }
-
-        .field label {
-            display: block;
-            margin-bottom: 7px;
-
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .field input {
-            width: 100%;
-            height: 48px;
-
-            padding: 0 14px;
-
-            border: 1px solid var(--border);
-            border-radius: 12px;
-
-            outline: none;
-
-            color: white;
-            background: rgba(255,255,255,.06);
-        }
-
-        .field input:focus {
-            border-color: rgba(40,209,124,.7);
-            box-shadow: 0 0 0 3px rgba(40,209,124,.08);
-        }
-
-        .setup-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-
-            margin-top: 18px;
-        }
-
-        .btn {
-            min-height: 46px;
-            padding: 0 16px;
-
-            border: 0;
-            border-radius: 12px;
-
-            font-weight: 800;
-
-            transition:
-                transform .15s ease,
-                opacity .15s ease,
-                background .15s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn:disabled {
-            opacity: .4;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-primary {
-            color: #03130b;
-            background: var(--green);
-        }
-
-        .btn-secondary {
-            color: white;
-            background: rgba(255,255,255,.09);
-            border: 1px solid var(--border);
-        }
-
-        .btn-danger {
-            color: white;
-            background: var(--red);
-        }
-
-        .message {
-            min-height: 22px;
-            margin-top: 14px;
-
-            color: var(--yellow);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        /* =========================
-           GAME
-        ========================= */
-
-        .game-screen {
-            padding: 18px;
-        }
-
-        .game-layout {
-            width: min(1500px, 100%);
-            margin: 0 auto;
-
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 360px;
-            gap: 18px;
-        }
-
-        .main-panel,
-        .side-panel {
-            background: rgba(13,27,45,.88);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-        }
-
-        .main-panel {
-            padding: 16px;
-        }
-
-        .side-panel {
-            padding: 16px;
-
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        /* =========================
-           ROOM INFO
-        ========================= */
-
-        .room-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-
-            margin-bottom: 14px;
-        }
-
-        .room-code {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .room-code span {
-            color: var(--muted);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-        }
-
-        .room-code strong {
-            font-size: 20px;
-            letter-spacing: .08em;
-        }
-
-        .status-badge {
-            padding: 7px 11px;
-            border-radius: 999px;
-
-            font-size: 12px;
-            font-weight: 800;
-
-            background: rgba(255,255,255,.08);
-        }
-
-        .status-playing {
-            color: var(--green);
-            background: rgba(40,209,124,.1);
-        }
-
-        .status-waiting {
-            color: var(--yellow);
-            background: rgba(255,209,102,.1);
-        }
-
-        .status-finished {
-            color: var(--red);
-            background: rgba(255,93,108,.1);
-        }
-
-        /* =========================
-           BOARD
-        ========================= */
-
-        .board-wrap {
-            width: 100%;
-            overflow: auto;
-            padding-bottom: 5px;
-        }
-
-        .board {
-            width: min(900px, 100%);
-            aspect-ratio: 1 / 1;
-            margin: 0 auto;
-
-            display: grid;
-            grid-template-columns: repeat(11, 1fr);
-            grid-template-rows: repeat(11, 1fr);
-
-            gap: 2px;
-
-            padding: 4px;
-
-            background: #0a1422;
-            border: 2px solid rgba(255,255,255,.12);
-            border-radius: 14px;
-        }
-
-        .space {
-            position: relative;
-
-            min-width: 0;
-            min-height: 0;
-
-            overflow: hidden;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            padding: 4px;
-
-            border-radius: 5px;
-            border: 1px solid rgba(255,255,255,.09);
-
-            background: rgba(255,255,255,.045);
-
-            font-size: clamp(7px, 1vw, 11px);
-        }
-
-        .space.center {
-            grid-column: 2 / 11;
-            grid-row: 2 / 11;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background:
-                radial-gradient(circle at center, rgba(40,209,124,.12), transparent 55%),
-                rgba(255,255,255,.025);
-
-            border: 1px solid rgba(255,255,255,.08);
-        }
-
-        .center-content {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .center-title {
-            font-size: clamp(24px, 4vw, 48px);
-            font-weight: 900;
-            letter-spacing: .08em;
-        }
-
-        .center-subtitle {
-            margin-top: 6px;
-            color: var(--muted);
-            font-size: clamp(10px, 1.3vw, 14px);
-        }
-
-        .space-color {
-            height: 7px;
-            margin: -4px -4px 3px;
-
-            background: transparent;
-        }
-
-        .space-name {
-            overflow: hidden;
-
-            font-weight: 700;
-            line-height: 1.15;
-
-            text-align: center;
-            word-break: break-word;
-        }
-
-        .space-price {
-            text-align: center;
-            color: var(--muted);
-            font-size: .85em;
-        }
-
-        .space-tokens {
-            min-height: 16px;
-
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .token {
-            width: 15px;
-            height: 15px;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 50%;
-
-            color: #07111f;
-            background: white;
-
-            border: 2px solid #07111f;
-
-            font-size: 8px;
-            font-weight: 900;
-
-            box-shadow: 0 1px 5px rgba(0,0,0,.5);
-        }
-
-        .token-1 { background: #ff6b6b; }
-        .token-2 { background: #4dabf7; }
-        .token-3 { background: #ffd43b; }
-        .token-4 { background: #69db7c; }
-
-        .owned {
-            outline: 2px solid rgba(40,209,124,.65);
-            outline-offset: -2px;
-        }
-
-        .current-space {
-            box-shadow:
-                inset 0 0 0 2px rgba(255,209,102,.9),
-                0 0 12px rgba(255,209,102,.15);
-        }
-
-        /* =========================
-           SIDE PANEL
-        ========================= */
-
-        .section {
-            padding: 14px;
-
-            background: rgba(255,255,255,.035);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-        }
-
-        .section-title {
-            margin-bottom: 10px;
-
-            font-size: 13px;
-            font-weight: 900;
-
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: .06em;
-        }
-
-        .dice-area {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-
-            margin-bottom: 10px;
-        }
-
-        .dice {
-            min-height: 70px;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 14px;
-
-            background: rgba(255,255,255,.07);
-            border: 1px solid var(--border);
-
-            font-size: 32px;
-            font-weight: 900;
-        }
-
-        .turn-info {
-            margin-bottom: 10px;
-
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .turn-info strong {
-            color: white;
-        }
-
-        .action-buttons {
-            display: grid;
-            gap: 8px;
-        }
-
-        /* =========================
-           PLAYERS
-        ========================= */
-
-        .players-list {
-            display: grid;
-            gap: 8px;
-        }
-
-        .player-row {
-            display: grid;
-            grid-template-columns: 30px 1fr auto;
-            align-items: center;
-            gap: 8px;
-
-            padding: 9px;
-
-            border-radius: 10px;
-
-            background: rgba(255,255,255,.04);
-            border: 1px solid transparent;
-        }
-
-        .player-row.active {
-            border-color: rgba(40,209,124,.5);
-            background: rgba(40,209,124,.07);
-        }
-
-        .player-row.me {
-            box-shadow: inset 3px 0 0 var(--blue);
-        }
-
-        .player-number {
-            width: 26px;
-            height: 26px;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 50%;
-
-            font-size: 11px;
-            font-weight: 900;
-
-            background: rgba(255,255,255,.1);
-        }
-
-        .player-name {
-            font-weight: 800;
-            font-size: 14px;
-        }
-
-        .player-meta {
-            color: var(--muted);
-            font-size: 11px;
-            margin-top: 2px;
-        }
-
-        .player-money {
-            font-weight: 900;
-            color: var(--green);
-            font-size: 13px;
-        }
-
-        /* =========================
-           EVENTS
-        ========================= */
-
-        .events {
-            max-height: 240px;
-            overflow: auto;
-
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .event {
-            padding: 8px 10px;
-
-            border-radius: 9px;
-
-            background: rgba(255,255,255,.04);
-
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .event-time {
-            margin-top: 3px;
-            color: #74859a;
-            font-size: 10px;
-        }
-
-        /* =========================
-           MODAL / TOAST
-        ========================= */
-
-        .toast {
-            position: fixed;
-            left: 50%;
-            bottom: 22px;
-            z-index: 100;
-
-            width: min(480px, calc(100% - 30px));
-
-            padding: 13px 16px;
-
-            transform: translateX(-50%);
-
-            border-radius: 13px;
-
-            background: rgba(10,20,34,.96);
-            border: 1px solid var(--border);
-
-            box-shadow: 0 15px 50px rgba(0,0,0,.4);
-
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .toast.success {
-            border-color: rgba(40,209,124,.4);
-        }
-
-        .toast.error {
-            border-color: rgba(255,93,108,.5);
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 1000px) {
-            .game-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .side-panel {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                align-items: start;
-            }
-
-            .side-wide {
-                grid-column: 1 / -1;
-            }
-        }
-
-        @media (max-width: 650px) {
-            .topbar {
-                padding: 0 12px;
-            }
-
-            .brand {
-                font-size: 15px;
-            }
-
-            .game-screen {
-                padding: 9px;
-            }
-
-            .main-panel,
-            .side-panel {
-                border-radius: 15px;
-                padding: 10px;
-            }
-
-            .side-panel {
-                display: flex;
-            }
-
-            .setup-card {
-                padding: 22px;
-            }
-
-            .setup-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .room-header {
-                align-items: flex-start;
-            }
-
-            .board {
-                min-width: 560px;
-            }
-
-            .board-wrap {
-                overflow-x: auto;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>UK Monopoly - Supabase</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #06111f;
+    --panel: #0d1b2d;
+    --panel2: #15263a;
+    --border: #29405a;
+    --text: #f4f7fb;
+    --muted: #9aaabd;
+    --green: #20d47a;
+    --green2: #10b968;
+    --red: #ff5d6c;
+    --gold: #f4c95d;
+    --blue: #4fa3ff;
+}
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at top, #142c47 0%, #071321 48%, #030a12 100%);
+    color: var(--text);
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        Arial,
+        sans-serif;
+    min-height: 100vh;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header {
+    height: 78px;
+    background: rgba(3, 10, 19, .92);
+    border-bottom: 1px solid #1d3045;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(14px);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.logo-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #21d87b, #0ca85f);
+    color: #032014;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    font-weight: 900;
+}
+
+.connection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--red);
+}
+
+.dot.online {
+    background: var(--green);
+    box-shadow: 0 0 12px rgba(32,212,122,.7);
+}
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+main {
+    width: min(1250px, 94%);
+    margin: 28px auto 60px;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+.login-card {
+    width: min(650px, 100%);
+    margin: 10vh auto 0;
+    padding: 38px;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background: rgba(13,27,45,.92);
+    box-shadow: 0 30px 90px rgba(0,0,0,.38);
+}
+
+.login-card h1 {
+    font-size: 38px;
+    margin: 0 0 8px;
+}
+
+.login-card .subtitle {
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.notice {
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #65562b;
+    background: rgba(100,80,20,.16);
+    color: #f3d889;
+    margin-bottom: 22px;
+    line-height: 1.5;
+}
+
+label {
+    display: block;
+    color: var(--muted);
+    margin: 18px 0 8px;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 16px 17px;
+    border-radius: 14px;
+    border: 1px solid #30465e;
+    background: #17283b;
+    color: white;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(32,212,122,.12);
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.btn {
+    border: 0;
+    border-radius: 14px;
+    padding: 15px 18px;
+    font-weight: 800;
+    color: white;
+    background: #24364b;
+    border: 1px solid #38506a;
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, var(--green), var(--green2));
+    color: #042115;
+    border: 0;
+}
+
+.btn.danger {
+    background: #5b2730;
+    border-color: #793b45;
+}
+
+.btn.gold {
+    background: #69521d;
+    border-color: #856b2a;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+/* =====================================================
+   ROOM
+===================================================== */
+
+.room-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.room-code {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.room-status {
+    color: var(--muted);
+}
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.player-card {
+    background: rgba(13,27,45,.95);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+}
+
+.player-card.current {
+    border-color: var(--green);
+    box-shadow: 0 0 0 1px rgba(32,212,122,.15);
+}
+
+.player-number {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.player-name {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 7px 0;
+}
+
+.player-money {
+    color: #7cf3ae;
+    font-weight: 700;
+}
+
+.waiting-box {
+    margin-top: 20px;
+    padding: 22px;
+    background: rgba(13,27,45,.92);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+}
+
+/* =====================================================
+   GAME
+===================================================== */
+
+.game-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 20px;
+}
+
+.game-board-wrap {
+    background: rgba(8,19,32,.88);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 18px;
+}
+
+.board {
+    width: min(780px, 100%);
+    margin: auto;
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    gap: 3px;
+    background: #081421;
+}
+
+.space {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    background: #edf2f5;
+    color: #101820;
+    border-radius: 4px;
+    padding: 3px;
+    overflow: hidden;
+    font-size: clamp(6px, 1vw, 11px);
+}
+
+.space.center {
+    background: #102337;
+    color: white;
+    grid-column: 2 / 11;
+    grid-row: 2 / 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.center-title {
+    font-size: clamp(20px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    transform: rotate(-35deg);
+}
+
+.space-name {
+    font-weight: 800;
+    line-height: 1.05;
+}
+
+.space-price {
+    font-size: .85em;
+    margin-top: 3px;
+}
+
+.color-strip {
+    height: 12%;
+    min-height: 4px;
+    margin: -3px -3px 3px;
+}
+
+.tokens {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 2px;
+}
+
+.token {
+    width: clamp(13px, 2vw, 22px);
+    height: clamp(13px, 2vw, 22px);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1bd477;
+    color: #03170d;
+    border: 2px solid white;
+    font-size: clamp(7px, 1vw, 11px);
+    font-weight: 900;
+}
+
+.token.t1 { background: #ff5d6c; }
+.token.t2 { background: #4fa3ff; }
+.token.t3 { background: #f4c95d; }
+.token.t4 { background: #b987ff; }
+
+/* =====================================================
+   SIDE PANEL
+===================================================== */
+
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.panel {
+    background: rgba(13,27,45,.94);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px;
+}
+
+.panel-title {
+    font-weight: 800;
+    font-size: 17px;
+    margin-bottom: 13px;
+}
+
+.turn-box {
+    text-align: center;
+    padding: 10px;
+}
+
+.turn-player {
+    font-size: 23px;
+    font-weight: 900;
+    color: var(--green);
+}
+
+.dice {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.die {
+    width: 58px;
+    height: 58px;
+    border-radius: 13px;
+    background: #f4f7fb;
+    color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.money-big {
+    text-align: center;
+    font-size: 28px;
+    color: #77efaa;
+    font-weight: 900;
+}
+
+.my-position {
+    color: var(--muted);
+    text-align: center;
+    margin-top: 5px;
+}
+
+.side-actions {
+    display: grid;
+    gap: 9px;
+}
+
+.event-list {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.event {
+    padding: 9px 0;
+    border-bottom: 1px solid #203247;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.event:last-child {
+    border-bottom: 0;
+}
+
+.event-time {
+    color: #687b90;
+    font-size: 11px;
+}
+
+/* =====================================================
+   PROPERTY
+===================================================== */
+
+.property-list {
+    display: grid;
+    gap: 7px;
+}
+
+.property-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    background: #14263a;
+    border-radius: 10px;
+    padding: 9px 11px;
+    font-size: 13px;
+}
+
+.owner {
+    color: #7cf3ae;
+    font-weight: 700;
+}
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 20px);
+    background: #15283d;
+    border: 1px solid #38516c;
+    border-radius: 14px;
+    padding: 13px 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s;
+    z-index: 999;
+    max-width: 90%;
+    text-align: center;
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+#toast.error {
+    border-color: #8b3b47;
+    background: #3b1c23;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 900px) {
+    header {
+        height: 68px;
+        padding: 0 15px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .logo-box {
+        width: 36px;
+        height: 36px;
+    }
+
+    main {
+        width: 96%;
+        margin-top: 16px;
+    }
+
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .side-panel {
+        order: 2;
+    }
+
+    .players-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .login-card {
+        margin-top: 6vh;
+        padding: 25px;
+    }
+
+    .login-card h1 {
+        font-size: 31px;
+    }
+}
+
+@media (max-width: 500px) {
+    .connection span {
+        display: none;
+    }
+
+    .players-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .actions {
+        grid-template-columns: 1fr;
+    }
+
+    .room-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .game-board-wrap {
+        padding: 7px;
+        border-radius: 16px;
+    }
+
+    .board {
+        gap: 2px;
+    }
+
+    .space {
+        padding: 2px;
+    }
+
+    .color-strip {
+        height: 9%;
+        min-height: 3px;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<header class="topbar">
-    <div class="brand">
-        <div class="brand-icon">M</div>
+<header>
+    <div class="logo">
+        <div class="logo-box">M</div>
         <div>UK MONOPOLY</div>
     </div>
 
     <div class="connection">
-        <span id="connectionDot" class="dot"></span>
-        <span id="connectionText">未連線</span>
+        <div id="connectionDot" class="dot"></div>
+        <span id="connectionText">連線中...</span>
     </div>
 </header>
 
-<!-- =========================
-     SETUP
-========================= -->
+<main>
 
-<section id="setupScreen" class="setup-screen">
+<!-- =====================================================
+     LOGIN SCREEN
+===================================================== -->
 
-    <div class="setup-card">
+<section id="loginScreen" class="screen active">
+
+    <div class="login-card">
 
         <h1>UK Monopoly</h1>
 
-        <p>
+        <div class="subtitle">
             Supabase 多人即時版。<br>
-            建立或加入房間後，遊戲狀態會由 Supabase 控制。
-        </p>
-
-        <div class="config-warning" id="configWarning">
-            請先在 HTML 最下面填入你的 Supabase URL 與 Anon Key。
+            房間、玩家、骰子、回合與遊戲狀態由 Supabase 控制。
         </div>
 
-        <div class="field">
-            <label for="playerName">玩家名稱</label>
-            <input
-                id="playerName"
-                type="text"
-                maxlength="30"
-                placeholder="例如：Player 1"
-            />
+        <div class="notice">
+            已連接 Supabase。<br>
+            建立房間後，其他玩家使用相同房間代碼加入。
         </div>
 
-        <div class="field">
-            <label for="roomCode">房間代碼</label>
-            <input
-                id="roomCode"
-                type="text"
-                maxlength="20"
-                placeholder="例如：LONDON01"
-                autocomplete="off"
-            />
-        </div>
+        <label for="playerName">玩家名稱</label>
+        <input
+            id="playerName"
+            maxlength="20"
+            autocomplete="off"
+            placeholder="例如：David"
+        >
 
-        <div class="setup-buttons">
+        <label for="roomCode">房間代碼</label>
+        <input
+            id="roomCode"
+            maxlength="20"
+            autocomplete="off"
+            placeholder="例如：TEST1"
+        >
+
+        <div class="actions">
 
             <button
-                id="createRoomBtn"
-                class="btn btn-primary"
-                onclick="createRoomAndJoin()"
-            >
+                id="createBtn"
+                class="btn primary"
+                onclick="createRoom()">
                 建立房間
             </button>
 
             <button
-                id="joinRoomBtn"
-                class="btn btn-secondary"
-                onclick="joinRoom()"
-            >
+                id="joinBtn"
+                class="btn"
+                onclick="joinRoom()">
                 加入房間
             </button>
 
         </div>
 
-        <div id="setupMessage" class="message"></div>
+        <div id="loginMessage"
+             style="margin-top:16px;color:#ff737f;">
+        </div>
 
     </div>
 
 </section>
 
-<!-- =========================
-     GAME
-========================= -->
 
-<section id="gameScreen" class="game-screen hidden">
+<!-- =====================================================
+     ROOM SCREEN
+===================================================== -->
+
+<section id="roomScreen" class="screen">
+
+    <div class="room-top">
+
+        <div>
+            <div class="room-status">房間代碼</div>
+            <div id="roomCodeDisplay" class="room-code">----</div>
+        </div>
+
+        <button
+            class="btn"
+            onclick="copyRoomCode()">
+            複製房間代碼
+        </button>
+
+    </div>
+
+    <div class="panel">
+
+        <div class="panel-title">
+            房間玩家
+        </div>
+
+        <div id="playersGrid" class="players-grid"></div>
+
+    </div>
+
+    <div class="waiting-box">
+
+        <div id="roomStatusText">
+            等待其他玩家加入...
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:9px;flex-wrap:wrap;">
+
+            <button
+                id="manualStartBtn"
+                class="btn primary"
+                onclick="startGame()">
+                開始遊戲
+            </button>
+
+            <button
+                class="btn danger"
+                onclick="leaveRoom()">
+                離開房間
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     GAME SCREEN
+===================================================== -->
+
+<section id="gameScreen" class="screen">
 
     <div class="game-layout">
 
-        <!-- BOARD -->
+        <div class="game-board-wrap">
 
-        <main class="main-panel">
+            <div id="board" class="board"></div>
 
-            <div class="room-header">
+        </div>
 
-                <div class="room-code">
-                    <span>Room</span>
-                    <strong id="roomCodeDisplay">---</strong>
-                </div>
-
-                <div id="gameStatus" class="status-badge status-waiting">
-                    WAITING
-                </div>
-
-            </div>
-
-            <div class="board-wrap">
-                <div id="board" class="board">
-                    <!-- JS 產生 -->
-                </div>
-            </div>
-
-        </main>
-
-        <!-- SIDE -->
 
         <aside class="side-panel">
 
-            <!-- GAME CONTROL -->
+            <!-- TURN -->
 
-            <div class="section side-wide">
+            <div class="panel">
 
-                <div class="section-title">
-                    遊戲控制
+                <div class="panel-title">
+                    🎲 回合
                 </div>
 
-                <div class="dice-area">
+                <div class="turn-box">
 
-                    <div id="dice1" class="dice">
-                        —
+                    <div class="turn-player"
+                         id="turnPlayer">
+                        -
                     </div>
 
-                    <div id="dice2" class="dice">
-                        —
+                    <div id="turnNumber"
+                         style="color:#8295aa;margin-top:4px;">
+                        第 0 回合
                     </div>
 
-                </div>
+                    <div class="dice">
 
-                <div id="turnInfo" class="turn-info">
-                    等待遊戲開始……
-                </div>
+                        <div id="dice1" class="die">?</div>
+                        <div id="dice2" class="die">?</div>
 
-                <div class="action-buttons">
-
-                    <button
-                        id="startGameBtn"
-                        class="btn btn-secondary"
-                        onclick="startGame()"
-                    >
-                        開始遊戲
-                    </button>
+                    </div>
 
                     <button
-                        id="rollDiceBtn"
-                        class="btn btn-primary"
-                        onclick="rollDice()"
-                        disabled
-                    >
+                        id="rollBtn"
+                        class="btn primary"
+                        style="width:100%;"
+                        onclick="rollDice()">
                         🎲 擲骰子
                     </button>
 
+                </div>
+
+            </div>
+
+
+            <!-- MY PLAYER -->
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    👤 我的玩家
+                </div>
+
+                <div id="myName"
+                     style="font-size:21px;font-weight:800;text-align:center;">
+                    -
+                </div>
+
+                <div id="myMoney"
+                     class="money-big">
+                    £0
+                </div>
+
+                <div id="myPosition"
+                     class="my-position">
+                    -
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    操作
+                </div>
+
+                <div class="side-actions">
+
                     <button
-                        id="buyPropertyBtn"
-                        class="btn btn-secondary"
+                        id="buyBtn"
+                        class="btn gold"
                         onclick="buyProperty()"
-                        disabled
-                    >
+                        disabled>
                         🏠 購買地產
+                    </button>
+
+                    <button
+                        class="btn"
+                        onclick="startGame()">
+                        ▶ 開始 / 繼續遊戲
+                    </button>
+
+                    <button
+                        class="btn danger"
+                        onclick="leaveRoom()">
+                        離開
                     </button>
 
                 </div>
 
             </div>
 
-            <!-- MY INFO -->
 
-            <div class="section">
+            <!-- PROPERTIES -->
 
-                <div class="section-title">
-                    我的狀態
+            <div class="panel">
+
+                <div class="panel-title">
+                    🏠 地產
                 </div>
 
-                <div id="myInfo">
-                    尚未加入遊戲
-                </div>
-
-            </div>
-
-            <!-- PLAYERS -->
-
-            <div class="section side-wide">
-
-                <div class="section-title">
-                    玩家
-                </div>
-
-                <div id="playersList" class="players-list">
-                    -
+                <div id="propertyList"
+                     class="property-list">
+                    尚無地產
                 </div>
 
             </div>
+
 
             <!-- EVENTS -->
 
-            <div class="section side-wide">
+            <div class="panel">
 
-                <div class="section-title">
-                    遊戲事件
+                <div class="panel-title">
+                    📜 遊戲紀錄
                 </div>
 
-                <div id="events" class="events">
-                    -
+                <div id="eventList"
+                     class="event-list">
                 </div>
 
             </div>
@@ -984,1296 +924,370 @@
 
 </section>
 
-<!-- TOAST -->
+</main>
 
-<div id="toast" class="toast hidden"></div>
 
-<script>
-/* =========================================================
+<div id="toast"></div>
+
+
+<script type="module">
+
+/* =====================================================
    SUPABASE CONFIG
-   =========================================================
+===================================================== */
 
-   把下面兩個值換成你的 Supabase Project Settings
-   → Data API / API Keys 裡面的：
-
-   Project URL
-   Publishable / Anon key
-
-   不要放 service_role key。
-========================================================= */
-
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+import {
+    createClient
+} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 
-/* =========================================================
-   SUPABASE CLIENT
-========================================================= */
+const SUPABASE_URL =
+    "https://aeqhrcdlmpqncddridaj.supabase.co";
 
-let supabaseClient = null;
-
-if (
-    SUPABASE_URL &&
-    SUPABASE_ANON_KEY &&
-    !SUPABASE_URL.includes("YOUR_") &&
-    !SUPABASE_ANON_KEY.includes("YOUR_")
-) {
-    supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
-
-    document.getElementById("configWarning").classList.add("hidden");
-}
+const SUPABASE_ANON_KEY =
+    "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
 
 
-/* =========================================================
-   LOCAL GAME DATA
-========================================================= */
+const supabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+/* =====================================================
+   GLOBAL STATE
+===================================================== */
+
+let roomId = null;
+let gameId = null;
+let playerId = null;
+let roomCode = null;
 
 let gameState = null;
-
-let currentRoomId = localStorage.getItem("monopoly_room_id");
-let currentGameId = localStorage.getItem("monopoly_game_id");
-let currentPlayerId = localStorage.getItem("monopoly_player_id");
-let currentRoomCode = localStorage.getItem("monopoly_room_code");
-let currentPlayerName = localStorage.getItem("monopoly_player_name");
 
 let realtimeChannel = null;
 
 
-/* =========================================================
-   BOARD POSITION MAP
-========================================================= */
+/* =====================================================
+   DOM
+===================================================== */
 
-const boardCoordinates = {};
+const $ = id => document.getElementById(id);
 
-/*
-    11 x 11 board
 
-    順序：
-    0 右下
-    1 往左
-    ...
-    10 左下
-    11 往上
-    ...
-    20 左上
-    21 往右
-    ...
-    30 右上
-    31 往下
-    ...
-    39 右下
-*/
+/* =====================================================
+   INIT
+===================================================== */
 
-function buildBoardCoordinates() {
+window.addEventListener("load", async () => {
 
-    let position = 0;
-
-    // Bottom: 0 -> 10
-    for (let col = 10; col >= 0; col--) {
-        boardCoordinates[position++] = {
-            row: 10,
-            col
-        };
-    }
-
-    // Left: 11 -> 20
-    for (let row = 9; row >= 0; row--) {
-        boardCoordinates[position++] = {
-            row,
-            col: 0
-        };
-    }
-
-    // Top: 21 -> 30
-    for (let col = 1; col <= 10; col++) {
-        boardCoordinates[position++] = {
-            row: 0,
-            col
-        };
-    }
-
-    // Right: 31 -> 39
-    for (let row = 1; row <= 9; row++) {
-        boardCoordinates[position++] = {
-            row,
-            col: 10
-        };
-    }
-}
-
-
-/* =========================================================
-   INIT BOARD
-========================================================= */
-
-function renderBoard() {
-
-    const board = document.getElementById("board");
-
-    board.innerHTML = "";
-
-    buildBoardCoordinates();
-
-    const spaces = gameState?.board || [];
-
-    spaces.forEach(space => {
-
-        const coord = boardCoordinates[space.position];
-
-        if (!coord) {
-            return;
-        }
-
-        const el = document.createElement("div");
-
-        el.className = "space";
-
-        el.style.gridRow = coord.row + 1;
-        el.style.gridColumn = coord.col + 1;
-
-        el.dataset.position = space.position;
-
-        if (space.color_group) {
-            const color = getGroupColor(space.color_group);
-
-            el.innerHTML = `
-                <div
-                    class="space-color"
-                    style="background:${color};"
-                ></div>
-
-                <div class="space-name">
-                    ${escapeHtml(space.name)}
-                </div>
-
-                <div class="space-price">
-                    ${space.price ? "£" + space.price : ""}
-                </div>
-
-                <div
-                    class="space-tokens"
-                    id="tokens-${space.position}"
-                ></div>
-            `;
-        } else {
-
-            el.innerHTML = `
-                <div class="space-color"></div>
-
-                <div class="space-name">
-                    ${escapeHtml(space.name)}
-                </div>
-
-                <div class="space-price">
-                    ${getSpaceTypeText(space.type)}
-                </div>
-
-                <div
-                    class="space-tokens"
-                    id="tokens-${space.position}"
-                ></div>
-            `;
-        }
-
-        board.appendChild(el);
-    });
-
-
-    // Center
-    const center = document.createElement("div");
-
-    center.className = "space center";
-
-    center.innerHTML = `
-        <div class="center-content">
-            <div class="center-title">
-                MONOPOLY
-            </div>
-
-            <div class="center-subtitle">
-                UK EDITION
-            </div>
-
-            <div style="margin-top:16px;color:#71839a;font-size:12px;">
-                Supabase Realtime
-            </div>
-        </div>
-    `;
-
-    board.appendChild(center);
-
-    renderTokens();
-}
-
-
-/* =========================================================
-   BOARD HELPERS
-========================================================= */
-
-function getGroupColor(group) {
-
-    const colors = {
-        brown: "#8d5524",
-        light_blue: "#74c0fc",
-        pink: "#f783ac",
-        orange: "#ff922b",
-        red: "#ff6b6b",
-        yellow: "#ffd43b",
-        green: "#69db7c",
-        dark_blue: "#4dabf7"
-    };
-
-    return colors[group] || "#888";
-}
-
-
-function getSpaceTypeText(type) {
-
-    const map = {
-        go: "START",
-        community_chest: "EVENT",
-        chance: "CHANCE",
-        tax: "TAX",
-        railroad: "RAIL",
-        utility: "UTILITY",
-        jail: "JAIL",
-        free_parking: "FREE",
-        go_to_jail: "JAIL"
-    };
-
-    return map[type] || "";
-}
-
-
-/* =========================================================
-   RENDER TOKENS
-========================================================= */
-
-function renderTokens() {
-
-    if (!gameState?.players) {
-        return;
-    }
-
-    document.querySelectorAll(".space-tokens").forEach(el => {
-        el.innerHTML = "";
-    });
-
-    document.querySelectorAll(".space").forEach(el => {
-        el.classList.remove("current-space");
-    });
-
-    gameState.players.forEach(player => {
-
-        const container =
-            document.getElementById(
-                "tokens-" + player.position
-            );
-
-        if (!container) {
-            return;
-        }
-
-        const token = document.createElement("div");
-
-        token.className =
-            "token token-" +
-            Math.min(player.player_number, 4);
-
-        token.title =
-            player.name +
-            " · £" +
-            player.money;
-
-        token.textContent =
-            String(player.player_number);
-
-        container.appendChild(token);
-    });
-
-
-    const currentPlayer =
-        gameState.game?.current_player_id;
-
-    if (currentPlayer) {
-
-        const p =
-            gameState.players.find(
-                x => x.id === currentPlayer
-            );
-
-        if (p) {
-
-            const space =
-                document.querySelector(
-                    `.space[data-position="${p.position}"]`
-                );
-
-            if (space) {
-                space.classList.add("current-space");
-            }
-        }
-    }
-}
-
-
-/* =========================================================
-   SETUP
-========================================================= */
-
-function getInputValues() {
-
-    const name =
-        document.getElementById("playerName")
-            .value
-            .trim();
-
-    const room =
-        document.getElementById("roomCode")
-            .value
-            .trim()
-            .toUpperCase();
-
-    return {
-        name,
-        room
-    };
-}
-
-
-function validateSupabase() {
-
-    if (!supabaseClient) {
-
-        showSetupMessage(
-            "請先填入 SUPABASE_URL 與 SUPABASE_ANON_KEY。",
-            true
-        );
-
-        return false;
-    }
-
-    return true;
-}
-
-
-function validateName(name) {
-
-    if (!name) {
-
-        showSetupMessage(
-            "請輸入玩家名稱。",
-            true
-        );
-
-        return false;
-    }
-
-    return true;
-}
-
-
-function validateRoom(room) {
-
-    if (!room) {
-
-        showSetupMessage(
-            "請輸入房間代碼。",
-            true
-        );
-
-        return false;
-    }
-
-    return true;
-}
-
-
-/* =========================================================
-   CREATE ROOM
-========================================================= */
-
-async function createRoomAndJoin() {
-
-    if (!validateSupabase()) {
-        return;
-    }
-
-    const {
-        name,
-        room
-    } = getInputValues();
-
-    if (!validateName(name) || !validateRoom(room)) {
-        return;
-    }
-
-    setSetupLoading(true);
+    $("connectionDot").classList.remove("online");
+    $("connectionText").textContent = "連線中...";
 
     try {
 
-        showSetupMessage(
-            "正在建立房間……"
-        );
-
-        const {
-            data,
-            error
-        } = await supabaseClient.rpc(
-            "create_room",
-            {
-                p_room_code: room
-            }
-        );
+        const { error } =
+            await supabase
+                .from("board_spaces")
+                .select("position")
+                .limit(1);
 
         if (error) {
             throw error;
         }
 
-        /*
-            create_room 回傳：
+        $("connectionDot").classList.add("online");
+        $("connectionText").textContent =
+            "Supabase 已連線";
 
-            room_id
-            game_id
-            room_code
-        */
+    } catch (error) {
 
-        currentRoomId = data.room_id;
-        currentGameId = data.game_id;
-        currentRoomCode = data.room_code;
+        console.error(error);
 
-        /*
-            建立房間後直接加入
-        */
+        $("connectionText").textContent =
+            "Supabase 連線失敗";
 
-        const {
-            data: playerData,
-            error: joinError
-        } = await supabaseClient.rpc(
-            "join_room",
-            {
-                p_room_code: currentRoomCode,
-                p_name: name
-            }
+        showToast(
+            "Supabase 連線失敗，請檢查 Project URL / Publishable Key",
+            true
         );
+    }
+
+});
+
+
+/* =====================================================
+   SCREEN
+===================================================== */
+
+function showScreen(name) {
+
+    document.querySelectorAll(".screen")
+        .forEach(el => el.classList.remove("active"));
+
+    $(name + "Screen")
+        .classList.add("active");
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimer = null;
+
+function showToast(message, error = false) {
+
+    const el = $("toast");
+
+    el.textContent = message;
+
+    el.classList.toggle("error", error);
+    el.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        el.classList.remove("show");
+    }, 3000);
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function errorMessage(error) {
+
+    if (!error) {
+        return "發生未知錯誤";
+    }
+
+    return error.message ||
+           error.details ||
+           error.hint ||
+           String(error);
+}
+
+
+/* =====================================================
+   CREATE ROOM
+===================================================== */
+
+window.createRoom = async function() {
+
+    const name =
+        $("playerName").value.trim();
+
+    let code =
+        $("roomCode").value.trim().toUpperCase();
+
+    if (!name) {
+        showLoginError("請輸入玩家名稱");
+        return;
+    }
+
+    if (!code) {
+        code = randomRoomCode();
+        $("roomCode").value = code;
+    }
+
+    setLoginBusy(true);
+
+    try {
+
+        const { data, error } =
+            await supabase.rpc(
+                "create_room",
+                {
+                    p_room_code: code
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        roomId = data.room_id;
+        gameId = data.game_id;
+        roomCode = data.room_code;
+
+        /*
+         * create_room 只建立 room/game，
+         * 所以建立房間的人還需要自己 join_room。
+         */
+
+        const { data: player, error: joinError } =
+            await supabase.rpc(
+                "join_room",
+                {
+                    p_room_code: roomCode,
+                    p_name: name
+                }
+            );
 
         if (joinError) {
             throw joinError;
         }
 
-        savePlayerSession(
-            playerData,
-            name
-        );
+        playerId = player.player_id;
 
-        showGameScreen();
+        await enterRoom();
 
-        await loadGameState();
-
-        subscribeRealtime();
-
-        toast(
-            "房間建立成功！",
-            "success"
-        );
+        showToast("房間建立成功");
 
     } catch (error) {
 
         console.error(error);
 
-        showSetupMessage(
-            getErrorMessage(error),
-            true
+        showLoginError(
+            errorMessage(error)
         );
 
     } finally {
 
-        setSetupLoading(false);
+        setLoginBusy(false);
+
     }
-}
+};
 
 
-/* =========================================================
+/* =====================================================
    JOIN ROOM
-========================================================= */
+===================================================== */
 
-async function joinRoom() {
+window.joinRoom = async function() {
 
-    if (!validateSupabase()) {
+    const name =
+        $("playerName").value.trim();
+
+    const code =
+        $("roomCode").value.trim().toUpperCase();
+
+    if (!name) {
+        showLoginError("請輸入玩家名稱");
         return;
     }
 
-    const {
-        name,
-        room
-    } = getInputValues();
-
-    if (!validateName(name) || !validateRoom(room)) {
+    if (!code) {
+        showLoginError("請輸入房間代碼");
         return;
     }
 
-    setSetupLoading(true);
+    setLoginBusy(true);
 
     try {
 
-        showSetupMessage(
-            "正在加入房間……"
-        );
-
-        const {
-            data,
-            error
-        } = await supabaseClient.rpc(
-            "join_room",
-            {
-                p_room_code: room,
-                p_name: name
-            }
-        );
+        const { data, error } =
+            await supabase.rpc(
+                "join_room",
+                {
+                    p_room_code: code,
+                    p_name: name
+                }
+            );
 
         if (error) {
             throw error;
         }
 
-        savePlayerSession(
-            data,
-            name
-        );
+        roomId = data.room_id;
+        gameId = data.game_id;
+        playerId = data.player_id;
+        roomCode = code;
 
-        showGameScreen();
+        await enterRoom();
 
-        await loadGameState();
-
-        subscribeRealtime();
-
-        toast(
-            "加入房間成功！",
-            "success"
-        );
+        showToast("成功加入房間");
 
     } catch (error) {
 
         console.error(error);
 
-        showSetupMessage(
-            getErrorMessage(error),
-            true
+        showLoginError(
+            errorMessage(error)
         );
 
     } finally {
 
-        setSetupLoading(false);
+        setLoginBusy(false);
+
     }
+};
+
+
+/* =====================================================
+   ENTER ROOM
+===================================================== */
+
+async function enterRoom() {
+
+    $("roomCodeDisplay").textContent =
+        roomCode;
+
+    showScreen("room");
+
+    subscribeRealtime();
+
+    await loadGameState();
+
 }
 
 
-/* =========================================================
-   SAVE SESSION
-========================================================= */
-
-function savePlayerSession(data, name) {
-
-    currentPlayerId = data.player_id;
-    currentGameId = data.game_id;
-    currentRoomId = data.room_id;
-    currentRoomCode =
-        data.room_code ||
-        document.getElementById("roomCode").value
-            .trim()
-            .toUpperCase();
-
-    currentPlayerName = name;
-
-    localStorage.setItem(
-        "monopoly_player_id",
-        currentPlayerId
-    );
-
-    localStorage.setItem(
-        "monopoly_game_id",
-        currentGameId
-    );
-
-    localStorage.setItem(
-        "monopoly_room_id",
-        currentRoomId
-    );
-
-    localStorage.setItem(
-        "monopoly_room_code",
-        currentRoomCode
-    );
-
-    localStorage.setItem(
-        "monopoly_player_name",
-        currentPlayerName
-    );
-}
-
-
-/* =========================================================
+/* =====================================================
    LOAD GAME STATE
-========================================================= */
+===================================================== */
 
 async function loadGameState() {
 
-    if (!supabaseClient || !currentGameId) {
-        return;
-    }
+    if (!gameId) return;
 
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient.rpc(
+    const { data, error } =
+        await supabase.rpc(
             "get_game_state",
             {
-                p_game_id: currentGameId
+                p_game_id: gameId
             }
         );
 
-        if (error) {
-            throw error;
-        }
-
-        if (!data) {
-            return;
-        }
-
-        gameState = data;
-
-        renderGame();
-
-        setConnection(
-            true,
-            "Supabase 已連線"
-        );
-
-    } catch (error) {
+    if (error) {
 
         console.error(error);
 
-        setConnection(
-            false,
-            "同步失敗"
+        showToast(
+            errorMessage(error),
+            true
         );
-
-        toast(
-            getErrorMessage(error),
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
-   RENDER GAME
-========================================================= */
-
-function renderGame() {
-
-    if (!gameState) {
-        return;
-    }
-
-    const game =
-        gameState.game || {};
-
-    const players =
-        gameState.players || [];
-
-    document.getElementById(
-        "roomCodeDisplay"
-    ).textContent =
-        currentRoomCode || "---";
-
-
-    updateGameStatus(
-        game.status
-    );
-
-
-    document.getElementById(
-        "dice1"
-    ).textContent =
-        game.dice_1 || "—";
-
-
-    document.getElementById(
-        "dice2"
-    ).textContent =
-        game.dice_2 || "—";
-
-
-    renderBoard();
-
-    renderPlayers();
-
-    renderMyInfo();
-
-    renderTurnInfo();
-
-    updateButtons();
-}
-
-
-/* =========================================================
-   GAME STATUS
-========================================================= */
-
-function updateGameStatus(status) {
-
-    const el =
-        document.getElementById("gameStatus");
-
-    el.className =
-        "status-badge";
-
-    if (status === "playing") {
-
-        el.classList.add(
-            "status-playing"
-        );
-
-        el.textContent =
-            "PLAYING";
-
-    } else if (status === "finished") {
-
-        el.classList.add(
-            "status-finished"
-        );
-
-        el.textContent =
-            "FINISHED";
-
-    } else {
-
-        el.classList.add(
-            "status-waiting"
-        );
-
-        el.textContent =
-            "WAITING";
-    }
-}
-
-
-/* =========================================================
-   PLAYERS
-========================================================= */
-
-function renderPlayers() {
-
-    const container =
-        document.getElementById(
-            "playersList"
-        );
-
-    container.innerHTML = "";
-
-    const players =
-        gameState?.players || [];
-
-    if (!players.length) {
-
-        container.textContent =
-            "目前沒有玩家";
 
         return;
     }
 
-    players.forEach(player => {
+    gameState = data;
 
-        const row =
-            document.createElement("div");
-
-        row.className =
-            "player-row";
-
-        if (
-            gameState.game?.current_player_id ===
-            player.id
-        ) {
-            row.classList.add("active");
-        }
-
-        if (
-            player.id === currentPlayerId
-        ) {
-            row.classList.add("me");
-        }
-
-        row.innerHTML = `
-
-            <div class="player-number">
-                ${player.player_number}
-            </div>
-
-            <div>
-                <div class="player-name">
-                    ${escapeHtml(player.name)}
-                    ${
-                        player.id === currentPlayerId
-                            ? " <span style='color:#4ea8ff'>(我)</span>"
-                            : ""
-                    }
-                </div>
-
-                <div class="player-meta">
-                    位置 ${player.position}
-                    ${
-                        player.is_in_jail
-                            ? " · 監獄"
-                            : ""
-                    }
-                </div>
-            </div>
-
-            <div class="player-money">
-                £${player.money}
-            </div>
-
-        `;
-
-        container.appendChild(row);
-    });
+    renderAll();
 }
 
 
-/* =========================================================
-   MY INFO
-========================================================= */
-
-function renderMyInfo() {
-
-    const el =
-        document.getElementById(
-            "myInfo"
-        );
-
-    const me =
-        gameState?.players?.find(
-            p => p.id === currentPlayerId
-        );
-
-    if (!me) {
-
-        el.textContent =
-            "找不到目前玩家";
-
-        return;
-    }
-
-    const space =
-        gameState.board?.find(
-            b => b.position === me.position
-        );
-
-    el.innerHTML = `
-
-        <div style="font-size:18px;font-weight:900;">
-            ${escapeHtml(me.name)}
-        </div>
-
-        <div style="
-            margin-top:7px;
-            color:#28d17c;
-            font-size:20px;
-            font-weight:900;
-        ">
-            £${me.money}
-        </div>
-
-        <div style="
-            margin-top:7px;
-            color:#9eacbd;
-            font-size:12px;
-            line-height:1.5;
-        ">
-            位置：${me.position}
-            <br>
-            ${space ? escapeHtml(space.name) : ""}
-            ${
-                me.is_in_jail
-                    ? "<br>目前在監獄"
-                    : ""
-            }
-        </div>
-    `;
-}
-
-
-/* =========================================================
-   TURN INFO
-========================================================= */
-
-function renderTurnInfo() {
-
-    const el =
-        document.getElementById(
-            "turnInfo"
-        );
-
-    if (!gameState?.game) {
-
-        el.textContent =
-            "等待遊戲開始……";
-
-        return;
-    }
-
-    const current =
-        gameState.players?.find(
-            p =>
-                p.id ===
-                gameState.game.current_player_id
-        );
-
-    if (!current) {
-
-        el.textContent =
-            "等待玩家……";
-
-        return;
-    }
-
-    if (
-        current.id === currentPlayerId
-    ) {
-
-        el.innerHTML = `
-            <strong>現在是你的回合 🎲</strong>
-            <br>
-            回合：${gameState.game.turn_number}
-        `;
-
-    } else {
-
-        el.innerHTML = `
-            現在輪到
-            <strong>${escapeHtml(current.name)}</strong>
-            <br>
-            回合：${gameState.game.turn_number}
-        `;
-    }
-}
-
-
-/* =========================================================
-   BUTTON STATES
-========================================================= */
-
-function updateButtons() {
-
-    if (!gameState?.game) {
-        return;
-    }
-
-    const game =
-        gameState.game;
-
-    const isMyTurn =
-        game.current_player_id ===
-        currentPlayerId;
-
-    const playing =
-        game.status === "playing";
-
-    const startButton =
-        document.getElementById(
-            "startGameBtn"
-        );
-
-    const rollButton =
-        document.getElementById(
-            "rollDiceBtn"
-        );
-
-    const buyButton =
-        document.getElementById(
-            "buyPropertyBtn"
-        );
-
-
-    startButton.disabled =
-        playing ||
-        game.status === "finished";
-
-
-    rollButton.disabled =
-        !playing ||
-        !isMyTurn;
-
-
-    /*
-        注意：
-
-        目前你的 SQL roll_dice()
-        會在擲骰後立即切換 current_player_id。
-
-        因此 buy_property()
-        會因為 current_player_id
-        已經變成下一位而失敗。
-
-        所以這裡暫時不讓按鈕造成誤操作。
-    */
-
-    buyButton.disabled = true;
-
-    buyButton.title =
-        "目前 SQL 的 roll_dice() 會在擲骰後立即切換回合，需要先修正 SQL 回合流程。";
-}
-
-
-/* =========================================================
-   START GAME
-========================================================= */
-
-async function startGame() {
-
-    if (!supabaseClient || !currentGameId) {
-        return;
-    }
-
-    const button =
-        document.getElementById(
-            "startGameBtn"
-        );
-
-    button.disabled = true;
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient.rpc(
-            "start_game",
-            {
-                p_game_id: currentGameId
-            }
-        );
-
-        if (error) {
-            throw error;
-        }
-
-        await loadGameState();
-
-        toast(
-            "遊戲開始！",
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        toast(
-            getErrorMessage(error),
-            "error"
-        );
-
-        button.disabled = false;
-    }
-}
-
-
-/* =========================================================
-   ROLL DICE
-========================================================= */
-
-async function rollDice() {
-
-    if (
-        !supabaseClient ||
-        !currentGameId ||
-        !currentPlayerId
-    ) {
-        return;
-    }
-
-    const button =
-        document.getElementById(
-            "rollDiceBtn"
-        );
-
-    button.disabled = true;
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient.rpc(
-            "roll_dice",
-            {
-                p_game_id: currentGameId,
-                p_player_id: currentPlayerId
-            }
-        );
-
-        if (error) {
-            throw error;
-        }
-
-        /*
-            RPC 回傳：
-
-            success
-            dice1
-            dice2
-            total
-            player_id
-            old_position
-            new_position
-            passed_go
-            space
-            space_type
-            next_player_id
-        */
-
-        console.log(
-            "roll_dice result:",
-            data
-        );
-
-        await loadGameState();
-
-        let message =
-            `你擲出 ${data.dice1} + ${data.dice2} = ${data.total}`;
-
-        if (data.passed_go) {
-            message +=
-                "，經過 GO，獲得 £200";
-        }
-
-        message +=
-            `。你落在 ${data.space}`;
-
-        toast(
-            message,
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        toast(
-            getErrorMessage(error),
-            "error"
-        );
-
-    } finally {
-
-        updateButtons();
-    }
-}
-
-
-/* =========================================================
-   BUY PROPERTY
-========================================================= */
-
-async function buyProperty() {
-
-    /*
-        目前 SQL 版本的 buy_property()
-        與 roll_dice() 回合切換邏輯衝突。
-
-        所以這裡保留 RPC 對接。
-        SQL 修正後即可直接啟用。
-    */
-
-    if (
-        !supabaseClient ||
-        !currentGameId ||
-        !currentPlayerId
-    ) {
-        return;
-    }
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient.rpc(
-            "buy_property",
-            {
-                p_game_id: currentGameId,
-                p_player_id: currentPlayerId
-            }
-        );
-
-        if (error) {
-            throw error;
-        }
-
-        await loadGameState();
-
-        toast(
-            `成功購買 ${data.property}，支付 £${data.price}`,
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        toast(
-            getErrorMessage(error),
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
+/* =====================================================
    REALTIME
-========================================================= */
+===================================================== */
 
 function subscribeRealtime() {
 
-    if (
-        !supabaseClient ||
-        !currentGameId
-    ) {
-        return;
-    }
-
-    /*
-        移除舊 channel
-    */
-
     if (realtimeChannel) {
 
-        supabaseClient.removeChannel(
+        supabase.removeChannel(
             realtimeChannel
         );
 
         realtimeChannel = null;
     }
 
-
     realtimeChannel =
-        supabaseClient
+        supabase
             .channel(
-                "monopoly-game-" +
-                currentGameId +
-                "-" +
-                Date.now()
+                "monopoly-" + gameId
             )
-
-            /*
-                GAME
-            */
 
             .on(
                 "postgres_changes",
@@ -2281,24 +1295,14 @@ function subscribeRealtime() {
                     event: "*",
                     schema: "public",
                     table: "games",
-                    filter:
-                        "id=eq." +
-                        currentGameId
+                    filter: "id=eq." + gameId
                 },
-                async payload => {
-
-                    console.log(
-                        "games realtime:",
-                        payload
-                    );
+                async () => {
 
                     await loadGameState();
+
                 }
             )
-
-            /*
-                PLAYERS
-            */
 
             .on(
                 "postgres_changes",
@@ -2306,398 +1310,956 @@ function subscribeRealtime() {
                     event: "*",
                     schema: "public",
                     table: "players",
-                    filter:
-                        "game_id=eq." +
-                        currentGameId
+                    filter: "game_id=eq." + gameId
                 },
-                async payload => {
-
-                    console.log(
-                        "players realtime:",
-                        payload
-                    );
+                async () => {
 
                     await loadGameState();
+
                 }
             )
-
-            /*
-                GAME EVENTS
-            */
 
             .on(
                 "postgres_changes",
                 {
-                    event: "INSERT",
+                    event: "*",
                     schema: "public",
                     table: "game_events",
-                    filter:
-                        "game_id=eq." +
-                        currentGameId
+                    filter: "game_id=eq." + gameId
                 },
-                async payload => {
-
-                    console.log(
-                        "event realtime:",
-                        payload
-                    );
-
-                    await renderEvents();
+                async () => {
 
                     await loadGameState();
+
                 }
             )
 
-            .subscribe(
-                status => {
+            .subscribe(status => {
 
-                    console.log(
-                        "Realtime:",
-                        status
-                    );
+                console.log(
+                    "Realtime:",
+                    status
+                );
 
-                    if (
-                        status === "SUBSCRIBED"
-                    ) {
-
-                        setConnection(
-                            true,
-                            "Realtime 已連線"
-                        );
-
-                    } else if (
-                        status === "CHANNEL_ERROR"
-                    ) {
-
-                        setConnection(
-                            false,
-                            "Realtime 錯誤"
-                        );
-                    }
-                }
-            );
+            });
 }
 
 
-/* =========================================================
-   EVENTS
-========================================================= */
+/* =====================================================
+   RENDER ALL
+===================================================== */
 
-async function renderEvents() {
+function renderAll() {
+
+    if (!gameState) return;
+
+    renderRoom();
+
+    renderBoard();
+
+    renderGameInfo();
+
+    renderProperties();
+
+    renderEvents();
+
+    const status =
+        gameState.game?.status;
 
     if (
-        !supabaseClient ||
-        !currentGameId
+        status === "playing" ||
+        status === "finished"
     ) {
+        showScreen("game");
+    } else {
+        showScreen("room");
+    }
+}
+
+
+/* =====================================================
+   RENDER ROOM
+===================================================== */
+
+function renderRoom() {
+
+    const players =
+        gameState.players || [];
+
+    const game =
+        gameState.game || {};
+
+    $("roomCodeDisplay").textContent =
+        roomCode || "----";
+
+    $("playersGrid").innerHTML =
+        players.map(player => {
+
+            const current =
+                game.current_player_id === player.id;
+
+            return `
+                <div class="player-card ${current ? "current" : ""}">
+                    <div class="player-number">
+                        PLAYER ${player.player_number}
+                    </div>
+
+                    <div class="player-name">
+                        ${escapeHtml(player.name)}
+                        ${current ? " 🎲" : ""}
+                    </div>
+
+                    <div class="player-money">
+                        £${player.money}
+                    </div>
+
+                    <div style="color:#8194a8;font-size:13px;margin-top:5px;">
+                        位置：${player.position}
+                        ${player.is_in_jail ? " · 監獄" : ""}
+                    </div>
+                </div>
+            `;
+
+        }).join("");
+
+
+    if (game.status === "playing") {
+
+        $("roomStatusText").textContent =
+            "遊戲進行中";
+
+    } else {
+
+        $("roomStatusText").textContent =
+            `目前 ${players.length} / 4 名玩家。可以等待其他玩家，或手動開始遊戲。`;
+    }
+
+}
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+window.startGame = async function() {
+
+    if (!gameId) {
         return;
     }
 
     try {
 
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("game_events")
-            .select("*")
-            .eq(
-                "game_id",
-                currentGameId
-            )
-            .order(
-                "created_at",
+        const { error } =
+            await supabase.rpc(
+                "start_game",
                 {
-                    ascending: false
+                    p_game_id: gameId
                 }
-            )
-            .limit(50);
+            );
 
         if (error) {
             throw error;
         }
 
-        const container =
-            document.getElementById(
-                "events"
-            );
+        await loadGameState();
 
-        container.innerHTML = "";
-
-        if (!data || !data.length) {
-
-            container.textContent =
-                "目前沒有遊戲事件";
-
-            return;
-        }
-
-        data.forEach(event => {
-
-            const el =
-                document.createElement("div");
-
-            el.className = "event";
-
-            el.innerHTML = `
-
-                <div>
-                    ${escapeHtml(
-                        event.message ||
-                        event.event_type
-                    )}
-                </div>
-
-                <div class="event-time">
-                    ${formatTime(
-                        event.created_at
-                    )}
-                </div>
-
-            `;
-
-            container.appendChild(el);
-        });
+        showToast("遊戲開始");
 
     } catch (error) {
 
-        console.error(
-            "events error:",
-            error
+        console.error(error);
+
+        showToast(
+            errorMessage(error),
+            true
         );
     }
-}
+};
 
 
-/* =========================================================
-   SHOW GAME
-========================================================= */
+/* =====================================================
+   RENDER GAME INFO
+===================================================== */
 
-function showGameScreen() {
+function renderGameInfo() {
 
-    document
-        .getElementById("setupScreen")
-        .classList.add("hidden");
+    const game =
+        gameState.game || {};
 
-    document
-        .getElementById("gameScreen")
-        .classList.remove("hidden");
+    const players =
+        gameState.players || [];
 
-    document.getElementById(
-        "roomCodeDisplay"
-    ).textContent =
-        currentRoomCode || "---";
-
-    renderEvents();
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-function setConnection(
-    online,
-    text
-) {
-
-    const dot =
-        document.getElementById(
-            "connectionDot"
+    const me =
+        players.find(
+            p => p.id === playerId
         );
 
-    const label =
-        document.getElementById(
-            "connectionText"
+    const current =
+        players.find(
+            p => p.id === game.current_player_id
         );
 
-    dot.className =
-        "dot";
+    $("turnPlayer").textContent =
+        current
+            ? current.name
+            : "-";
 
-    if (online) {
-        dot.classList.add("online");
-    } else {
-        dot.classList.add("error");
-    }
+    $("turnNumber").textContent =
+        `第 ${game.turn_number || 0} 回合`;
 
-    label.textContent =
-        text;
-}
+    $("dice1").textContent =
+        game.dice_1 || "?";
 
-
-/* =========================================================
-   SETUP MESSAGE
-========================================================= */
-
-function showSetupMessage(
-    message,
-    isError = false
-) {
-
-    const el =
-        document.getElementById(
-            "setupMessage"
-        );
-
-    el.textContent =
-        message;
-
-    el.style.color =
-        isError
-            ? "#ff6b6b"
-            : "#ffd166";
-}
+    $("dice2").textContent =
+        game.dice_2 || "?";
 
 
-function setSetupLoading(
-    loading
-) {
+    if (me) {
 
-    document.getElementById(
-        "createRoomBtn"
-    ).disabled = loading;
+        $("myName").textContent =
+            me.name;
 
-    document.getElementById(
-        "joinRoomBtn"
-    ).disabled = loading;
-}
+        $("myMoney").textContent =
+            `£${me.money}`;
 
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer = null;
-
-function toast(
-    message,
-    type = ""
-) {
-
-    const el =
-        document.getElementById(
-            "toast"
-        );
-
-    el.textContent =
-        message;
-
-    el.className =
-        "toast";
-
-    if (type) {
-        el.classList.add(type);
-    }
-
-    el.classList.remove(
-        "hidden"
-    );
-
-    clearTimeout(
-        toastTimer
-    );
-
-    toastTimer =
-        setTimeout(() => {
-
-            el.classList.add(
-                "hidden"
+        const space =
+            gameState.board.find(
+                b => b.position === me.position
             );
 
-        }, 4000);
+        $("myPosition").textContent =
+            `位置 ${me.position} · ${space ? space.name : ""}`;
+
+    }
+
+
+    const myTurn =
+        game.status === "playing" &&
+        game.current_player_id === playerId;
+
+    $("rollBtn").disabled =
+        !myTurn;
+
+    updateBuyButton(me, myTurn);
+
 }
 
 
-/* =========================================================
-   ERROR
-========================================================= */
+/* =====================================================
+   BOARD
+===================================================== */
 
-function getErrorMessage(error) {
-
-    if (!error) {
-        return "發生未知錯誤";
-    }
-
-    let message =
-        error.message ||
-        error.error_description ||
-        String(error);
+function boardCoordinate(position) {
 
     /*
-        常見 Supabase / PostgreSQL 錯誤
-    */
+     * Monopoly 40 格排列。
+     * position 0 = 左下 GO
+     * 順時針排列。
+     */
 
-    if (
-        message.includes(
-            "找不到房間"
-        )
-    ) {
-        return "找不到這個房間，請確認房間代碼。";
+    if (position === 0) {
+        return [11, 11];
     }
 
-    if (
-        message.includes(
-            "房間已滿"
-        )
-    ) {
-        return "房間已滿。";
+    if (position >= 1 && position <= 10) {
+        return [
+            11,
+            11 - position
+        ];
     }
 
-    if (
-        message.includes(
-            "現在不是你的回合"
-        )
-    ) {
-        return "現在不是你的回合。";
+    if (position >= 11 && position <= 20) {
+        return [
+            11 - (position - 10),
+            1
+        ];
     }
 
-    if (
-        message.includes(
-            "遊戲尚未開始"
-        )
-    ) {
-        return "遊戲尚未開始。";
+    if (position >= 21 && position <= 30) {
+        return [
+            1,
+            position - 20
+        ];
     }
 
-    if (
-        message.includes(
-            "玩家不存在"
-        )
-    ) {
-        return "找不到玩家資料，請重新加入房間。";
+    if (position >= 31 && position <= 39) {
+        return [
+            position - 30,
+            11
+        ];
     }
 
-    if (
-        message.includes(
-            "金錢不足"
-        )
-    ) {
-        return "金錢不足，無法購買。";
-    }
-
-    if (
-        message.includes(
-            "這個地產已經有人購買"
-        )
-    ) {
-        return "這個地產已經有人購買。";
-    }
-
-    return message;
+    return [1,1];
 }
 
 
-/* =========================================================
-   UTILITIES
-========================================================= */
+function renderBoard() {
+
+    const board =
+        $("board");
+
+    const spaces =
+        gameState.board || [];
+
+    board.innerHTML = "";
+
+    /*
+     * 建立中心區域
+     */
+
+    const center =
+        document.createElement("div");
+
+    center.className =
+        "space center";
+
+    center.innerHTML =
+        `<div class="center-title">UK<br>MONOPOLY</div>`;
+
+    board.appendChild(center);
+
+
+    /*
+     * 建立 40 格
+     */
+
+    spaces.forEach(space => {
+
+        const [row, col] =
+            boardCoordinate(space.position);
+
+        const el =
+            document.createElement("div");
+
+        el.className =
+            "space";
+
+        el.style.gridRow =
+            row;
+
+        el.style.gridColumn =
+            col;
+
+
+        const owner =
+            getPropertyOwner(
+                space.position
+            );
+
+        const color =
+            colorForGroup(
+                space.color_group
+            );
+
+
+        el.innerHTML = `
+
+            ${
+                space.color_group
+                ? `<div class="color-strip"
+                        style="background:${color}">
+                   </div>`
+                : ""
+            }
+
+            <div class="space-name">
+                ${escapeHtml(space.name)}
+            </div>
+
+            ${
+                space.price
+                ? `<div class="space-price">
+                        £${space.price}
+                   </div>`
+                : ""
+            }
+
+            ${
+                owner
+                ? `<div style="
+                        color:#078d4e;
+                        font-weight:900;
+                        font-size:.82em;
+                        margin-top:2px;">
+                        ${escapeHtml(owner.name)}
+                   </div>`
+                : ""
+            }
+
+            <div class="tokens"
+                 id="tokens-${space.position}">
+            </div>
+        `;
+
+        board.appendChild(el);
+
+    });
+
+
+    /*
+     * 玩家棋子
+     */
+
+    (gameState.players || [])
+        .forEach(player => {
+
+            const tokenBox =
+                document.getElementById(
+                    "tokens-" + player.position
+                );
+
+            if (!tokenBox) return;
+
+            const token =
+                document.createElement("div");
+
+            token.className =
+                "token t" +
+                player.player_number;
+
+            token.textContent =
+                player.player_number;
+
+            token.title =
+                player.name;
+
+            tokenBox.appendChild(token);
+
+        });
+
+}
+
+
+/* =====================================================
+   COLOR GROUP
+===================================================== */
+
+function colorForGroup(group) {
+
+    const colors = {
+
+        brown: "#8b5a2b",
+
+        light_blue: "#75c9e8",
+
+        pink: "#df77b7",
+
+        orange: "#f39a3d",
+
+        red: "#e84d55",
+
+        yellow: "#f1d44e",
+
+        green: "#48ad65",
+
+        dark_blue: "#4169c1"
+
+    };
+
+    return colors[group] || "#777";
+}
+
+
+/* =====================================================
+   PROPERTY OWNER
+===================================================== */
+
+function getPropertyOwner(position) {
+
+    if (!gameState || !gameState.events) {
+        /*
+         * get_game_state 原 SQL 沒有回傳 events。
+         * 所以 owner 在 render 前由 events cache 提供。
+         */
+    }
+
+    const purchase =
+        propertyPurchases.find(
+            e =>
+                Number(e.data?.position) ===
+                Number(position)
+        );
+
+    if (!purchase) {
+        return null;
+    }
+
+    return (gameState.players || [])
+        .find(p => p.id === purchase.player_id)
+        || null;
+}
+
+
+/* =====================================================
+   PROPERTY CACHE
+===================================================== */
+
+let propertyPurchases = [];
+
+
+async function loadPropertyPurchases() {
+
+    if (!gameId) return;
+
+    const { data, error } =
+        await supabase
+            .from("game_events")
+            .select(
+                "id,player_id,event_type,message,data,created_at"
+            )
+            .eq("game_id", gameId)
+            .eq("event_type", "property_purchase")
+            .order("id", {
+                ascending: true
+            });
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+    }
+
+    propertyPurchases =
+        data || [];
+}
+
+
+/* =====================================================
+   RENDER PROPERTIES
+===================================================== */
+
+function renderProperties() {
+
+    /*
+     * 先從已經載入的 purchase event
+     * 建立地產所有權。
+     */
+
+    const purchases =
+        propertyPurchases || [];
+
+    if (!purchases.length) {
+
+        $("propertyList").innerHTML =
+            `<div style="color:#71859b;">
+                尚無玩家購買地產
+             </div>`;
+
+        return;
+    }
+
+    $("propertyList").innerHTML =
+        purchases.map(event => {
+
+            const position =
+                Number(event.data?.position);
+
+            const space =
+                gameState.board.find(
+                    b => b.position === position
+                );
+
+            const owner =
+                gameState.players.find(
+                    p => p.id === event.player_id
+                );
+
+            if (!space) return "";
+
+            return `
+                <div class="property-item">
+
+                    <span>
+                        ${escapeHtml(space.name)}
+                    </span>
+
+                    <span class="owner">
+                        ${owner
+                            ? escapeHtml(owner.name)
+                            : "未知"}
+                    </span>
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+/* =====================================================
+   RENDER EVENTS
+===================================================== */
+
+async function renderEvents() {
+
+    if (!gameId) return;
+
+    const { data, error } =
+        await supabase
+            .from("game_events")
+            .select(
+                "id,player_id,event_type,message,data,created_at"
+            )
+            .eq("game_id", gameId)
+            .order("id", {
+                ascending: false
+            })
+            .limit(50);
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+    }
+
+    const events =
+        data || [];
+
+    /*
+     * 同步地產 ownership cache
+     */
+
+    propertyPurchases =
+        events
+            .filter(
+                e =>
+                    e.event_type ===
+                    "property_purchase"
+            )
+            .reverse();
+
+
+    /*
+     * 重新繪製棋盤與地產
+     */
+
+    renderBoard();
+
+    renderProperties();
+
+
+    $("eventList").innerHTML =
+        events.map(event => {
+
+            const time =
+                new Date(
+                    event.created_at
+                ).toLocaleTimeString(
+                    "zh-TW",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                );
+
+            return `
+                <div class="event">
+
+                    <div>
+                        ${escapeHtml(
+                            event.message || event.event_type
+                        )}
+                    </div>
+
+                    <div class="event-time">
+                        ${time}
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+/* =====================================================
+   BUY BUTTON
+===================================================== */
+
+function updateBuyButton(
+    player,
+    myTurn
+) {
+
+    const btn =
+        $("buyBtn");
+
+    if (!player || !myTurn) {
+
+        btn.disabled = true;
+
+        return;
+    }
+
+    const space =
+        gameState.board.find(
+            b => b.position === player.position
+        );
+
+    if (!space) {
+
+        btn.disabled = true;
+
+        return;
+    }
+
+    const alreadyOwned =
+        getPropertyOwner(
+            space.position
+        );
+
+    btn.disabled =
+        space.type !== "property" ||
+        !!alreadyOwned ||
+        player.money < space.price;
+
+}
+
+
+/* =====================================================
+   ROLL DICE
+===================================================== */
+
+window.rollDice = async function() {
+
+    if (!gameId || !playerId) {
+        return;
+    }
+
+    const game =
+        gameState?.game;
+
+    if (
+        !game ||
+        game.current_player_id !== playerId
+    ) {
+
+        showToast(
+            "現在不是你的回合",
+            true
+        );
+
+        return;
+    }
+
+    $("rollBtn").disabled = true;
+
+    try {
+
+        const { data, error } =
+            await supabase.rpc(
+                "roll_dice",
+                {
+                    p_game_id: gameId,
+                    p_player_id: playerId
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        $("dice1").textContent =
+            data.dice1;
+
+        $("dice2").textContent =
+            data.dice2;
+
+        showToast(
+            `你擲出 ${data.dice1} + ${data.dice2} = ${data.total}`
+        );
+
+        await loadGameState();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            errorMessage(error),
+            true
+        );
+
+        await loadGameState();
+
+    }
+
+};
+
+
+/* =====================================================
+   BUY PROPERTY
+===================================================== */
+
+window.buyProperty = async function() {
+
+    if (!gameId || !playerId) {
+        return;
+    }
+
+    try {
+
+        const { data, error } =
+            await supabase.rpc(
+                "buy_property",
+                {
+                    p_game_id: gameId,
+                    p_player_id: playerId
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        showToast(
+            `成功購買 ${data.property}，支付 £${data.price}`
+        );
+
+        await loadGameState();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            errorMessage(error),
+            true
+        );
+
+    }
+
+};
+
+
+/* =====================================================
+   COPY ROOM CODE
+===================================================== */
+
+window.copyRoomCode = async function() {
+
+    try {
+
+        await navigator.clipboard.writeText(
+            roomCode
+        );
+
+        showToast(
+            "房間代碼已複製"
+        );
+
+    } catch {
+
+        showToast(
+            `房間代碼：${roomCode}`
+        );
+    }
+};
+
+
+/* =====================================================
+   LEAVE
+===================================================== */
+
+window.leaveRoom = async function() {
+
+    if (
+        !confirm(
+            "確定要離開目前房間嗎？"
+        )
+    ) {
+        return;
+    }
+
+    if (realtimeChannel) {
+
+        await supabase.removeChannel(
+            realtimeChannel
+        );
+
+        realtimeChannel = null;
+    }
+
+    roomId = null;
+    gameId = null;
+    playerId = null;
+    roomCode = null;
+    gameState = null;
+    propertyPurchases = [];
+
+    showScreen("login");
+
+    $("loginMessage").textContent = "";
+
+};
+
+
+/* =====================================================
+   LOGIN UI
+===================================================== */
+
+function setLoginBusy(busy) {
+
+    $("createBtn").disabled = busy;
+    $("joinBtn").disabled = busy;
+
+    if (busy) {
+
+        $("loginMessage").style.color =
+            "#9aaabd";
+
+        $("loginMessage").textContent =
+            "連線中，請稍候...";
+
+    }
+}
+
+
+function showLoginError(message) {
+
+    $("loginMessage").style.color =
+        "#ff737f";
+
+    $("loginMessage").textContent =
+        message;
+}
+
+
+/* =====================================================
+   RANDOM ROOM CODE
+===================================================== */
+
+function randomRoomCode() {
+
+    const chars =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let result = "";
+
+    for (let i = 0; i < 5; i++) {
+
+        result +=
+            chars[
+                Math.floor(
+                    Math.random() *
+                    chars.length
+                )
+            ];
+    }
+
+    return result;
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 function escapeHtml(value) {
 
-    if (value === null ||
-        value === undefined) {
-        return "";
-    }
-
-    return String(value)
+    return String(value ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
@@ -2706,193 +2268,35 @@ function escapeHtml(value) {
 }
 
 
-function formatTime(
-    timestamp
-) {
+/* =====================================================
+   REFRESH PROPERTY EVENTS
+===================================================== */
 
-    if (!timestamp) {
-        return "";
+setInterval(async () => {
+
+    if (gameId) {
+
+        await loadPropertyPurchases();
+
+        renderBoard();
+        renderProperties();
+
     }
 
-    const date =
-        new Date(timestamp);
-
-    return date.toLocaleTimeString(
-        "zh-TW",
-        {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        }
-    );
-}
+}, 5000);
 
 
-/* =========================================================
-   RESTORE SESSION
-========================================================= */
+/* =====================================================
+   EXPOSE DEBUG
+===================================================== */
 
-async function restoreSession() {
+window.monopoly = {
+    supabase,
+    getState: () => gameState,
+    getGameId: () => gameId,
+    getPlayerId: () => playerId
+};
 
-    if (
-        !supabaseClient ||
-        !currentGameId ||
-        !currentPlayerId
-    ) {
-        return;
-    }
-
-    try {
-
-        /*
-            確認這個玩家還存在
-        */
-
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("players")
-            .select("id")
-            .eq(
-                "id",
-                currentPlayerId
-            )
-            .eq(
-                "game_id",
-                currentGameId
-            )
-            .maybeSingle();
-
-        if (error) {
-            throw error;
-        }
-
-        if (!data) {
-
-            clearSession();
-
-            return;
-        }
-
-        document.getElementById(
-            "playerName"
-        ).value =
-            currentPlayerName || "";
-
-        document.getElementById(
-            "roomCode"
-        ).value =
-            currentRoomCode || "";
-
-        showGameScreen();
-
-        await loadGameState();
-
-        subscribeRealtime();
-
-        await renderEvents();
-
-    } catch (error) {
-
-        console.error(
-            "restore session:",
-            error
-        );
-
-        clearSession();
-    }
-}
-
-
-function clearSession() {
-
-    localStorage.removeItem(
-        "monopoly_player_id"
-    );
-
-    localStorage.removeItem(
-        "monopoly_game_id"
-    );
-
-    localStorage.removeItem(
-        "monopoly_room_id"
-    );
-
-    localStorage.removeItem(
-        "monopoly_room_code"
-    );
-
-    localStorage.removeItem(
-        "monopoly_player_name"
-    );
-
-    currentPlayerId = null;
-    currentGameId = null;
-    currentRoomId = null;
-    currentRoomCode = null;
-    currentPlayerName = null;
-}
-
-
-/* =========================================================
-   ENTER KEY
-========================================================= */
-
-document
-    .getElementById("roomCode")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key === "Enter"
-            ) {
-                joinRoom();
-            }
-        }
-    );
-
-
-document
-    .getElementById("playerName")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key === "Enter"
-            ) {
-                joinRoom();
-            }
-        }
-    );
-
-
-/* =========================================================
-   START
-========================================================= */
-
-(async function init() {
-
-    if (!supabaseClient) {
-
-        setConnection(
-            false,
-            "尚未設定 Supabase"
-        );
-
-        return;
-    }
-
-    setConnection(
-        true,
-        "Supabase 準備完成"
-    );
-
-    await restoreSession();
-
-})();
 </script>
 
 </body>

@@ -14,18 +14,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
-/* =========================================================
-   RESET
-========================================================= */
-
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body{
+html,body{
   margin:0;
   min-height:100%;
   width:100%;
@@ -33,26 +27,16 @@ body{
 
 body{
   background:
-    radial-gradient(
-      circle at 50% 10%,
+    radial-gradient(circle at 50% 10%,
       #294d43 0%,
       #102a23 42%,
-      #06120f 100%
-    );
-
+      #06120f 100%);
   color:#f6efd8;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
+  font-family:Georgia,"Times New Roman",serif;
   overflow-x:hidden;
 }
 
-button,
-input,
-select{
+button,input,select{
   font:inherit;
 }
 
@@ -69,58 +53,28 @@ button:disabled{
   min-height:100vh;
 }
 
-/* =========================================================
-   HEADER
-========================================================= */
+/* HEADER */
 
 .header{
-  padding:
-    clamp(14px,3vw,25px)
-    12px
-    18px;
-
+  padding:clamp(14px,3vw,25px) 12px 18px;
   text-align:center;
-
-  border-bottom:
-    2px solid #c9a54d;
-
+  border-bottom:2px solid #c9a54d;
   background:
-    linear-gradient(
-      180deg,
+    linear-gradient(180deg,
       rgba(3,18,14,.98),
-      rgba(8,30,24,.94)
-    );
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.45);
+      rgba(8,30,24,.94));
+  box-shadow:0 10px 35px rgba(0,0,0,.45);
 }
 
 .logo{
   display:inline-block;
-
-  padding:
-    7px clamp(12px,3vw,25px);
-
-  border:
-    3px solid #d7b85b;
-
-  background:
-    linear-gradient(
-      145deg,
-      #fff1b8,
-      #d8a83d
-    );
-
+  padding:7px clamp(12px,3vw,25px);
+  border:3px solid #d7b85b;
+  background:linear-gradient(145deg,#fff1b8,#d8a83d);
   color:#17120a;
-
-  font-size:
-    clamp(30px,7vw,58px);
-
+  font-size:clamp(30px,7vw,58px);
   font-weight:900;
-
-  letter-spacing:
-    clamp(1px,1vw,4px);
-
+  letter-spacing:clamp(1px,1vw,4px);
   box-shadow:
     inset 0 0 0 3px #6d4c16,
     0 5px 15px rgba(0,0,0,.55);
@@ -128,31 +82,20 @@ button:disabled{
 
 .subtitle{
   margin-top:9px;
-
   color:#eadfbf;
-
-  font-size:
-    clamp(10px,2.3vw,20px);
-
-  letter-spacing:
-    clamp(1px,1vw,3px);
+  font-size:clamp(10px,2.3vw,20px);
+  letter-spacing:clamp(1px,1vw,3px);
 }
 
 .connection{
   display:inline-flex;
   align-items:center;
   gap:8px;
-
   margin-top:12px;
-
   padding:7px 14px;
-
   border-radius:999px;
-
   background:#122720;
-
   font-family:Arial,sans-serif;
-
   font-size:12px;
   font-weight:bold;
 }
@@ -160,13 +103,9 @@ button:disabled{
 .dot{
   width:11px;
   height:11px;
-
   border-radius:50%;
-
   background:#e33c35;
-
-  box-shadow:
-    0 0 10px currentColor;
+  box-shadow:0 0 10px currentColor;
 }
 
 .connection.ok{
@@ -181,40 +120,24 @@ button:disabled{
   color:#ff7373;
 }
 
-/* =========================================================
-   ROOM BAR
-========================================================= */
+/* ROOM */
 
 .roomBar{
-  width:
-    min(1700px,calc(100% - 24px));
-
+  width:min(1700px,calc(100% - 24px));
   margin:14px auto;
-
   display:flex;
-
   gap:10px;
-
   align-items:center;
 }
 
 .roomInfo{
   flex:1;
-
   min-width:0;
-
   padding:12px 15px;
-
-  border:
-    1px solid #96783c;
-
+  border:1px solid #96783c;
   border-radius:12px;
-
-  background:
-    rgba(10,29,23,.92);
-
+  background:rgba(10,29,23,.92);
   font-family:Arial,sans-serif;
-
   font-size:14px;
 }
 
@@ -229,40 +152,21 @@ button:disabled{
 
 .joinBox input{
   width:210px;
-
   padding:11px 13px;
-
-  border:
-    2px solid #9a7b3c;
-
+  border:2px solid #9a7b3c;
   border-radius:9px;
-
   background:#f3e8ca;
-
   color:#17130d;
-
   outline:none;
 }
 
 .goldBtn{
-  border:
-    1px solid #c09a4a;
-
+  border:1px solid #c09a4a;
   border-radius:9px;
-
   padding:10px 15px;
-
   color:#fff4d0;
-
   font-weight:bold;
-
-  background:
-    linear-gradient(
-      145deg,
-      #4c8b53,
-      #275b38
-    );
-
+  background:linear-gradient(145deg,#4c8b53,#275b38);
   box-shadow:
     inset 0 1px rgba(255,255,255,.2),
     0 4px 10px rgba(0,0,0,.35);
@@ -276,91 +180,52 @@ button:disabled{
   transform:translateY(2px);
 }
 
-/* =========================================================
-   MAIN LAYOUT
-========================================================= */
+/* LAYOUT */
 
 .layout{
-  width:
-    min(1700px,calc(100% - 24px));
-
+  width:min(1700px,calc(100% - 24px));
   margin:auto;
-
   display:grid;
-
-  grid-template-columns:
-    260px
-    minmax(0,1fr)
-    290px;
-
+  grid-template-columns:260px minmax(0,1fr) 290px;
   gap:15px;
-
   padding-bottom:30px;
 }
 
 .panel{
   padding:14px;
-
-  border:
-    1px solid #8d7139;
-
+  border:1px solid #8d7139;
   border-radius:14px;
-
   background:
-    linear-gradient(
-      145deg,
-      #162c25,
-      #091714
-    );
-
+    linear-gradient(145deg,#162c25,#091714);
   box-shadow:
     0 10px 25px rgba(0,0,0,.38),
     inset 0 0 20px rgba(255,255,255,.015);
 }
 
 .panel h2{
-  margin:
-    0 0 12px;
-
+  margin:0 0 12px;
   padding-bottom:8px;
-
-  border-bottom:
-    1px solid #67542e;
-
+  border-bottom:1px solid #67542e;
   color:#e6c76c;
-
   font-size:19px;
 }
 
-/* =========================================================
-   PLAYERS
-========================================================= */
+/* PLAYERS */
 
 .player{
   display:flex;
   align-items:center;
-
   gap:9px;
-
   margin:7px 0;
-
   padding:8px;
-
-  border:
-    1px solid #40534a;
-
+  border:1px solid #40534a;
   border-radius:9px;
-
   background:#0c1c17;
-
-  transition:.2s;
 }
 
 .player.active{
   border-color:#e4c35d;
-
-  box-shadow:
-    0 0 14px rgba(228,195,93,.2);
+  box-shadow:0 0 14px rgba(228,195,93,.2);
 }
 
 .playerBankrupt{
@@ -370,25 +235,13 @@ button:disabled{
 .avatar{
   width:40px;
   height:40px;
-
   flex:none;
-
   display:grid;
   place-items:center;
-
   border-radius:50%;
-
-  background:
-    linear-gradient(
-      145deg,
-      #f0f0e9,
-      #6d706b
-    );
-
+  background:linear-gradient(145deg,#f0f0e9,#6d706b);
   color:#17130c;
-
   font-size:22px;
-
   box-shadow:
     inset -4px -5px 8px rgba(0,0,0,.5),
     0 3px 8px #000;
@@ -401,23 +254,17 @@ button:disabled{
 
 .playerMoney{
   margin-top:3px;
-
   color:#f0d05d;
-
   font-family:Arial,sans-serif;
 }
 
 .playerStatus{
   margin-left:auto;
-
   color:#71df8d;
-
   font-size:9px;
 }
 
-/* =========================================================
-   BOARD PANEL
-========================================================= */
+/* BOARD */
 
 .boardPanel{
   padding:10px;
@@ -425,252 +272,134 @@ button:disabled{
 
 .boardWrap{
   width:100%;
-
   display:flex;
   justify-content:center;
   align-items:center;
-
   overflow:hidden;
-
   padding:2px;
 }
 
-/*
-  IMPORTANT:
-  不再使用 min-width:650px
-  讓棋盤可以真正縮放到手機螢幕。
-*/
-
 .board{
   position:relative;
-
   width:min(900px,100%);
-
   max-width:900px;
-
-  aspect-ratio:1 / 1;
-
+  aspect-ratio:1/1;
   margin:auto;
-
   display:grid;
-
-  grid-template-columns:
-    1.25fr repeat(9,1fr) 1.25fr;
-
-  grid-template-rows:
-    1.25fr repeat(9,1fr) 1.25fr;
-
-  border:
-    clamp(6px,1.2vw,12px)
-    solid #4b2d17;
-
+  grid-template-columns:1.25fr repeat(9,1fr) 1.25fr;
+  grid-template-rows:1.25fr repeat(9,1fr) 1.25fr;
+  border:clamp(6px,1.2vw,12px) solid #4b2d17;
   border-radius:7px;
-
   background:#0e3428;
-
   box-shadow:
     0 30px 60px rgba(0,0,0,.75),
     0 8px 0 #241308,
     inset 0 0 0 4px #b17b39;
-
   overflow:hidden;
 }
 
-/* =========================================================
-   CENTER
-========================================================= */
+/* CENTER */
 
 .center{
-  grid-column:2 / 11;
-  grid-row:2 / 11;
-
+  grid-column:2/11;
+  grid-row:2/11;
   position:relative;
-
   overflow:hidden;
-
   background:
-    radial-gradient(
-      circle at center,
+    radial-gradient(circle at center,
       #39755d 0%,
       #1b4939 48%,
-      #0d2a21 100%
-    );
-
-  border:
-    clamp(2px,.5vw,4px)
-    solid #80622e;
-
-  box-shadow:
-    inset 0 0 70px rgba(0,0,0,.7);
+      #0d2a21 100%);
+  border:clamp(2px,.5vw,4px) solid #80622e;
+  box-shadow:inset 0 0 70px rgba(0,0,0,.7);
 }
 
 .center::before{
   content:"";
-
   position:absolute;
-
   inset:8%;
-
-  border:
-    2px solid rgba(238,210,123,.22);
-
+  border:2px solid rgba(238,210,123,.22);
   transform:rotate(-8deg);
 }
 
 .center::after{
   content:"";
-
   position:absolute;
-
   inset:13%;
-
-  border:
-    1px solid rgba(238,210,123,.14);
-
+  border:1px solid rgba(238,210,123,.14);
   transform:rotate(8deg);
 }
 
 .monopolyLogo{
   position:absolute;
-
   left:50%;
   top:20%;
-
-  transform:
-    translateX(-50%)
-    rotate(-8deg);
-
+  transform:translateX(-50%) rotate(-8deg);
   width:82%;
-
-  padding:
-    clamp(7px,1.5vw,14px)
-    5px;
-
+  padding:clamp(7px,1.5vw,14px) 5px;
   text-align:center;
-
   color:#b31816;
-
   background:#fff4c7;
-
-  border:
-    clamp(2px,.5vw,5px)
-    solid #16110b;
-
+  border:clamp(2px,.5vw,5px) solid #16110b;
   font-family:Arial,sans-serif;
-
-  font-size:
-    clamp(18px,5vw,55px);
-
+  font-size:clamp(18px,5vw,55px);
   font-weight:900;
-
-  letter-spacing:
-    clamp(1px,1vw,4px);
-
-  text-shadow:
-    2px 2px 0 #d5a72e;
-
-  box-shadow:
-    0 10px 20px rgba(0,0,0,.5);
-
+  letter-spacing:clamp(1px,1vw,4px);
+  text-shadow:2px 2px 0 #d5a72e;
+  box-shadow:0 10px 20px rgba(0,0,0,.5);
   z-index:2;
 }
 
 .centerTag{
   position:absolute;
-
   top:43%;
-
   width:100%;
-
   text-align:center;
-
   color:#f0d47a;
-
-  font-size:
-    clamp(7px,1.7vw,19px);
-
-  letter-spacing:
-    clamp(1px,1vw,4px);
-
+  font-size:clamp(7px,1.7vw,19px);
+  letter-spacing:clamp(1px,1vw,4px);
   z-index:2;
 }
 
 .centerMoney{
   position:absolute;
-
   left:50%;
   top:52%;
-
   transform:translateX(-50%);
-
-  font-size:
-    clamp(40px,10vw,130px);
-
-  filter:
-    drop-shadow(0 12px 10px rgba(0,0,0,.55));
-
+  font-size:clamp(40px,10vw,130px);
+  filter:drop-shadow(0 12px 10px rgba(0,0,0,.55));
   z-index:2;
 }
 
 .centerDice{
   position:absolute;
-
   bottom:9%;
-
   left:50%;
-
   transform:translateX(-50%);
-
   display:flex;
-
-  gap:
-    clamp(4px,1vw,12px);
-
+  gap:clamp(4px,1vw,12px);
   z-index:3;
 }
 
-/* =========================================================
-   TILES
-========================================================= */
+/* TILES */
 
 .tile{
   position:relative;
-
   min-width:0;
   min-height:0;
-
   overflow:hidden;
-
   display:flex;
   flex-direction:column;
-
   justify-content:center;
   align-items:center;
-
   text-align:center;
-
-  padding:
-    3px 2px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #fff2d0,
-      #d7c5a1
-    );
-
+  padding:3px 2px;
+  background:linear-gradient(145deg,#fff2d0,#d7c5a1);
   color:#1d1810;
-
-  border:
-    1px solid #6f5d43;
-
+  border:1px solid #6f5d43;
   font-family:Arial,sans-serif;
-
-  box-shadow:
-    inset 0 0 5px rgba(0,0,0,.25);
-
+  box-shadow:inset 0 0 5px rgba(0,0,0,.25);
   transition:.15s;
-
   cursor:pointer;
 }
 
@@ -681,313 +410,149 @@ button:disabled{
 
 .tileName{
   max-width:95%;
-
   margin-top:4px;
-
-  font-size:
-    clamp(5px,1.05vw,13px);
-
+  font-size:clamp(5px,1.05vw,13px);
   font-weight:900;
-
   line-height:1.03;
-
-  word-break:normal;
 }
 
 .tilePrice{
   margin-top:3px;
-
-  font-size:
-    clamp(5px, .9vw, 11px);
+  font-size:clamp(5px,.9vw,11px);
 }
 
 .tileIcon{
-  font-size:
-    clamp(10px,2vw,24px);
-
+  font-size:clamp(10px,2vw,24px);
   line-height:1;
 }
 
 .colorBar{
   position:absolute;
-
   left:0;
   right:0;
   top:0;
-
   height:18%;
 }
 
-/* =========================================================
-   PROPERTY GROUPS
-========================================================= */
-
-.brown .colorBar{
-  background:#7a4a2c;
-}
-
-.lightblue .colorBar{
-  background:#70c9db;
-}
-
-.pink .colorBar{
-  background:#c84f8e;
-}
-
-.orange .colorBar{
-  background:#e07b2f;
-}
-
-.red .colorBar{
-  background:#bd3d35;
-}
-
-.yellow .colorBar{
-  background:#e1bd3b;
-}
-
-.green .colorBar{
-  background:#3b874b;
-}
-
-.darkblue .colorBar{
-  background:#3b55a4;
-}
+.brown .colorBar{background:#7a4a2c}
+.lightblue .colorBar{background:#70c9db}
+.pink .colorBar{background:#c84f8e}
+.orange .colorBar{background:#e07b2f}
+.red .colorBar{background:#bd3d35}
+.yellow .colorBar{background:#e1bd3b}
+.green .colorBar{background:#3b874b}
+.darkblue .colorBar{background:#3b55a4}
 
 .corner{
-  background:
-    linear-gradient(
-      145deg,
-      #fff0c7,
-      #d7c39c
-    );
+  background:linear-gradient(145deg,#fff0c7,#d7c39c);
 }
 
-/* =========================================================
-   OWNERSHIP
-========================================================= */
+.owner1{box-shadow:inset 0 -5px 0 #d64039}
+.owner2{box-shadow:inset 0 -5px 0 #3d83d2}
+.owner3{box-shadow:inset 0 -5px 0 #4ba95b}
+.owner4{box-shadow:inset 0 -5px 0 #dfb937}
 
-.owner1{
-  box-shadow:
-    inset 0 -5px 0 #d64039;
-}
-
-.owner2{
-  box-shadow:
-    inset 0 -5px 0 #3d83d2;
-}
-
-.owner3{
-  box-shadow:
-    inset 0 -5px 0 #4ba95b;
-}
-
-.owner4{
-  box-shadow:
-    inset 0 -5px 0 #dfb937;
-}
-
-/* =========================================================
-   BUILDINGS
-========================================================= */
+/* BUILDINGS */
 
 .buildings{
   position:absolute;
-
   left:50%;
   bottom:2px;
-
   transform:translateX(-50%);
-
   display:flex;
-
   gap:2px;
 }
 
 .house{
-  width:
-    clamp(3px,.7vw,7px);
-
-  height:
-    clamp(3px,.7vw,7px);
-
+  width:clamp(3px,.7vw,7px);
+  height:clamp(3px,.7vw,7px);
   background:#347d3b;
-
-  border:
-    1px solid #173c1a;
+  border:1px solid #173c1a;
 }
 
 .hotel{
-  width:
-    clamp(7px,1.2vw,13px);
-
-  height:
-    clamp(4px,.8vw,8px);
-
+  width:clamp(7px,1.2vw,13px);
+  height:clamp(4px,.8vw,8px);
   background:#bd3933;
-
-  border:
-    1px solid #681d19;
+  border:1px solid #681d19;
 }
 
-/* =========================================================
-   PIECES
-========================================================= */
+/* PIECES */
 
 .piece{
   position:absolute;
-
-  width:
-    clamp(16px,3vw,29px);
-
-  height:
-    clamp(16px,3vw,29px);
-
+  width:clamp(16px,3vw,29px);
+  height:clamp(16px,3vw,29px);
   display:grid;
   place-items:center;
-
   z-index:30;
-
-  border-radius:
-    50% 50% 45% 45%;
-
+  border-radius:50% 50% 45% 45%;
   color:#fff;
-
-  font-size:
-    clamp(9px,1.6vw,16px);
-
-  text-shadow:
-    0 2px 3px #000;
-
+  font-size:clamp(9px,1.6vw,16px);
+  text-shadow:0 2px 3px #000;
   box-shadow:
     0 6px 5px rgba(0,0,0,.55),
     inset -4px -4px 5px rgba(0,0,0,.25),
     inset 3px 3px 4px rgba(255,255,255,.35);
-
-  transition:
-    left .25s ease,
-    top .25s ease;
 }
 
-.p1{
-  background:#c93632;
-}
+.p1{background:#c93632}
+.p2{background:#367ac1}
+.p3{background:#49a458}
+.p4{background:#d2aa2e;color:#17120b}
 
-.p2{
-  background:#367ac1;
-}
-
-.p3{
-  background:#49a458;
-}
-
-.p4{
-  background:#d2aa2e;
-  color:#17120b;
-}
-
-/* =========================================================
-   DICE
-========================================================= */
+/* DICE */
 
 .dice{
   display:flex;
-
   justify-content:center;
-
   gap:10px;
-
   margin:10px 0;
 }
 
 .die{
-  width:
-    clamp(42px,6vw,54px);
-
-  height:
-    clamp(42px,6vw,54px);
-
+  width:clamp(42px,6vw,54px);
+  height:clamp(42px,6vw,54px);
   display:grid;
   place-items:center;
-
   border-radius:10px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #fffef5,
-      #c9c1ad
-    );
-
+  background:linear-gradient(145deg,#fffef5,#c9c1ad);
   color:#111;
-
   font-family:Arial,sans-serif;
-
-  font-size:
-    clamp(21px,3vw,29px);
-
+  font-size:clamp(21px,3vw,29px);
   font-weight:bold;
-
   box-shadow:
     0 7px 10px rgba(0,0,0,.5),
     inset 2px 2px 5px white;
 }
 
 .rolling{
-  animation:
-    diceRoll .55s linear infinite;
+  animation:diceRoll .55s linear infinite;
 }
 
 @keyframes diceRoll{
-  0%{
-    transform:rotate(0) scale(1);
-  }
-
-  50%{
-    transform:rotate(12deg) scale(1.08);
-  }
-
-  100%{
-    transform:rotate(-12deg) scale(1);
-  }
+  0%{transform:rotate(0) scale(1)}
+  50%{transform:rotate(12deg) scale(1.08)}
+  100%{transform:rotate(-12deg) scale(1)}
 }
 
-/* =========================================================
-   ACTIONS
-========================================================= */
+/* ACTIONS */
 
 .actions{
   display:grid;
-
-  grid-template-columns:
-    repeat(5,1fr);
-
+  grid-template-columns:repeat(5,1fr);
   gap:7px;
-
   margin-top:10px;
 }
 
 .action{
   min-height:58px;
-
-  border:
-    1px solid #8e753d;
-
+  border:1px solid #8e753d;
   border-radius:10px;
-
   color:#f4e5bb;
-
-  background:
-    linear-gradient(
-      145deg,
-      #263e38,
-      #10211d
-    );
-
+  background:linear-gradient(145deg,#263e38,#10211d);
   font-weight:bold;
-
-  box-shadow:
-    0 5px 12px rgba(0,0,0,.35);
+  box-shadow:0 5px 12px rgba(0,0,0,.35);
 }
 
 .action:hover{
@@ -995,52 +560,28 @@ button:disabled{
 }
 
 .action.primary{
-  background:
-    linear-gradient(
-      145deg,
-      #4c8951,
-      #285b39
-    );
+  background:linear-gradient(145deg,#4c8951,#285b39);
 }
 
 .action.danger{
-  background:
-    linear-gradient(
-      145deg,
-      #91453a,
-      #592b25
-    );
+  background:linear-gradient(145deg,#91453a,#592b25);
 }
 
-/* =========================================================
-   PROPERTY CARD
-========================================================= */
+/* PROPERTY */
 
 .propertyCard{
   overflow:hidden;
-
-  border:
-    1px solid #725d35;
-
+  border:1px solid #725d35;
   border-radius:11px;
-
   background:#091714;
 }
 
 .propertyImage{
   height:100px;
-
   display:grid;
   place-items:center;
-
   font-size:60px;
-
-  background:
-    radial-gradient(
-      circle,
-      #607d6a,
-      #213e32
-    );
+  background:radial-gradient(circle,#607d6a,#213e32);
 }
 
 .propertyInfo{
@@ -1048,101 +589,68 @@ button:disabled{
 }
 
 .propertyInfo h3{
-  margin:
-    0 0 5px;
-
+  margin:0 0 5px;
   color:#e7c96d;
-
   font-size:18px;
 }
 
 .stat{
   display:flex;
-
   justify-content:space-between;
-
   padding:6px 0;
-
-  border-bottom:
-    1px solid #243831;
-
+  border-bottom:1px solid #243831;
   font-family:Arial,sans-serif;
 }
 
 .ownerText{
   margin-top:10px;
-
   text-align:center;
-
   color:#73df8e;
 }
 
-/* =========================================================
-   LOG
-========================================================= */
+/* LOG */
 
 .log{
   max-height:270px;
-
   overflow:auto;
-
   font-family:Arial,sans-serif;
-
   font-size:12px;
 }
 
 .logLine{
   padding:6px 0;
-
-  border-bottom:
-    1px solid #22352f;
+  border-bottom:1px solid #22352f;
 }
 
 .logLine b{
   color:#e5c66c;
 }
 
-/* =========================================================
-   STATUS
-========================================================= */
+/* STATUS */
 
 .statusBox{
   font-family:Arial,sans-serif;
-
   line-height:1.8;
 }
 
 .statusMoney{
   color:#f1d05e;
-
   font-size:20px;
-
   font-weight:bold;
 }
 
-/* =========================================================
-   MODAL
-========================================================= */
+/* MODALS */
 
 .modal{
   position:fixed;
-
   inset:0;
-
   z-index:100;
-
   display:none;
-
   align-items:center;
   justify-content:center;
-
   padding:15px;
-
-  background:
-    rgba(0,0,0,.78);
-
-  backdrop-filter:
-    blur(5px);
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(5px);
 }
 
 .modal.show{
@@ -1150,29 +658,14 @@ button:disabled{
 }
 
 .modalBox{
-  width:
-    min(620px,100%);
-
+  width:min(620px,100%);
   max-height:90vh;
-
   overflow:auto;
-
   padding:20px;
-
-  border:
-    2px solid #a1813e;
-
+  border:2px solid #a1813e;
   border-radius:17px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #182d26,
-      #091714
-    );
-
-  box-shadow:
-    0 30px 70px #000;
+  background:linear-gradient(145deg,#182d26,#091714);
+  box-shadow:0 30px 70px #000;
 }
 
 .modalBox h2{
@@ -1181,79 +674,52 @@ button:disabled{
 
 .closeBtn{
   float:right;
-
   border:0;
-
   background:none;
-
   color:#fff;
-
   font-size:27px;
 }
 
 .tradeGrid{
   display:grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
+  grid-template-columns:1fr 1fr;
   gap:10px;
 }
 
 .resource{
   padding:12px;
-
-  border:
-    1px solid #42534b;
-
+  border:1px solid #42534b;
   border-radius:9px;
-
   background:#101f1b;
 }
 
 .resource input,
 .resource select{
   width:100%;
-
   margin-top:7px;
-
   padding:8px;
-
   border-radius:6px;
-
   border:1px solid #7b704e;
 }
 
-/* =========================================================
-   TABLET
-========================================================= */
+/* TABLET */
 
 @media(max-width:1150px){
-
   .layout{
-    grid-template-columns:
-      220px
-      minmax(0,1fr);
+    grid-template-columns:220px minmax(0,1fr);
   }
 
   .rightPanel{
-    grid-column:1 / -1;
-
+    grid-column:1/-1;
     display:grid;
-
-    grid-template-columns:
-      1fr 1fr 1fr;
-
+    grid-template-columns:1fr 1fr 1fr;
     gap:12px;
   }
 }
 
-/* =========================================================
-   MOBILE
-========================================================= */
+/* MOBILE */
 
 @media(max-width:800px){
-
   .roomBar{
     flex-direction:column;
     align-items:stretch;
@@ -1270,9 +736,7 @@ button:disabled{
 
   .layout{
     display:block;
-
-    width:
-      calc(100% - 10px);
+    width:calc(100% - 10px);
   }
 
   .leftPanel{
@@ -1283,30 +747,17 @@ button:disabled{
     padding:5px;
   }
 
-  .boardWrap{
-    overflow:hidden;
-
-    width:100%;
-  }
-
-  /*
-    關鍵：
-    棋盤直接使用父容器寬度，
-    不再產生水平裁切。
-  */
-
   .board{
     width:100%;
     max-width:none;
   }
 
   .actions{
-    grid-template-columns:
-      repeat(2,1fr);
+    grid-template-columns:repeat(2,1fr);
   }
 
   .action:last-child{
-    grid-column:1 / -1;
+    grid-column:1/-1;
   }
 
   .rightPanel{
@@ -1318,12 +769,7 @@ button:disabled{
   }
 }
 
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
 @media(max-width:500px){
-
   .header{
     padding-top:12px;
   }
@@ -1366,39 +812,18 @@ button:disabled{
     grid-template-columns:1fr;
   }
 
-  .actions{
-    gap:6px;
-  }
-
   .action{
     min-height:52px;
     font-size:12px;
   }
 }
 
-/* =========================================================
-   VERY SMALL PHONE
-========================================================= */
-
 @media(max-width:380px){
-
-  .tileName{
-    font-size:4.5px;
-  }
-
-  .tilePrice{
-    font-size:4.5px;
-  }
-
-  .tileIcon{
-    font-size:9px;
-  }
-
-  .centerTag{
-    font-size:6px;
-  }
+  .tileName{font-size:4.5px}
+  .tilePrice{font-size:4.5px}
+  .tileIcon{font-size:9px}
+  .centerTag{font-size:6px}
 }
-
 </style>
 </head>
 
@@ -1406,62 +831,34 @@ button:disabled{
 
 <div id="app">
 
-<!-- =======================================================
-     HEADER
-======================================================= -->
-
 <header class="header">
 
-  <div class="logo">
-    MONOPOLY
-  </div>
+  <div class="logo">MONOPOLY</div>
 
   <div class="subtitle">
     UK CITIES • CLASSIC PROPERTY TRADING BOARD GAME
   </div>
 
-  <div
-    id="connection"
-    class="connection bad">
-
+  <div id="connection" class="connection bad">
     <span class="dot"></span>
-
     <span id="connectionText">
-      Offline / Demo Mode
+      Connecting to Supabase...
     </span>
-
   </div>
 
 </header>
 
-
-<!-- =======================================================
-     ROOM
-======================================================= -->
-
 <div class="roomBar">
 
   <div class="roomInfo">
-
     ROOM:
-    <b>UK-MONOPOLY-001</b>
-
+    <b id="roomCode">UK-MONOPOLY-001</b>
     ·
-
-    <span id="playerCount">
-      0
-    </span>
-
+    <span id="playerCount">0</span>
     / 4 Players
-
     ·
-
-    <span id="turnText">
-      Waiting
-    </span>
-
+    <span id="turnText">Waiting</span>
   </div>
-
 
   <div class="joinBox">
 
@@ -1471,144 +868,79 @@ button:disabled{
       placeholder="你的玩家名稱">
 
     <button
+      id="joinBtn"
       class="goldBtn"
       onclick="joinGame()">
-
       👤 加入遊戲
-
     </button>
 
   </div>
 
 </div>
 
-
-<!-- =======================================================
-     MAIN
-======================================================= -->
-
 <main class="layout">
-
-
-<!-- =======================================================
-     LEFT PANEL
-======================================================= -->
 
 <section class="leftPanel">
 
-
-  <!-- PLAYERS -->
-
   <div class="panel">
 
-    <h2>
-      👑 PLAYERS
-    </h2>
+    <h2>👑 PLAYERS</h2>
 
     <div id="players">
-
       <div style="color:#aaa">
         等待玩家加入...
       </div>
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>🇬🇧 UK MONOPOLY RULES</h2>
+
+    <div style="
+      line-height:1.75;
+      font-family:Arial,sans-serif;
+      font-size:12px">
+
+      <b>GO：</b>經過 GO 獲得 £200<br>
+      <b>Property：</b>購買英國城市地產<br>
+      <b>Rent：</b>其他玩家停留時支付租金<br>
+      <b>House：</b>建造房屋提高租金<br>
+      <b>Hotel：</b>4 間房屋後升級旅館<br>
+      <b>Railway：</b>鐵路站提供固定租金<br>
+      <b>Chance：</b>隨機事件<br>
+      <b>Community Chest：</b>公共基金事件<br>
+      <b>Jail：</b>進入監獄<br>
+      <b>Free Parking：</b>免費停車<br>
+      <b>勝利：</b>最後存活的玩家勝出
 
     </div>
 
   </div>
 
-
-  <!-- RULES -->
-
   <div class="panel">
 
-    <h2>
-      🇬🇧 UK MONOPOLY RULES
-    </h2>
-
-    <div
-      style="
-        line-height:1.75;
-        font-family:Arial,sans-serif;
-        font-size:12px">
-
-      <b>GO：</b>
-      經過 GO 獲得 £200<br>
-
-      <b>Property：</b>
-      購買英國城市地產<br>
-
-      <b>Rent：</b>
-      其他玩家停留時支付租金<br>
-
-      <b>House：</b>
-      建造房屋提高租金<br>
-
-      <b>Hotel：</b>
-      4 間房屋後升級旅館<br>
-
-      <b>Railway：</b>
-      鐵路站提供固定租金<br>
-
-      <b>Chance：</b>
-      隨機事件<br>
-
-      <b>Community Chest：</b>
-      公共基金事件<br>
-
-      <b>Jail：</b>
-      進入監獄<br>
-
-      <b>Free Parking：</b>
-      免費停車<br>
-
-      <b>勝利：</b>
-      其他玩家破產後最後留下的玩家勝出
-
-    </div>
-
-  </div>
-
-
-  <!-- DICE -->
-
-  <div class="panel">
-
-    <h2>
-      🎲 DICE
-    </h2>
+    <h2>🎲 DICE</h2>
 
     <div class="dice">
 
-      <div
-        class="die"
-        id="die1">
-        ⚀
-      </div>
-
-      <div
-        class="die"
-        id="die2">
-        ⚀
-      </div>
+      <div class="die" id="die1">⚀</div>
+      <div class="die" id="die2">⚀</div>
 
     </div>
 
     <button
+      id="sideRollBtn"
       class="goldBtn"
       style="width:100%"
       onclick="rollDice()">
-
       🎲 擲骰子
-
     </button>
 
   </div>
 
 </section>
-
-
-<!-- =======================================================
-     BOARD
-======================================================= -->
 
 <section>
 
@@ -1616,12 +948,7 @@ button:disabled{
 
 <div class="boardWrap">
 
-<div
-  class="board"
-  id="board">
-
-
-  <!-- CENTER -->
+<div class="board" id="board">
 
   <div class="center">
 
@@ -1639,17 +966,8 @@ button:disabled{
 
     <div class="centerDice">
 
-      <div
-        class="die"
-        id="centerDie1">
-        ⚀
-      </div>
-
-      <div
-        class="die"
-        id="centerDie2">
-        ⚀
-      </div>
+      <div class="die" id="centerDie1">⚀</div>
+      <div class="die" id="centerDie2">⚀</div>
 
     </div>
 
@@ -1659,54 +977,36 @@ button:disabled{
 
 </div>
 
-
-<!-- ACTIONS -->
-
 <div class="actions">
 
   <button
     class="action primary"
     onclick="rollDice()">
-
-    🎲<br>
-    ROLL
-
+    🎲<br>ROLL
   </button>
 
   <button
     class="action"
     onclick="buyCurrentProperty()">
-
-    🏠<br>
-    BUY
-
+    🏠<br>BUY
   </button>
 
   <button
     class="action"
     onclick="buildProperty()">
-
-    🏗️<br>
-    BUILD
-
+    🏗️<br>BUILD
   </button>
 
   <button
     class="action"
     onclick="openTrade()">
-
-    🤝<br>
-    TRADE
-
+    🤝<br>TRADE
   </button>
 
   <button
     class="action danger"
     onclick="endTurn()">
-
-    ➜<br>
-    END TURN
-
+    ➜<br>END TURN
   </button>
 
 </div>
@@ -1715,30 +1015,18 @@ button:disabled{
 
 </section>
 
-
-<!-- =======================================================
-     RIGHT PANEL
-======================================================= -->
-
 <section class="rightPanel">
-
-
-  <!-- PROPERTY -->
 
   <div class="panel">
 
-    <h2>
-      🏙️ LOCATION
-    </h2>
+    <h2>🏙️ LOCATION</h2>
 
     <div class="propertyCard">
 
       <div
         class="propertyImage"
         id="propertyIcon">
-
         🏠
-
       </div>
 
       <div class="propertyInfo">
@@ -1750,76 +1038,40 @@ button:disabled{
         <div
           id="propertyType"
           style="color:#aaa">
-
           UK Property
-
         </div>
 
         <div class="stat">
-
-          <span>
-            Price
-          </span>
-
-          <b id="propertyPrice">
-            £60
-          </b>
-
+          <span>Price</span>
+          <b id="propertyPrice">£60</b>
         </div>
 
         <div class="stat">
-
-          <span>
-            Base Rent
-          </span>
-
-          <b id="propertyRent">
-            £2
-          </b>
-
+          <span>Base Rent</span>
+          <b id="propertyRent">£2</b>
         </div>
 
         <div class="stat">
-
-          <span>
-            House Cost
-          </span>
-
-          <b id="propertyHouseCost">
-            £50
-          </b>
-
+          <span>House Cost</span>
+          <b id="propertyHouseCost">£50</b>
         </div>
 
         <div class="stat">
-
-          <span>
-            Hotel
-          </span>
-
-          <b id="propertyHotel">
-            £250
-          </b>
-
+          <span>Hotel</span>
+          <b id="propertyHotel">£250</b>
         </div>
 
         <div
           class="ownerText"
           id="propertyOwner">
-
           無擁有者
-
         </div>
 
         <button
           class="goldBtn"
-          style="
-            width:100%;
-            margin-top:10px"
+          style="width:100%;margin-top:10px"
           onclick="buyCurrentProperty()">
-
           🏠 BUY PROPERTY
-
         </button>
 
       </div>
@@ -1828,45 +1080,27 @@ button:disabled{
 
   </div>
 
-
-  <!-- LOG -->
-
   <div class="panel">
 
-    <h2>
-      📜 GAME LOG
-    </h2>
+    <h2>📜 GAME LOG</h2>
 
-    <div
-      class="log"
-      id="gameLog">
+    <div class="log" id="gameLog">
 
       <div class="logLine">
-
         <b>System</b>：
         等待玩家加入。
-
       </div>
 
     </div>
 
   </div>
 
-
-  <!-- STATUS -->
-
   <div class="panel">
 
-    <h2>
-      💰 YOUR STATUS
-    </h2>
+    <h2>💰 YOUR STATUS</h2>
 
-    <div
-      id="myStatus"
-      class="statusBox">
-
+    <div id="myStatus" class="statusBox">
       尚未加入遊戲
-
     </div>
 
   </div>
@@ -1877,68 +1111,45 @@ button:disabled{
 
 </div>
 
+<!-- TRADE -->
 
-<!-- =======================================================
-     TRADE MODAL
-======================================================= -->
-
-<div
-  class="modal"
-  id="tradeModal">
+<div class="modal" id="tradeModal">
 
   <div class="modalBox">
 
     <button
       class="closeBtn"
       onclick="closeModal('tradeModal')">
-
       ×
-
     </button>
 
-    <h2>
-      🤝 PLAYER TRADE
-    </h2>
+    <h2>🤝 PLAYER TRADE</h2>
 
     <div class="tradeGrid">
 
       <div class="resource">
 
-        <b>
-          我的金錢
-        </b>
+        <b>我的金錢</b>
 
         <div
           id="tradeMyMoney"
-          style="
-            margin-top:8px;
-            color:#efd15e">
-
+          style="margin-top:8px;color:#efd15e">
           £0
-
         </div>
 
       </div>
 
-
       <div class="resource">
 
-        <b>
-          交易玩家
-        </b>
+        <b>交易玩家</b>
 
-        <select
-          id="tradeTarget">
-        </select>
+        <select id="tradeTarget"></select>
 
       </div>
 
-
       <div class="resource">
 
-        <b>
-          支付金額
-        </b>
+        <b>支付金額</b>
 
         <input
           id="tradeGiveMoney"
@@ -1948,12 +1159,9 @@ button:disabled{
 
       </div>
 
-
       <div class="resource">
 
-        <b>
-          要求金額
-        </b>
+        <b>要求金額</b>
 
         <input
           id="tradeGetMoney"
@@ -1965,61 +1173,45 @@ button:disabled{
 
     </div>
 
-
     <button
       class="goldBtn"
-      style="
-        width:100%;
-        margin-top:15px"
+      style="width:100%;margin-top:15px"
       onclick="sendTrade()">
-
       🤝 完成交易
-
     </button>
 
   </div>
 
 </div>
 
+<!-- CARD -->
 
-<!-- =======================================================
-     CARD MODAL
-======================================================= -->
-
-<div
-  class="modal"
-  id="cardModal">
+<div class="modal" id="cardModal">
 
   <div class="modalBox">
 
     <button
       class="closeBtn"
       onclick="closeModal('cardModal')">
-
       ×
-
     </button>
 
     <h2 id="cardTitle">
       Chance
     </h2>
 
-    <div
-      style="
-        padding:25px;
-        text-align:center;
-        border:2px solid #a98243;
-        border-radius:12px;
-        background:#172b25;
-        font-size:18px">
+    <div style="
+      padding:25px;
+      text-align:center;
+      border:2px solid #a98243;
+      border-radius:12px;
+      background:#172b25;
+      font-size:18px">
 
-      <div
-        style="
-          font-size:50px;
-          margin-bottom:15px">
-
+      <div style="
+        font-size:50px;
+        margin-bottom:15px">
         🎴
-
       </div>
 
       <b id="cardText">
@@ -2028,26 +1220,14 @@ button:disabled{
 
     </div>
 
-    <button
-      class="goldBtn"
-      style="
-        width:100%;
-        margin-top:15px"
-      onclick="drawCard()">
-
-      🎴 抽一張卡
-
-    </button>
-
   </div>
 
 </div>
 
-
 <script>
 
 /* =========================================================
-   SUPABASE
+   SUPABASE CONFIG
 ========================================================= */
 
 const SUPABASE_URL =
@@ -2056,52 +1236,46 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
 
-let supabaseClient = null;
-let channel = null;
-
-
-/* =========================================================
-   CONSTANTS
-========================================================= */
-
-const STARTING_MONEY = 1500;
-
-const GO_MONEY = 200;
+const ROOM_CODE =
+  "UK-MONOPOLY-001";
 
 const MAX_PLAYERS = 4;
 
+const STARTING_MONEY = 1500;
+
 const diceFaces = [
-  "⚀",
-  "⚁",
-  "⚂",
-  "⚃",
-  "⚄",
-  "⚅"
+  "⚀","⚁","⚂","⚃","⚄","⚅"
 ];
 
 const pieceSymbols = [
-  "♟",
-  "♞",
-  "♜",
-  "♛"
+  "♟","♞","♜","♛"
 ];
+
+let supabaseClient = null;
+let realtimeChannel = null;
+
+let me = null;
+
+let gameState = {
+  room_id:null,
+  current_player_id:null,
+  turn:0,
+  rolled:false,
+  winner_id:null
+};
+
+let players = [];
+let properties = [];
+let logs = [];
 
 
 /* =========================================================
-   UK MONOPOLY BOARD
-   40 SPACES
-
-   0 = GO
-   clockwise around board
+   BOARD
 ========================================================= */
 
 const boardSpaces = [
 
-  {
-    name:"GO",
-    type:"go",
-    icon:"🚩"
-  },
+  {name:"GO",type:"go",icon:"🚩"},
 
   {
     name:"Bridgwater",
@@ -2113,11 +1287,7 @@ const boardSpaces = [
     icon:"🏠"
   },
 
-  {
-    name:"Community Chest",
-    type:"chest",
-    icon:"📦"
-  },
+  {name:"Community Chest",type:"chest",icon:"📦"},
 
   {
     name:"Bath",
@@ -2129,12 +1299,7 @@ const boardSpaces = [
     icon:"🏛️"
   },
 
-  {
-    name:"Income Tax",
-    type:"tax",
-    amount:200,
-    icon:"💷"
-  },
+  {name:"Income Tax",type:"tax",amount:200,icon:"💷"},
 
   {
     name:"London Underground",
@@ -2154,11 +1319,7 @@ const boardSpaces = [
     icon:"🏠"
   },
 
-  {
-    name:"Chance",
-    type:"chance",
-    icon:"❓"
-  },
+  {name:"Chance",type:"chance",icon:"❓"},
 
   {
     name:"Oxford",
@@ -2180,11 +1341,7 @@ const boardSpaces = [
     icon:"🎓"
   },
 
-  {
-    name:"Jail",
-    type:"jail",
-    icon:"🚓"
-  },
+  {name:"Jail",type:"jail",icon:"🚓"},
 
   {
     name:"Birmingham",
@@ -2241,11 +1398,7 @@ const boardSpaces = [
     icon:"🏠"
   },
 
-  {
-    name:"Community Chest",
-    type:"chest",
-    icon:"📦"
-  },
+  {name:"Community Chest",type:"chest",icon:"📦"},
 
   {
     name:"Sheffield",
@@ -2267,11 +1420,7 @@ const boardSpaces = [
     icon:"🏠"
   },
 
-  {
-    name:"Free Parking",
-    type:"parking",
-    icon:"🅿️"
-  },
+  {name:"Free Parking",type:"parking",icon:"🅿️"},
 
   {
     name:"Manchester",
@@ -2283,11 +1432,7 @@ const boardSpaces = [
     icon:"🏠"
   },
 
-  {
-    name:"Chance",
-    type:"chance",
-    icon:"❓"
-  },
+  {name:"Chance",type:"chance",icon:"❓"},
 
   {
     name:"Liverpool",
@@ -2354,11 +1499,7 @@ const boardSpaces = [
     icon:"🏖️"
   },
 
-  {
-    name:"Go To Jail",
-    type:"gotojail",
-    icon:"🚓"
-  },
+  {name:"Go To Jail",type:"gotojail",icon:"🚓"},
 
   {
     name:"Glasgow",
@@ -2380,11 +1521,7 @@ const boardSpaces = [
     icon:"🏠"
   },
 
-  {
-    name:"Community Chest",
-    type:"chest",
-    icon:"📦"
-  },
+  {name:"Community Chest",type:"chest",icon:"📦"},
 
   {
     name:"Belfast",
@@ -2404,11 +1541,7 @@ const boardSpaces = [
     icon:"🚆"
   },
 
-  {
-    name:"Chance",
-    type:"chance",
-    icon:"❓"
-  },
+  {name:"Chance",type:"chance",icon:"❓"},
 
   {
     name:"London",
@@ -2420,12 +1553,7 @@ const boardSpaces = [
     icon:"🏙️"
   },
 
-  {
-    name:"Luxury Tax",
-    type:"tax",
-    amount:100,
-    icon:"💎"
-  },
+  {name:"Luxury Tax",type:"tax",amount:100,icon:"💎"},
 
   {
     name:"Plymouth",
@@ -2441,136 +1569,7 @@ const boardSpaces = [
 
 
 /* =========================================================
-   GAME STATE
-========================================================= */
-
-let players = [];
-
-let me = null;
-
-let localState = {
-
-  currentPlayer:0,
-
-  turn:0,
-
-  rolled:false,
-
-  positions:{},
-
-  money:{},
-
-  owners:{},
-
-  houses:{},
-
-  inJail:{},
-
-  bankrupt:{}
-
-};
-
-
-/* =========================================================
    BOARD CREATION
-========================================================= */
-
-function createBoard(){
-
-  const board =
-    document.getElementById("board");
-
-  boardSpaces.forEach(
-    (space,index)=>{
-
-      const tile =
-        document.createElement("div");
-
-      tile.className =
-        "tile";
-
-      tile.dataset.index =
-        index;
-
-      if(space.group){
-
-        tile.classList.add(
-          space.group
-        );
-
-      }
-
-      if(
-        space.type!=="property"
-        &&
-        space.type!=="railroad"
-        &&
-        space.type!=="utility"
-      ){
-
-        tile.classList.add(
-          "corner"
-        );
-
-      }
-
-      const pos =
-        getBoardPosition(index);
-
-      tile.style.gridColumn =
-        pos.col;
-
-      tile.style.gridRow =
-        pos.row;
-
-      const color =
-        space.group
-        ?
-        `<div class="colorBar"></div>`
-        :
-        "";
-
-      tile.innerHTML = `
-
-        ${color}
-
-        <div class="tileIcon">
-          ${space.icon}
-        </div>
-
-        <div class="tileName">
-          ${escapeHTML(space.name)}
-        </div>
-
-        ${
-          space.price
-          ?
-          `<div class="tilePrice">
-             £${space.price}
-           </div>`
-          :
-          ""
-        }
-
-        <div class="buildings"></div>
-
-      `;
-
-      tile.onclick =
-        ()=>{
-          selectProperty(index);
-        };
-
-      board.appendChild(tile);
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   BOARD POSITION
 ========================================================= */
 
 function getBoardPosition(index){
@@ -2578,36 +1577,328 @@ function getBoardPosition(index){
   const n = 11;
 
   if(index <= 10){
-
     return {
       row:n,
       col:n-index
     };
-
   }
 
   if(index <= 20){
-
     return {
       row:n-(index-10),
       col:1
     };
-
   }
 
   if(index <= 30){
-
     return {
       row:1,
       col:index-20
     };
-
   }
 
   return {
     row:index-30,
     col:n
   };
+}
+
+
+function createBoard(){
+
+  const board =
+    document.getElementById("board");
+
+  boardSpaces.forEach((space,index)=>{
+
+    const tile =
+      document.createElement("div");
+
+    tile.className = "tile";
+    tile.dataset.index = index;
+
+    if(space.group){
+      tile.classList.add(space.group);
+    }
+
+    if(
+      ![
+        "property",
+        "railroad",
+        "utility"
+      ].includes(space.type)
+    ){
+      tile.classList.add("corner");
+    }
+
+    const pos =
+      getBoardPosition(index);
+
+    tile.style.gridColumn = pos.col;
+    tile.style.gridRow = pos.row;
+
+    tile.innerHTML = `
+
+      ${
+        space.group
+        ? `<div class="colorBar"></div>`
+        : ""
+      }
+
+      <div class="tileIcon">
+        ${space.icon}
+      </div>
+
+      <div class="tileName">
+        ${escapeHTML(space.name)}
+      </div>
+
+      ${
+        space.price
+        ?
+        `<div class="tilePrice">
+          £${space.price}
+        </div>`
+        :
+        ""
+      }
+
+      <div class="buildings"></div>
+
+    `;
+
+    tile.onclick =
+      ()=>selectProperty(index);
+
+    board.appendChild(tile);
+
+  });
+}
+
+
+/* =========================================================
+   SUPABASE INIT
+========================================================= */
+
+async function initSupabase(){
+
+  try{
+
+    supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    await subscribeRealtime();
+
+    setConnection(
+      true,
+      "Supabase connected"
+    );
+
+    await refreshGame();
+
+  }catch(error){
+
+    console.error(error);
+
+    setConnection(
+      false,
+      "Supabase connection failed"
+    );
+
+    addLog(
+      "無法連線到 Supabase。"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   REALTIME
+========================================================= */
+
+async function subscribeRealtime(){
+
+  realtimeChannel =
+    supabaseClient
+      .channel(
+        `uk-monopoly-${ROOM_CODE}`
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"monopoly_games",
+          filter:`room_code=eq.${ROOM_CODE}`
+        },
+        async ()=>{
+          await refreshGame();
+        }
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"monopoly_players",
+          filter:`room_code=eq.${ROOM_CODE}`
+        },
+        async ()=>{
+          await refreshGame();
+        }
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"monopoly_properties",
+          filter:`room_code=eq.${ROOM_CODE}`
+        },
+        async ()=>{
+          await refreshGame();
+        }
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"monopoly_logs",
+          filter:`room_code=eq.${ROOM_CODE}`
+        },
+        async ()=>{
+          await refreshLogs();
+        }
+      );
+
+  const status =
+    await new Promise(resolve=>{
+
+      realtimeChannel.subscribe(
+        status=>{
+          if(
+            [
+              "SUBSCRIBED",
+              "CHANNEL_ERROR",
+              "TIMED_OUT"
+            ].includes(status)
+          ){
+            resolve(status);
+          }
+        }
+      );
+
+    });
+
+  if(status!=="SUBSCRIBED"){
+    throw new Error(
+      "Realtime subscription failed"
+    );
+  }
+
+}
+
+
+/* =========================================================
+   LOAD STATE
+========================================================= */
+
+async function refreshGame(){
+
+  if(!supabaseClient){
+    return;
+  }
+
+  const [
+    gameResult,
+    playersResult,
+    propertiesResult
+  ] =
+    await Promise.all([
+
+      supabaseClient
+        .from("monopoly_games")
+        .select("*")
+        .eq("room_code",ROOM_CODE)
+        .maybeSingle(),
+
+      supabaseClient
+        .from("monopoly_players")
+        .select("*")
+        .eq("room_code",ROOM_CODE)
+        .order("joined_at"),
+
+      supabaseClient
+        .from("monopoly_properties")
+        .select("*")
+        .eq("room_code",ROOM_CODE)
+
+    ]);
+
+  if(gameResult.error)
+    throw gameResult.error;
+
+  if(playersResult.error)
+    throw playersResult.error;
+
+  if(propertiesResult.error)
+    throw propertiesResult.error;
+
+
+  if(gameResult.data){
+    gameState =
+      gameResult.data;
+  }
+
+  players =
+    playersResult.data || [];
+
+  properties =
+    propertiesResult.data || [];
+
+
+  renderAll();
+
+}
+
+
+/* =========================================================
+   LOGS
+========================================================= */
+
+async function refreshLogs(){
+
+  if(!supabaseClient){
+    return;
+  }
+
+  const {data,error} =
+    await supabaseClient
+      .from("monopoly_logs")
+      .select("*")
+      .eq("room_code",ROOM_CODE)
+      .order("created_at",{ascending:false})
+      .limit(50);
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  logs =
+    data || [];
+
+  renderLogs();
 
 }
 
@@ -2626,178 +1917,78 @@ async function joinGame(){
 
   }
 
-  if(players.length >= MAX_PLAYERS){
-
-    alert("遊戲已滿，最多 4 名玩家。");
-
-    return;
-
-  }
-
   const input =
-    document.getElementById(
-      "nameInput"
-    );
+    document.getElementById("nameInput");
 
   const name =
     input.value.trim()
     ||
-    `Player ${
-      Math.floor(
-        Math.random()*999
-      )
-    }`;
+    `Player ${Math.floor(Math.random()*999)}`;
 
-  me = {
 
-    id:
-      crypto.randomUUID
-      ?
-      crypto.randomUUID()
-      :
-      `${Date.now()}-${Math.random()}`,
-
-    name:name
-
-  };
-
-  players = [
-    me
-  ];
-
-  localState.money[me.id] =
-    STARTING_MONEY;
-
-  localState.positions[me.id] =
-    0;
-
-  localState.inJail[me.id] =
-    false;
-
-  localState.bankrupt[me.id] =
-    false;
-
-  renderAll();
-
-  addLog(
-    `${name} 加入 UK MONOPOLY。`
+  setBusy(
+    true,
+    "加入中..."
   );
 
-  connectSupabase();
-
-}
-
-
-/* =========================================================
-   SUPABASE
-========================================================= */
-
-async function connectSupabase(){
 
   try{
 
-    supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
+    const playerId =
+      crypto.randomUUID();
 
-    channel =
-      supabaseClient.channel(
-        "uk-monopoly-room-001",
-        {
 
-          config:{
-
-            broadcast:{
-              self:false
-            },
-
-            presence:{
-              key:me.id
-            }
-
+    const {data,error} =
+      await supabaseClient
+        .rpc(
+          "join_monopoly_game",
+          {
+            p_room_code:ROOM_CODE,
+            p_player_id:playerId,
+            p_name:name
           }
-
-        }
-      );
+        );
 
 
-    channel
-      .on(
-        "broadcast",
-        {
-          event:"monopoly-game"
-        },
-        payload=>{
-
-          receiveGame(
-            payload.payload
-          );
-
-        }
-      )
-
-      .on(
-        "presence",
-        {
-          event:"sync"
-        },
-        ()=>{
-          updatePresence();
-        }
-      )
-
-      .on(
-        "presence",
-        {
-          event:"join"
-        },
-        ()=>{
-          updatePresence();
-        }
-      )
-
-      .on(
-        "presence",
-        {
-          event:"leave"
-        },
-        ()=>{
-          updatePresence();
-        }
-      );
+    if(error)
+      throw error;
 
 
-    await channel.subscribe(
-      async status=>{
+    me = {
+      id:playerId,
+      name:name
+    };
 
-        if(
-          status==="SUBSCRIBED"
-        ){
 
-          setConnection(true);
-
-          await channel.track({
-
-            id:me.id,
-
-            name:me.name
-
-          });
-
-          broadcastState();
-
-        }
-
-      }
+    localStorage.setItem(
+      `uk-monopoly-player-${ROOM_CODE}`,
+      JSON.stringify(me)
     );
+
+
+    addLog(
+      `${name} 加入 UK MONOPOLY。`
+    );
+
+
+    await refreshGame();
+
 
   }catch(error){
 
     console.error(error);
 
-    setConnection(false);
+    alert(
+      error.message ||
+      "加入遊戲失敗。"
+    );
+
+  }finally{
+
+    setBusy(
+      false,
+      "👤 加入遊戲"
+    );
 
   }
 
@@ -2805,219 +1996,38 @@ async function connectSupabase(){
 
 
 /* =========================================================
-   PRESENCE
+   PLAYER RESTORE
 ========================================================= */
 
-async function updatePresence(){
+function restorePlayer(){
 
-  if(!channel){
-    return;
-  }
+  try{
 
-  const state =
-    channel.presenceState();
+    const raw =
+      localStorage.getItem(
+        `uk-monopoly-player-${ROOM_CODE}`
+      );
 
-  const list = [];
+    if(!raw){
+      return;
+    }
 
-  Object
-    .values(state)
-    .flat()
-    .forEach(player=>{
-
-      if(
-        !list.some(
-          x=>x.id===player.id
-        )
-      ){
-
-        list.push(player);
-
-      }
-
-    });
-
-
-  if(
-    me
-    &&
-    !list.some(
-      x=>x.id===me.id
-    )
-  ){
-
-    list.push(me);
-
-  }
-
-
-  players =
-    list.slice(
-      0,
-      MAX_PLAYERS
-    );
-
-
-  players.forEach(player=>{
+    const saved =
+      JSON.parse(raw);
 
     if(
-      localState.money[player.id]
-      ===undefined
+      saved &&
+      saved.id &&
+      saved.name
     ){
 
-      localState.money[player.id] =
-        STARTING_MONEY;
+      me = saved;
 
     }
 
-    if(
-      localState.positions[player.id]
-      ===undefined
-    ){
+  }catch(error){
 
-      localState.positions[player.id] =
-        0;
-
-    }
-
-    if(
-      localState.inJail[player.id]
-      ===undefined
-    ){
-
-      localState.inJail[player.id] =
-        false;
-
-    }
-
-    if(
-      localState.bankrupt[player.id]
-      ===undefined
-    ){
-
-      localState.bankrupt[player.id] =
-        false;
-
-    }
-
-  });
-
-
-  renderAll();
-
-  broadcastState();
-
-}
-
-
-/* =========================================================
-   BROADCAST
-========================================================= */
-
-async function broadcastState(){
-
-  if(!channel){
-    return;
-  }
-
-  await channel.send({
-
-    type:"broadcast",
-
-    event:"monopoly-game",
-
-    payload:{
-
-      state:localState,
-
-      players:players
-
-    }
-
-  });
-
-}
-
-
-/* =========================================================
-   RECEIVE
-========================================================= */
-
-function receiveGame(data){
-
-  if(!data){
-    return;
-  }
-
-  if(data.state){
-
-    localState = {
-
-      ...localState,
-
-      ...data.state
-
-    };
-
-  }
-
-  if(
-    Array.isArray(
-      data.players
-    )
-  ){
-
-    players =
-      data.players
-        .slice(0,MAX_PLAYERS);
-
-  }
-
-  renderAll();
-
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-function setConnection(ok){
-
-  const el =
-    document.getElementById(
-      "connection"
-    );
-
-  const text =
-    document.getElementById(
-      "connectionText"
-    );
-
-  if(ok){
-
-    el.classList.remove(
-      "bad"
-    );
-
-    el.classList.add(
-      "ok"
-    );
-
-    text.textContent =
-      "Supabase connected";
-
-  }else{
-
-    el.classList.remove(
-      "ok"
-    );
-
-    el.classList.add(
-      "bad"
-    );
-
-    text.textContent =
-      "Offline / Demo Mode";
+    console.error(error);
 
   }
 
@@ -3025,322 +2035,67 @@ function setConnection(ok){
 
 
 /* =========================================================
-   RENDER
+   SERVER ACTION
 ========================================================= */
 
-function renderAll(){
-
-  renderPlayers();
-
-  renderPieces();
-
-  updateOwnership();
-
-  updateMyStatus();
-
-}
-
-
-/* =========================================================
-   PLAYERS
-========================================================= */
-
-function renderPlayers(){
-
-  const el =
-    document.getElementById(
-      "players"
-    );
-
-  if(!players.length){
-
-    el.innerHTML =
-      `<div style="color:#aaa">
-        等待玩家加入...
-      </div>`;
-
-    return;
-
-  }
-
-
-  el.innerHTML =
-    players.map(
-      (player,index)=>{
-
-        const active =
-          index ===
-          localState.currentPlayer;
-
-        const bankrupt =
-          localState.bankrupt[
-            player.id
-          ];
-
-        return `
-
-          <div
-            class="
-              player
-              ${active?"active":""}
-              ${bankrupt?"playerBankrupt":""}
-            ">
-
-            <div class="avatar">
-              ${pieceSymbols[index]}
-            </div>
-
-            <div>
-
-              <div class="playerName">
-
-                ${escapeHTML(
-                  player.name
-                )}
-
-              </div>
-
-              <div class="playerMoney">
-
-                £${
-                  localState.money[
-                    player.id
-                  ] ?? STARTING_MONEY
-                }
-
-              </div>
-
-            </div>
-
-            ${
-              bankrupt
-              ?
-              `<div class="playerStatus">
-                BANKRUPT
-               </div>`
-              :
-              active
-              ?
-              `<div class="playerStatus">
-                TURN
-               </div>`
-              :
-              ""
-            }
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-
-  document.getElementById(
-    "playerCount"
-  ).textContent =
-    players.length;
-
-
-  const current =
-    players[
-      localState.currentPlayer
-    ];
-
-
-  document.getElementById(
-    "turnText"
-  ).textContent =
-    current
-    ?
-    `${current.name}'s Turn`
-    :
-    "Waiting";
-
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-function updateMyStatus(){
-
-  const el =
-    document.getElementById(
-      "myStatus"
-    );
+async function serverAction(
+  functionName,
+  params={}
+){
 
   if(!me){
 
-    el.innerHTML =
-      "尚未加入遊戲";
+    alert(
+      "請先加入遊戲。"
+    );
 
-    return;
+    return null;
 
   }
 
+  try{
 
-  const money =
-    localState.money[
-      me.id
-    ] ?? STARTING_MONEY;
-
-
-  const position =
-    localState.positions[
-      me.id
-    ] ?? 0;
-
-
-  const space =
-    boardSpaces[
-      position
-    ];
+    const {data,error} =
+      await supabaseClient
+        .rpc(
+          functionName,
+          {
+            ...params,
+            p_room_code:ROOM_CODE,
+            p_player_id:me.id
+          }
+        );
 
 
-  const properties =
-    Object
-      .entries(
-        localState.owners
-      )
-      .filter(
-        ([index,owner])=>
-          owner===me.id
-      );
+    if(error)
+      throw error;
 
 
-  el.innerHTML = `
+    await refreshGame();
 
-    <b>
-      ${escapeHTML(me.name)}
-    </b>
+    return data;
 
-    <div class="statusMoney">
-      £${money}
-    </div>
+  }catch(error){
 
-    📍
-    ${escapeHTML(space.name)}
-
-    <br>
-
-    🏠
-    地產：
-    ${properties.length}
-    個
-
-    <br><br>
-
-    ${
-      properties.length
-      ?
-      properties
-        .map(
-          ([index])=>
-            escapeHTML(
-              boardSpaces[
-                Number(index)
-              ].name
-            )
-        )
-        .join("、")
-      :
-      "暫無地產"
-    }
-
-  `;
-
-}
-
-
-/* =========================================================
-   PIECES
-========================================================= */
-
-function renderPieces(){
-
-  document
-    .querySelectorAll(
-      ".piece"
-    )
-    .forEach(
-      piece=>piece.remove()
+    console.error(
+      functionName,
+      error
     );
 
+    alert(
+      error.message ||
+      "操作失敗。"
+    );
 
-  players.forEach(
-    (player,index)=>{
+    return null;
 
-      if(
-        localState.bankrupt[
-          player.id
-        ]
-      ){
-
-        return;
-
-      }
-
-
-      const position =
-        localState.positions[
-          player.id
-        ] ?? 0;
-
-
-      const tile =
-        document.querySelector(
-          `.tile[data-index="${position}"]`
-        );
-
-
-      if(!tile){
-        return;
-      }
-
-
-      const piece =
-        document.createElement(
-          "div"
-        );
-
-      piece.className =
-        `piece p${index+1}`;
-
-
-      piece.textContent =
-        pieceSymbols[index];
-
-
-      const offset =
-        index * 4;
-
-
-      piece.style.left =
-        `calc(
-          50% - 14px + ${offset}px
-        )`;
-
-
-      piece.style.top =
-        `calc(
-          50% - 14px + ${offset}px
-        )`;
-
-
-      tile.appendChild(
-        piece
-      );
-
-    }
-  );
+  }
 
 }
 
 
 /* =========================================================
-   DICE
+   ROLL
 ========================================================= */
 
 async function rollDice(){
@@ -3356,16 +2111,10 @@ async function rollDice(){
   }
 
 
-  const current =
-    players[
-      localState.currentPlayer
-    ];
-
-
   if(
-    current
-    &&
-    current.id !== me.id
+    gameState.current_player_id
+    !==
+    me.id
   ){
 
     alert(
@@ -3377,9 +2126,7 @@ async function rollDice(){
   }
 
 
-  if(
-    localState.rolled
-  ){
+  if(gameState.rolled){
 
     alert(
       "這回合已經擲過骰子。"
@@ -3390,468 +2137,39 @@ async function rollDice(){
   }
 
 
-  if(
-    localState.bankrupt[
-      me.id
-    ]
-  ){
+  animateDiceRandom();
 
-    alert(
-      "你已經破產。"
+
+  const result =
+    await serverAction(
+      "monopoly_roll_dice"
     );
 
-    return;
 
+  if(!result){
+    return;
   }
 
 
-  localState.rolled =
-    true;
-
-
   const d1 =
-    Math.floor(
-      Math.random()*6
-    )+1;
-
+    Number(result.die1);
 
   const d2 =
-    Math.floor(
-      Math.random()*6
-    )+1;
+    Number(result.die2);
 
 
-  animateDice(
+  showDice(
     d1,
     d2
   );
 
 
-  await wait(650);
-
-
-  const total =
-    d1+d2;
-
-
   addLog(
-    `${me.name} 擲出 ${d1}+${d2} = ${total}。`
+    `${me.name} 擲出 ${d1}+${d2} = ${d1+d2}。`
   );
 
 
-  await movePlayer(
-    me.id,
-    total
-  );
-
-
-  broadcastState();
-
-}
-
-
-/* =========================================================
-   DICE ANIMATION
-========================================================= */
-
-function animateDice(a,b){
-
-  const ids = [
-
-    "die1",
-    "die2",
-    "centerDie1",
-    "centerDie2"
-
-  ];
-
-
-  ids.forEach(
-    id=>{
-
-      document
-        .getElementById(id)
-        ?.classList.add(
-          "rolling"
-        );
-
-    }
-  );
-
-
-  setTimeout(
-    ()=>{
-
-      document.getElementById(
-        "die1"
-      ).textContent =
-        diceFaces[a-1];
-
-
-      document.getElementById(
-        "die2"
-      ).textContent =
-        diceFaces[b-1];
-
-
-      document.getElementById(
-        "centerDie1"
-      ).textContent =
-        diceFaces[a-1];
-
-
-      document.getElementById(
-        "centerDie2"
-      ).textContent =
-        diceFaces[b-1];
-
-
-      ids.forEach(
-        id=>{
-
-          document
-            .getElementById(id)
-            ?.classList.remove(
-              "rolling"
-            );
-
-        }
-      );
-
-    },
-    500
-  );
-
-}
-
-
-/* =========================================================
-   MOVEMENT
-========================================================= */
-
-async function movePlayer(
-  id,
-  steps
-){
-
-  let current =
-    localState.positions[id] ?? 0;
-
-
-  for(
-    let i=0;
-    i<steps;
-    i++
-  ){
-
-    current =
-      (current+1)%40;
-
-
-    localState.positions[id] =
-      current;
-
-
-    renderPieces();
-
-
-    await wait(150);
-
-
-    if(current===0){
-
-      localState.money[id] =
-        (
-          localState.money[id]
-          ?? STARTING_MONEY
-        )
-        + GO_MONEY;
-
-      addLog(
-        `${getPlayerName(id)} 經過 GO，獲得 £${GO_MONEY}。`
-      );
-
-    }
-
-  }
-
-
-  selectProperty(
-    current
-  );
-
-
-  handleLanding(
-    id,
-    current,
-    boardSpaces[current]
-  );
-
-
-  renderAll();
-
-  broadcastState();
-
-}
-
-
-/* =========================================================
-   LANDING
-========================================================= */
-
-function handleLanding(
-  id,
-  index,
-  space
-){
-
-  if(!space){
-    return;
-  }
-
-
-  if(space.type==="go"){
-
-    addLog(
-      `${getPlayerName(id)} 停在 GO。`
-    );
-
-    return;
-
-  }
-
-
-  if(space.type==="chance"){
-
-    if(id===me?.id){
-
-      drawCard(
-        "chance"
-      );
-
-    }
-
-    return;
-
-  }
-
-
-  if(space.type==="chest"){
-
-    if(id===me?.id){
-
-      drawCard(
-        "chest"
-      );
-
-    }
-
-    return;
-
-  }
-
-
-  if(space.type==="tax"){
-
-    const amount =
-      space.amount;
-
-
-    payBank(
-      id,
-      amount
-    );
-
-
-    addLog(
-      `${getPlayerName(id)} 支付 £${amount} 稅金。`
-    );
-
-
-    return;
-
-  }
-
-
-  if(space.type==="gotojail"){
-
-    localState.positions[id] =
-      10;
-
-    localState.inJail[id] =
-      true;
-
-
-    addLog(
-      `${getPlayerName(id)} 被送進 Jail。`
-    );
-
-
-    renderAll();
-
-    return;
-
-  }
-
-
-  if(space.type==="jail"){
-
-    addLog(
-      `${getPlayerName(id)} 來到 Jail。`
-    );
-
-    return;
-
-  }
-
-
-  if(space.type==="parking"){
-
-    addLog(
-      `${getPlayerName(id)} 停在 Free Parking。`
-    );
-
-    return;
-
-  }
-
-
-  if(space.type==="railroad"){
-
-    const owner =
-      localState.owners[index];
-
-
-    if(
-      owner
-      &&
-      owner!==id
-    ){
-
-      const rent =
-        calculateRailroadRent(
-          owner
-        );
-
-      payRent(
-        id,
-        owner,
-        rent
-      );
-
-    }
-
-    return;
-
-  }
-
-
-  if(space.type==="utility"){
-
-    const owner =
-      localState.owners[index];
-
-
-    if(
-      owner
-      &&
-      owner!==id
-    ){
-
-      const utilities =
-        countOwnedUtilities(
-          owner
-        );
-
-
-      const multiplier =
-        utilities>=2
-        ? 10
-        : 4;
-
-
-      const amount =
-        8 * multiplier;
-
-
-      payRent(
-        id,
-        owner,
-        amount
-      );
-
-    }
-
-    return;
-
-  }
-
-
-  if(space.type==="property"){
-
-    const owner =
-      localState.owners[index];
-
-
-    if(!owner){
-
-      if(
-        id===me?.id
-      ){
-
-        const money =
-          localState.money[id]
-          ?? STARTING_MONEY;
-
-
-        if(
-          money>=space.price
-        ){
-
-          const buy =
-            confirm(
-              `${space.name}\n\n價格：£${space.price}\n\n要購買嗎？`
-            );
-
-
-          if(buy){
-
-            buyProperty(
-              index
-            );
-
-          }
-
-        }
-
-      }
-
-    }
-
-    else if(
-      owner!==id
-    ){
-
-      const houses =
-        localState.houses[index]
-        ?? 0;
-
-
-      const rent =
-        space.rent[
-          houses
-        ];
-
-
-      payRent(
-        id,
-        owner,
-        rent
-      );
-
-    }
-
-  }
+  await refreshGame();
 
 }
 
@@ -3860,7 +2178,7 @@ function handleLanding(
    BUY
 ========================================================= */
 
-function buyCurrentProperty(){
+async function buyCurrentProperty(){
 
   if(!me){
 
@@ -3873,40 +2191,13 @@ function buyCurrentProperty(){
   }
 
 
-  const index =
-    localState.positions[
-      me.id
-    ] ?? 0;
+  const player =
+    getMePlayer();
 
-
-  buyProperty(
-    index
-  );
-
-}
-
-
-function buyProperty(
-  index
-){
-
-  if(!me){
-    return;
-  }
-
-
-  const space =
-    boardSpaces[index];
-
-
-  if(
-    !space
-    ||
-    !space.price
-  ){
+  if(!player){
 
     alert(
-      "這個位置不能購買。"
+      "找不到你的玩家資料。"
     );
 
     return;
@@ -3914,14 +2205,21 @@ function buyProperty(
   }
 
 
+  const position =
+    player.position;
+
+
+  const space =
+    boardSpaces[position];
+
+
   if(
+    !space ||
     ![
       "property",
       "railroad",
       "utility"
-    ].includes(
-      space.type
-    )
+    ].includes(space.type)
   ){
 
     alert(
@@ -3933,9 +2231,11 @@ function buyProperty(
   }
 
 
-  if(
-    localState.owners[index]
-  ){
+  const owner =
+    getProperty(position);
+
+
+  if(owner?.owner_id){
 
     alert(
       "這個地產已經有主人。"
@@ -3946,49 +2246,24 @@ function buyProperty(
   }
 
 
-  const money =
-    localState.money[
-      me.id
-    ] ?? STARTING_MONEY;
-
-
-  if(
-    money < space.price
-  ){
-
-    alert(
-      "你的資金不足。"
+  const result =
+    await serverAction(
+      "monopoly_buy_property",
+      {
+        p_position:position
+      }
     );
 
-    return;
+
+  if(result){
+
+    addLog(
+      `${me.name} 購買 ${space.name}。`
+    );
+
+    await refreshGame();
 
   }
-
-
-  localState.money[me.id] =
-    money-space.price;
-
-
-  localState.owners[index] =
-    me.id;
-
-
-  localState.houses[index] =
-    0;
-
-
-  addLog(
-    `${me.name} 購買 ${space.name}，花費 £${space.price}。`
-  );
-
-
-  renderAll();
-
-  selectProperty(
-    index
-  );
-
-  broadcastState();
 
 }
 
@@ -3997,7 +2272,7 @@ function buyProperty(
    BUILD
 ========================================================= */
 
-function buildProperty(){
+async function buildProperty(){
 
   if(!me){
 
@@ -4010,17 +2285,23 @@ function buildProperty(){
   }
 
 
-  const index =
-    localState.positions[
-      me.id
-    ] ?? 0;
+  const player =
+    getMePlayer();
 
+  if(!player){
+    return;
+  }
+
+
+  const position =
+    player.position;
 
   const space =
-    boardSpaces[index];
+    boardSpaces[position];
 
 
   if(
+    !space ||
     space.type!=="property"
   ){
 
@@ -4033,391 +2314,22 @@ function buildProperty(){
   }
 
 
-  if(
-    localState.owners[index]
-    !==
-    me.id
-  ){
-
-    alert(
-      "你必須擁有這個地產才能建築。"
-    );
-
-    return;
-
-  }
-
-
-  const houses =
-    localState.houses[index]
-    ?? 0;
-
-
-  if(
-    houses>=5
-  ){
-
-    alert(
-      "這座地產已經有旅館。"
-    );
-
-    return;
-
-  }
-
-
-  const cost =
-    space.houseCost;
-
-
-  const money =
-    localState.money[
-      me.id
-    ] ?? 0;
-
-
-  if(
-    money<cost
-  ){
-
-    alert(
-      `需要 £${cost}。`
-    );
-
-    return;
-
-  }
-
-
-  localState.money[
-    me.id
-  ] -= cost;
-
-
-  localState.houses[index] =
-    houses+1;
-
-
-  addLog(
-    `${me.name} 在 ${space.name} ${
-      houses===4
-      ? "升級成旅館"
-      : "建造房屋"
-    }，花費 £${cost}。`
-  );
-
-
-  renderAll();
-
-  broadcastState();
-
-}
-
-
-/* =========================================================
-   OWNERSHIP
-========================================================= */
-
-function updateOwnership(){
-
-  document
-    .querySelectorAll(".tile")
-    .forEach(tile=>{
-
-      const index =
-        Number(
-          tile.dataset.index
-        );
-
-
-      tile.classList.remove(
-        "owner1",
-        "owner2",
-        "owner3",
-        "owner4"
-      );
-
-
-      const owner =
-        localState.owners[
-          index
-        ];
-
-
-      if(owner){
-
-        const playerIndex =
-          players.findIndex(
-            player=>
-              player.id===owner
-          );
-
-
-        if(
-          playerIndex>=0
-        ){
-
-          tile.classList.add(
-            `owner${playerIndex+1}`
-          );
-
-        }
-
-      }
-
-
-      const buildings =
-        tile.querySelector(
-          ".buildings"
-        );
-
-
-      if(!buildings){
-        return;
-      }
-
-
-      buildings.innerHTML =
-        "";
-
-
-      const count =
-        localState.houses[
-          index
-        ] ?? 0;
-
-
-      if(
-        count===5
-      ){
-
-        const hotel =
-          document.createElement(
-            "div"
-          );
-
-        hotel.className =
-          "hotel";
-
-        buildings.appendChild(
-          hotel
-        );
-
-      }
-
-      else{
-
-        for(
-          let i=0;
-          i<count;
-          i++
-        ){
-
-          const house =
-            document.createElement(
-              "div"
-            );
-
-          house.className =
-            "house";
-
-          buildings.appendChild(
-            house
-          );
-
-        }
-
-      }
-
-    });
-
-}
-
-
-/* =========================================================
-   RENT
-========================================================= */
-
-function payRent(
-  from,
-  to,
-  amount
-){
-
-  const payer =
-    localState.money[from]
-    ?? 0;
-
-
-  const payment =
-    Math.min(
-      payer,
-      amount
-    );
-
-
-  localState.money[from] =
-    payer-payment;
-
-
-  localState.money[to] =
-    (
-      localState.money[to]
-      ?? 0
-    )
-    + payment;
-
-
-  addLog(
-    `${getPlayerName(from)} 支付 £${payment} 租金給 ${getPlayerName(to)}。`
-  );
-
-
-  if(
-    localState.money[from]<=0
-  ){
-
-    handleBankruptcy(
-      from,
-      to
-    );
-
-  }
-
-
-  renderAll();
-
-}
-
-
-/* =========================================================
-   BANK PAYMENT
-========================================================= */
-
-function payBank(
-  id,
-  amount
-){
-
-  const money =
-    localState.money[id]
-    ?? 0;
-
-
-  localState.money[id] =
-    Math.max(
-      0,
-      money-amount
-    );
-
-
-  if(
-    localState.money[id]===0
-  ){
-
-    handleBankruptcy(
-      id,
-      null
-    );
-
-  }
-
-
-  renderAll();
-
-}
-
-
-/* =========================================================
-   BANKRUPTCY
-========================================================= */
-
-function handleBankruptcy(
-  id,
-  creditor
-){
-
-  if(
-    localState.bankrupt[id]
-  ){
-
-    return;
-
-  }
-
-
-  localState.bankrupt[id] =
-    true;
-
-
-  Object
-    .entries(
-      localState.owners
-    )
-    .forEach(
-      ([index,owner])=>{
-
-        if(owner===id){
-
-          if(creditor){
-
-            localState.owners[index] =
-              creditor;
-
-          }
-
-          else{
-
-            delete localState.owners[index];
-
-            delete localState.houses[index];
-
-          }
-
-        }
-
+  const result =
+    await serverAction(
+      "monopoly_build_property",
+      {
+        p_position:position
       }
     );
 
 
-  addLog(
-    `${getPlayerName(id)} 破產。`
-  );
-
-
-  checkWinner();
-
-}
-
-
-/* =========================================================
-   WINNER
-========================================================= */
-
-function checkWinner(){
-
-  const alive =
-    players.filter(
-      player=>
-        !localState.bankrupt[
-          player.id
-        ]
-    );
-
-
-  if(
-    alive.length===1
-    &&
-    players.length>1
-  ){
+  if(result){
 
     addLog(
-      `🏆 ${alive[0].name} 獲得勝利！`
+      `${me.name} 在 ${space.name} 建造。`
     );
 
-    alert(
-      `🏆 ${alive[0].name} 獲得勝利！`
-    );
+    await refreshGame();
 
   }
 
@@ -4425,231 +2337,10 @@ function checkWinner(){
 
 
 /* =========================================================
-   RAILROAD RENT
+   END TURN
 ========================================================= */
 
-function calculateRailroadRent(
-  owner
-){
-
-  const railroadIndexes = [
-
-    5,
-    15,
-    25,
-    35
-
-  ];
-
-
-  const count =
-    railroadIndexes.filter(
-      index=>
-        localState.owners[index]
-        ===owner
-    ).length;
-
-
-  return (
-    [0,25,50,100,200][count]
-    || 25
-  );
-
-}
-
-
-/* =========================================================
-   UTILITY COUNT
-========================================================= */
-
-function countOwnedUtilities(
-  owner
-){
-
-  return [
-    12,
-    28
-  ].filter(
-    index=>
-      localState.owners[index]
-      ===owner
-  ).length;
-
-}
-
-
-/* =========================================================
-   CHANCE
-========================================================= */
-
-const chanceCards = [
-
-  {
-    text:"銀行錯誤對你有利。獲得 £200。",
-    action:()=>{
-      changeMoney(200);
-    }
-  },
-
-  {
-    text:"支付醫院費用 £100。",
-    action:()=>{
-      changeMoney(-100);
-    }
-  },
-
-  {
-    text:"前往 GO，獲得 £200。",
-    action:()=>{
-
-      localState.positions[
-        me.id
-      ] = 0;
-
-      changeMoney(
-        200
-      );
-
-      renderPieces();
-
-    }
-  },
-
-  {
-    text:"前往 Plymouth。",
-    action:()=>{
-
-      localState.positions[
-        me.id
-      ] = 39;
-
-      renderPieces();
-
-    }
-  },
-
-  {
-    text:"獲得股息 £50。",
-    action:()=>{
-      changeMoney(50);
-    }
-  },
-
-  {
-    text:"支付城市維修費 £75。",
-    action:()=>{
-      changeMoney(-75);
-    }
-  }
-
-];
-
-
-/* =========================================================
-   COMMUNITY CHEST
-========================================================= */
-
-const chestCards = [
-
-  {
-    text:"銀行錯誤對你有利。獲得 £200。",
-    action:()=>{
-      changeMoney(200);
-    }
-  },
-
-  {
-    text:"學校費用。支付 £50。",
-    action:()=>{
-      changeMoney(-50);
-    }
-  },
-
-  {
-    text:"生日快樂！每位玩家支付你 £10。",
-    action:()=>{
-
-      players.forEach(
-        player=>{
-
-          if(
-            player.id!==me.id
-            &&
-            !localState.bankrupt[
-              player.id
-            ]
-          ){
-
-            localState.money[
-              player.id
-            ] =
-              Math.max(
-                0,
-                (
-                  localState.money[
-                    player.id
-                  ] ?? 0
-                ) - 10
-              );
-
-            localState.money[
-              me.id
-            ] =
-              (
-                localState.money[
-                  me.id
-                ] ?? 0
-              ) + 10;
-
-          }
-
-        }
-      );
-
-    }
-  },
-
-  {
-    text:"獲得 £100。",
-    action:()=>{
-      changeMoney(100);
-    }
-  },
-
-  {
-    text:"醫生費用 £50。",
-    action:()=>{
-      changeMoney(-50);
-    }
-  },
-
-  {
-    text:"回到 GO，獲得 £200。",
-    action:()=>{
-
-      localState.positions[
-        me.id
-      ] = 0;
-
-      changeMoney(
-        200
-      );
-
-      renderPieces();
-
-    }
-  }
-
-];
-
-
-/* =========================================================
-   DRAW CARD
-========================================================= */
-
-function drawCard(
-  type="chance"
-){
+async function endTurn(){
 
   if(!me){
 
@@ -4662,99 +2353,41 @@ function drawCard(
   }
 
 
-  const deck =
-    type==="chest"
-    ?
-    chestCards
-    :
-    chanceCards;
+  if(
+    gameState.current_player_id
+    !==
+    me.id
+  ){
 
-
-  const card =
-    deck[
-      Math.floor(
-        Math.random()*deck.length
-      )
-    ];
-
-
-  document.getElementById(
-    "cardTitle"
-  ).textContent =
-    type==="chest"
-    ?
-    "Community Chest"
-    :
-    "Chance";
-
-
-  document.getElementById(
-    "cardText"
-  ).textContent =
-    card.text;
-
-
-  document
-    .getElementById(
-      "cardModal"
-    )
-    .classList.add(
-      "show"
+    alert(
+      "現在不是你的回合。"
     );
 
-
-  card.action();
-
-
-  addLog(
-    `${me.name} 抽到 ${
-      type==="chest"
-      ? "Community Chest"
-      : "Chance"
-    }：${card.text}`
-  );
-
-
-  renderAll();
-
-  broadcastState();
-
-}
-
-
-/* =========================================================
-   MONEY
-========================================================= */
-
-function changeMoney(
-  amount
-){
-
-  if(!me){
     return;
+
   }
 
 
-  localState.money[
-    me.id
-  ] =
-    (
-      localState.money[
-        me.id
-      ] ?? STARTING_MONEY
-    )
-    + amount;
+  if(!gameState.rolled){
+
+    alert(
+      "請先擲骰子。"
+    );
+
+    return;
+
+  }
 
 
-  if(
-    localState.money[
-      me.id
-    ]<0
-  ){
+  const result =
+    await serverAction(
+      "monopoly_end_turn"
+    );
 
-    localState.money[
-      me.id
-    ] = 0;
+
+  if(result){
+
+    await refreshGame();
 
   }
 
@@ -4780,12 +2413,9 @@ function openTrade(){
 
   const targets =
     players.filter(
-      player=>
-        player.id!==me.id
-        &&
-        !localState.bankrupt[
-          player.id
-        ]
+      p=>
+        p.id!==me.id &&
+        !p.bankrupt
     );
 
 
@@ -4807,42 +2437,32 @@ function openTrade(){
 
 
   select.innerHTML =
-    targets
-      .map(
-        player=>
-          `<option value="${player.id}">
-            ${escapeHTML(player.name)}
-           </option>`
-      )
-      .join("");
+    targets.map(
+      p=>
+        `<option value="${escapeHTML(p.id)}">
+          ${escapeHTML(p.name)}
+        </option>`
+    ).join("");
+
+
+  const mine =
+    getMePlayer();
 
 
   document.getElementById(
     "tradeMyMoney"
   ).textContent =
-    `£${
-      localState.money[
-        me.id
-      ] ?? 0
-    }`;
+    `£${mine?.money ?? 0}`;
 
 
   document
-    .getElementById(
-      "tradeModal"
-    )
-    .classList.add(
-      "show"
-    );
+    .getElementById("tradeModal")
+    .classList.add("show");
 
 }
 
 
-/* =========================================================
-   SEND TRADE
-========================================================= */
-
-function sendTrade(){
+async function sendTrade(){
 
   if(!me){
     return;
@@ -4877,207 +2497,38 @@ function sendTrade(){
     );
 
 
-  if(!target){
-
-    return;
-
-  }
-
-
-  if(
-    (
-      localState.money[
-        me.id
-      ] ?? 0
-    ) < give
-  ){
-
-    alert(
-      "你的資金不足。"
+  const result =
+    await serverAction(
+      "monopoly_trade_money",
+      {
+        p_target_player_id:target,
+        p_give_money:give,
+        p_get_money:get
+      }
     );
 
-    return;
 
-  }
+  if(result){
 
-
-  if(
-    (
-      localState.money[
-        target
-      ] ?? 0
-    ) < get
-  ){
-
-    alert(
-      "對方沒有足夠資金。"
+    closeModal(
+      "tradeModal"
     );
 
-    return;
+    await refreshGame();
 
   }
-
-
-  localState.money[
-    me.id
-  ] -= give;
-
-
-  localState.money[
-    target
-  ] =
-    (
-      localState.money[
-        target
-      ] ?? STARTING_MONEY
-    )
-    + give;
-
-
-  localState.money[
-    target
-  ] -= get;
-
-
-  localState.money[
-    me.id
-  ] += get;
-
-
-  addLog(
-    `${me.name} 與 ${getPlayerName(target)} 完成 £${give} ↔ £${get} 的交易。`
-  );
-
-
-  closeModal(
-    "tradeModal"
-  );
-
-
-  renderAll();
-
-  broadcastState();
 
 }
 
 
 /* =========================================================
-   END TURN
+   SELECT PROPERTY
 ========================================================= */
 
-function endTurn(){
-
-  if(!me){
-
-    alert(
-      "請先加入遊戲。"
-    );
-
-    return;
-
-  }
-
-
-  const current =
-    players[
-      localState.currentPlayer
-    ];
-
-
-  if(
-    current
-    &&
-    current.id!==me.id
-  ){
-
-    alert(
-      "現在不是你的回合。"
-    );
-
-    return;
-
-  }
-
-
-  if(
-    !localState.rolled
-  ){
-
-    alert(
-      "請先擲骰子。"
-    );
-
-    return;
-
-  }
-
-
-  localState.rolled =
-    false;
-
-
-  let next =
-    localState.currentPlayer;
-
-
-  do{
-
-    next =
-      (
-        next+1
-      )
-      %
-      Math.max(
-        players.length,
-        1
-      );
-
-  }
-
-  while(
-    players[next]
-    &&
-    localState.bankrupt[
-      players[next].id
-    ]
-    &&
-    next!==localState.currentPlayer
-  );
-
-
-  localState.currentPlayer =
-    next;
-
-
-  localState.turn++;
-
-
-  addLog(
-    `輪到 ${
-      players[next]?.name
-      || "下一位玩家"
-    }。`
-  );
-
-
-  renderAll();
-
-  broadcastState();
-
-}
-
-
-/* =========================================================
-   PROPERTY SELECT
-========================================================= */
-
-function selectProperty(
-  index
-){
+function selectProperty(index){
 
   const space =
     boardSpaces[index];
-
 
   if(!space){
     return;
@@ -5100,77 +2551,29 @@ function selectProperty(
     "UK Property";
 
 
-  if(
-    space.type==="railroad"
-  ){
+  if(space.type==="railroad")
+    typeText="Railway Station";
 
-    typeText =
-      "Railway Station";
+  else if(space.type==="utility")
+    typeText="Utility";
 
-  }
+  else if(space.type==="chance")
+    typeText="Chance";
 
-  else if(
-    space.type==="utility"
-  ){
+  else if(space.type==="chest")
+    typeText="Community Chest";
 
-    typeText =
-      "Utility";
+  else if(space.type==="tax")
+    typeText="Tax";
 
-  }
+  else if(space.type==="go")
+    typeText="START";
 
-  else if(
-    space.type==="chance"
-  ){
+  else if(space.type==="jail")
+    typeText="Jail";
 
-    typeText =
-      "Chance";
-
-  }
-
-  else if(
-    space.type==="chest"
-  ){
-
-    typeText =
-      "Community Chest";
-
-  }
-
-  else if(
-    space.type==="tax"
-  ){
-
-    typeText =
-      "Tax";
-
-  }
-
-  else if(
-    space.type==="go"
-  ){
-
-    typeText =
-      "START";
-
-  }
-
-  else if(
-    space.type==="jail"
-  ){
-
-    typeText =
-      "Jail";
-
-  }
-
-  else if(
-    space.type==="parking"
-  ){
-
-    typeText =
-      "Free Parking";
-
-  }
+  else if(space.type==="parking")
+    typeText="Free Parking";
 
 
   document.getElementById(
@@ -5223,20 +2626,409 @@ function selectProperty(
     "—";
 
 
-  const owner =
-    localState.owners[
-      index
-    ];
+  const prop =
+    getProperty(index);
 
 
   document.getElementById(
     "propertyOwner"
   ).textContent =
-    owner
+    prop?.owner_id
     ?
-    `擁有者：${getPlayerName(owner)}`
+    `擁有者：${getPlayerName(prop.owner_id)}`
     :
     "無擁有者";
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderAll(){
+
+  renderPlayers();
+
+  renderPieces();
+
+  updateOwnership();
+
+  updateMyStatus();
+
+  const mePlayer =
+    getMePlayer();
+
+  if(mePlayer){
+    selectProperty(
+      mePlayer.position
+    );
+  }
+
+  else{
+    selectProperty(1);
+  }
+
+  renderLogs();
+
+}
+
+
+/* =========================================================
+   PLAYERS
+========================================================= */
+
+function renderPlayers(){
+
+  const el =
+    document.getElementById(
+      "players"
+    );
+
+
+  if(!players.length){
+
+    el.innerHTML =
+      `<div style="color:#aaa">
+        等待玩家加入...
+      </div>`;
+
+  }else{
+
+    el.innerHTML =
+      players.map(
+        (player,index)=>{
+
+          const active =
+            player.id===
+            gameState.current_player_id;
+
+          const bankrupt =
+            player.bankrupt;
+
+          return `
+
+            <div class="
+              player
+              ${active?"active":""}
+              ${bankrupt?"playerBankrupt":""}
+            ">
+
+              <div class="avatar">
+                ${pieceSymbols[index] || "♟"}
+              </div>
+
+              <div>
+
+                <div class="playerName">
+                  ${escapeHTML(player.name)}
+                </div>
+
+                <div class="playerMoney">
+                  £${Number(player.money || 0)}
+                </div>
+
+              </div>
+
+              ${
+                bankrupt
+                ?
+                `<div class="playerStatus">
+                  BANKRUPT
+                </div>`
+                :
+                active
+                ?
+                `<div class="playerStatus">
+                  TURN
+                </div>`
+                :
+                ""
+              }
+
+            </div>
+
+          `;
+
+        }
+      ).join("");
+
+  }
+
+
+  document.getElementById(
+    "playerCount"
+  ).textContent =
+    players.length;
+
+
+  const current =
+    players.find(
+      p=>
+        p.id===
+        gameState.current_player_id
+    );
+
+
+  document.getElementById(
+    "turnText"
+  ).textContent =
+    current
+    ?
+    `${current.name}'s Turn`
+    :
+    "Waiting";
+
+}
+
+
+/* =========================================================
+   PIECES
+========================================================= */
+
+function renderPieces(){
+
+  document
+    .querySelectorAll(".piece")
+    .forEach(
+      p=>p.remove()
+    );
+
+
+  players.forEach(
+    (player,index)=>{
+
+      if(player.bankrupt){
+        return;
+      }
+
+
+      const tile =
+        document.querySelector(
+          `.tile[data-index="${player.position}"]`
+        );
+
+
+      if(!tile){
+        return;
+      }
+
+
+      const piece =
+        document.createElement("div");
+
+      piece.className =
+        `piece p${index+1}`;
+
+      piece.textContent =
+        pieceSymbols[index] || "♟";
+
+
+      const offset =
+        index*4;
+
+
+      piece.style.left =
+        `calc(50% - 14px + ${offset}px)`;
+
+
+      piece.style.top =
+        `calc(50% - 14px + ${offset}px)`;
+
+
+      tile.appendChild(piece);
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   OWNERSHIP
+========================================================= */
+
+function updateOwnership(){
+
+  document
+    .querySelectorAll(".tile")
+    .forEach(tile=>{
+
+      const index =
+        Number(tile.dataset.index);
+
+
+      tile.classList.remove(
+        "owner1",
+        "owner2",
+        "owner3",
+        "owner4"
+      );
+
+
+      const prop =
+        getProperty(index);
+
+
+      if(prop?.owner_id){
+
+        const playerIndex =
+          players.findIndex(
+            p=>p.id===prop.owner_id
+          );
+
+
+        if(playerIndex>=0){
+
+          tile.classList.add(
+            `owner${playerIndex+1}`
+          );
+
+        }
+
+      }
+
+
+      const buildings =
+        tile.querySelector(
+          ".buildings"
+        );
+
+
+      if(!buildings){
+        return;
+      }
+
+
+      buildings.innerHTML="";
+
+
+      const houses =
+        Number(prop?.houses || 0);
+
+
+      if(houses===5){
+
+        const hotel =
+          document.createElement("div");
+
+        hotel.className="hotel";
+
+        buildings.appendChild(hotel);
+
+      }else{
+
+        for(
+          let i=0;
+          i<houses;
+          i++
+        ){
+
+          const house =
+            document.createElement("div");
+
+          house.className="house";
+
+          buildings.appendChild(house);
+
+        }
+
+      }
+
+    });
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function updateMyStatus(){
+
+  const el =
+    document.getElementById(
+      "myStatus"
+    );
+
+
+  if(!me){
+
+    el.innerHTML =
+      "尚未加入遊戲";
+
+    return;
+
+  }
+
+
+  const player =
+    getMePlayer();
+
+
+  if(!player){
+
+    el.innerHTML =
+      "正在同步玩家資料...";
+
+    return;
+
+  }
+
+
+  const position =
+    Number(player.position || 0);
+
+
+  const space =
+    boardSpaces[position];
+
+
+  const owned =
+    properties.filter(
+      p=>
+        p.owner_id===me.id
+    );
+
+
+  el.innerHTML = `
+
+    <b>
+      ${escapeHTML(player.name)}
+    </b>
+
+    <div class="statusMoney">
+      £${Number(player.money || 0)}
+    </div>
+
+    📍
+    ${escapeHTML(space?.name || "Unknown")}
+
+    <br>
+
+    🏠
+    地產：
+    ${owned.length}
+    個
+
+    <br><br>
+
+    ${
+      owned.length
+      ?
+      owned.map(
+        p=>
+          escapeHTML(
+            boardSpaces[
+              Number(p.position)
+            ]?.name || ""
+          )
+      ).join("、")
+      :
+      "暫無地產"
+    }
+
+  `;
 
 }
 
@@ -5245,9 +3037,40 @@ function selectProperty(
    LOG
 ========================================================= */
 
-function addLog(
-  message
-){
+function renderLogs(){
+
+  const log =
+    document.getElementById(
+      "gameLog"
+    );
+
+
+  if(!logs.length){
+    return;
+  }
+
+
+  log.innerHTML =
+    logs.map(
+      item=>`
+
+        <div class="logLine">
+
+          <b>
+            ${formatTime(item.created_at)}
+          </b>
+
+          ${escapeHTML(item.message)}
+
+        </div>
+
+      `
+    ).join("");
+
+}
+
+
+function addLog(message){
 
   const log =
     document.getElementById(
@@ -5256,14 +3079,9 @@ function addLog(
 
 
   const div =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
-
-  div.className =
-    "logLine";
-
+  div.className="logLine";
 
   div.innerHTML = `
 
@@ -5277,39 +3095,149 @@ function addLog(
       )}
     </b>
 
-     ${escapeHTML(message)}
+    ${escapeHTML(message)}
 
   `;
 
 
-  log.prepend(
-    div
-  );
-
-
-  while(
-    log.children.length>50
-  ){
-
-    log.lastChild.remove();
-
-  }
+  log.prepend(div);
 
 }
 
 
 /* =========================================================
-   UTILITY
+   DICE UI
 ========================================================= */
 
-function getPlayerName(
-  id
-){
+function animateDiceRandom(){
+
+  const ids = [
+    "die1",
+    "die2",
+    "centerDie1",
+    "centerDie2"
+  ];
+
+
+  ids.forEach(id=>{
+
+    document
+      .getElementById(id)
+      ?.classList.add("rolling");
+
+  });
+
+
+  let count=0;
+
+  const timer =
+    setInterval(()=>{
+
+      document.getElementById(
+        "die1"
+      ).textContent =
+        diceFaces[
+          Math.floor(Math.random()*6)
+        ];
+
+      document.getElementById(
+        "die2"
+      ).textContent =
+        diceFaces[
+          Math.floor(Math.random()*6)
+        ];
+
+      document.getElementById(
+        "centerDie1"
+      ).textContent =
+        document.getElementById(
+          "die1"
+        ).textContent;
+
+      document.getElementById(
+        "centerDie2"
+      ).textContent =
+        document.getElementById(
+          "die2"
+        ).textContent;
+
+      count++;
+
+      if(count>=8){
+
+        clearInterval(timer);
+
+      }
+
+    },70);
+
+}
+
+
+function showDice(a,b){
+
+  const ids = [
+    "die1",
+    "die2",
+    "centerDie1",
+    "centerDie2"
+  ];
+
+
+  document.getElementById(
+    "die1"
+  ).textContent =
+    diceFaces[a-1];
+
+  document.getElementById(
+    "die2"
+  ).textContent =
+    diceFaces[b-1];
+
+  document.getElementById(
+    "centerDie1"
+  ).textContent =
+    diceFaces[a-1];
+
+  document.getElementById(
+    "centerDie2"
+  ).textContent =
+    diceFaces[b-1];
+
+
+  ids.forEach(id=>{
+
+    document
+      .getElementById(id)
+      ?.classList.remove("rolling");
+
+  });
+
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function getMePlayer(){
+
+  if(!me){
+    return null;
+  }
+
+  return players.find(
+    p=>p.id===me.id
+  ) || null;
+
+}
+
+
+function getPlayerName(id){
 
   return (
     players.find(
-      player=>
-        player.id===id
+      p=>p.id===id
     )?.name
     ||
     "Unknown"
@@ -5318,109 +3246,147 @@ function getPlayerName(
 }
 
 
-function wait(
-  ms
-){
+function getProperty(position){
 
-  return new Promise(
-    resolve=>
-      setTimeout(
-        resolve,
-        ms
-      )
-  );
+  return properties.find(
+    p=>
+      Number(p.position)===
+      Number(position)
+  ) || null;
 
 }
 
 
-function escapeHTML(
-  value
-){
+function formatTime(value){
 
-  return String(value)
+  if(!value){
+    return "";
+  }
 
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
-}
-
-
-function closeModal(
-  id
-){
-
-  document
-    .getElementById(id)
-    .classList.remove(
-      "show"
-    );
-
-}
-
-
-/* =========================================================
-   MODAL BACKGROUND
-========================================================= */
-
-document
-  .querySelectorAll(
-    ".modal"
-  )
-  .forEach(
-    modal=>{
-
-      modal.addEventListener(
-        "click",
-        event=>{
-
-          if(
-            event.target===modal
-          ){
-
-            modal.classList.remove(
-              "show"
-            );
-
-          }
-
-        }
-      );
-
+  return new Date(
+    value
+  ).toLocaleTimeString(
+    "zh-TW",
+    {
+      hour:"2-digit",
+      minute:"2-digit"
     }
   );
 
+}
+
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    ?.classList.remove("show");
+
+}
+
+
+function setConnection(
+  ok,
+  text
+){
+
+  const el =
+    document.getElementById(
+      "connection"
+    );
+
+  const label =
+    document.getElementById(
+      "connectionText"
+    );
+
+
+  el.classList.toggle(
+    "ok",
+    ok
+  );
+
+  el.classList.toggle(
+    "bad",
+    !ok
+  );
+
+  label.textContent =
+    text;
+
+}
+
+
+function setBusy(
+  busy,
+  text
+){
+
+  const button =
+    document.getElementById(
+      "joinBtn"
+    );
+
+  button.disabled =
+    busy;
+
+  button.textContent =
+    text;
+
+}
+
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
 
 /* =========================================================
-   INITIALIZE
+   MODALS
+========================================================= */
+
+document
+  .querySelectorAll(".modal")
+  .forEach(modal=>{
+
+    modal.addEventListener(
+      "click",
+      event=>{
+
+        if(
+          event.target===modal
+        ){
+
+          modal.classList.remove(
+            "show"
+          );
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   INIT
 ========================================================= */
 
 createBoard();
 
 selectProperty(1);
 
-setConnection(false);
+restorePlayer();
+
+initSupabase();
 
 </script>
 

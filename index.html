@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kingdoms of England</title>
 
+<!-- =====================================
+     SUPABASE
+===================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{
   box-sizing:border-box;
@@ -52,6 +58,13 @@ header p{
   margin:4px 0 0;
   font-size:16px;
   color:#f5ead0;
+}
+
+#connectionStatus{
+  margin-top:7px;
+  font-family:Arial,sans-serif;
+  font-size:12px;
+  color:#9bb095;
 }
 
 /* =========================
@@ -157,7 +170,6 @@ header p{
   pointer-events:none;
 }
 
-/* 標題 */
 .mapTitle{
   position:absolute;
   top:10px;
@@ -690,12 +702,13 @@ header p{
 <header>
   <h1>♜ Kingdoms of England</h1>
   <p>Build • Trade • Conquer</p>
+  <div id="connectionStatus">🔄 Connecting to Supabase...</div>
 </header>
 
 <div class="layout">
 
 <!-- =====================================
-     LEFT PANEL
+     LEFT
 ===================================== -->
 
 <aside class="left">
@@ -785,7 +798,6 @@ header p{
 
 <main class="map">
 
-  <!-- 你的 GitHub 圖片 -->
   <img
     class="mapImage"
     src="9EE7C46A-D813-43D1-BD12-E5A638559595.png"
@@ -810,10 +822,7 @@ header p{
     English Channel
   </div>
 
-
-  <!-- =====================================
-       HEXES
-  ===================================== -->
+  <!-- HEXES -->
 
   <div class="hexGrid">
 
@@ -947,19 +956,13 @@ header p{
 
   </div>
 
-
-  <!-- =====================================
-       ROADS
-  ===================================== -->
+  <!-- ROADS -->
 
   <div class="road r1" id="road1"></div>
   <div class="road r2" id="road2"></div>
   <div class="road r3" id="road3"></div>
 
-
-  <!-- =====================================
-       BUILDING NODES
-  ===================================== -->
+  <!-- BUILDING NODES -->
 
   <div class="node n1" onclick="buildNode(1)"></div>
   <div class="node n2" onclick="buildNode(2)"></div>
@@ -971,10 +974,7 @@ header p{
   <div class="node n8" onclick="buildNode(8)"></div>
   <div class="node n9" onclick="buildNode(9)"></div>
 
-
-  <!-- =====================================
-       CITIES
-  ===================================== -->
+  <!-- CITIES -->
 
   <div class="city c-newcastle"
        onclick="cityInfo('Newcastle')">
@@ -1036,10 +1036,7 @@ header p{
     Plymouth
   </div>
 
-
-  <!-- =====================================
-       PIRATE
-  ===================================== -->
+  <!-- PIRATE -->
 
   <div
     class="pirate"
@@ -1053,7 +1050,7 @@ header p{
 
 
 <!-- =====================================
-     RIGHT PANEL
+     RIGHT
 ===================================== -->
 
 <aside class="right">
@@ -1185,12 +1182,10 @@ header p{
     <h2>💬 CHAT</h2>
 
     <div class="chat" id="chat">
-
       🔴 Raven: Good luck everyone!<br>
       🔵 Lion: Let's build a strong kingdom!<br>
       🟢 Stag: I need Iron.<br>
       🟡 Falcon: Watch out for the pirate!<br>
-
     </div>
 
     <div class="chatInput">
@@ -1217,6 +1212,23 @@ header p{
 <script>
 
 /* =====================================
+   SUPABASE CONNECTION
+===================================== */
+
+const SUPABASE_URL =
+  "https://aeqhrcdlmpqncddridaj.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================
    GAME DATA
 ===================================== */
 
@@ -1239,6 +1251,289 @@ let roadCount=0;
 let villageCount=0;
 let townCount=0;
 
+let currentUser=null;
+
+
+/* =====================================
+   CONNECTION STATUS
+===================================== */
+
+function connectionStatus(message){
+  const el=document.getElementById("connectionStatus");
+
+  if(el){
+    el.textContent=message;
+  }
+}
+
+
+/* =====================================
+   ANONYMOUS LOGIN
+===================================== */
+
+async function connectSupabase(){
+
+  try{
+
+    connectionStatus(
+      "🔄 Connecting to Supabase..."
+    );
+
+    const {
+      data,
+      error
+    } = await supabaseClient.auth.getSession();
+
+    if(error){
+      throw error;
+    }
+
+    if(data.session){
+
+      currentUser=data.session.user;
+
+      connectionStatus(
+        "🟢 Connected to Supabase"
+      );
+
+    }else{
+
+      const result=
+        await supabaseClient.auth.signInAnonymously();
+
+      if(result.error){
+        throw result.error;
+      }
+
+      currentUser=result.data.user;
+
+      connectionStatus(
+        "🟢 Connected • Anonymous Player"
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Supabase connection error:",
+      error
+    );
+
+    connectionStatus(
+      "🔴 Supabase connection failed"
+    );
+
+    log(
+      "❌ Supabase: "+
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================
+   SAVE GAME STATE
+===================================== */
+
+async function saveGameState(){
+
+  if(!currentUser){
+    return;
+  }
+
+  try{
+
+    const payload={
+      id:1,
+      current_player:"Raven",
+      wood:resources.wood,
+      grain:resources.grain,
+      wool:resources.wool,
+      stone:resources.stone,
+      iron:resources.iron,
+      gold:resources.gold,
+      raven_vp:vp,
+      pirate_region:pirateRegion,
+      road_count:roadCount,
+      village_count:villageCount,
+      town_count:townCount
+    };
+
+    const {
+      error
+    } = await supabaseClient
+      .from("game_state")
+      .upsert(
+        payload,
+        {onConflict:"id"}
+      );
+
+    if(error){
+
+      console.error(
+        "Save game state error:",
+        error
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =====================================
+   LOAD GAME STATE
+===================================== */
+
+async function loadGameState(){
+
+  try{
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("game_state")
+      .select("*")
+      .eq("id",1)
+      .maybeSingle();
+
+    if(error){
+
+      console.error(
+        "Load game state error:",
+        error
+      );
+
+      return;
+
+    }
+
+    if(!data){
+      return;
+    }
+
+    if(data.wood !== undefined)
+      resources.wood=data.wood;
+
+    if(data.grain !== undefined)
+      resources.grain=data.grain;
+
+    if(data.wool !== undefined)
+      resources.wool=data.wool;
+
+    if(data.stone !== undefined)
+      resources.stone=data.stone;
+
+    if(data.iron !== undefined)
+      resources.iron=data.iron;
+
+    if(data.gold !== undefined)
+      resources.gold=data.gold;
+
+    if(data.raven_vp !== undefined)
+      vp=data.raven_vp;
+
+    if(data.pirate_region)
+      pirateRegion=data.pirate_region;
+
+    if(data.road_count !== undefined)
+      roadCount=data.road_count;
+
+    if(data.village_count !== undefined)
+      villageCount=data.village_count;
+
+    if(data.town_count !== undefined)
+      townCount=data.town_count;
+
+    updateResources();
+
+    document.getElementById(
+      "pirateLocation"
+    ).textContent=pirateRegion;
+
+    restoreBuildings();
+
+    log("☁️ Game loaded from Supabase.");
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =====================================
+   SAVE LOG
+===================================== */
+
+async function saveLog(message){
+
+  if(!currentUser){
+    return;
+  }
+
+  try{
+
+    const {
+      error
+    } = await supabaseClient
+      .from("game_logs")
+      .insert({
+
+        message:message,
+
+        player_name:"Raven",
+
+        user_id:currentUser.id
+
+      });
+
+    if(error){
+
+      console.warn(
+        "Game log save failed:",
+        error.message
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(error);
+
+  }
+
+}
+
+
+/* =====================================
+   GAME LOG
+===================================== */
+
+function log(message){
+
+  const box=document.getElementById("log");
+
+  box.innerHTML=
+    message+
+    "<br>"+
+    box.innerHTML;
+
+  saveLog(message);
+
+}
+
 
 /* =====================================
    RESOURCE UPDATE
@@ -1256,23 +1551,10 @@ function updateResources(){
 
   });
 
-  document.getElementById("ravenVP").textContent=
-    vp+" VP";
-}
+  document.getElementById(
+    "ravenVP"
+  ).textContent=vp+" VP";
 
-
-/* =====================================
-   GAME LOG
-===================================== */
-
-function log(message){
-
-  const box=document.getElementById("log");
-
-  box.innerHTML=
-    message+
-    "<br>"+
-    box.innerHTML;
 }
 
 
@@ -1280,10 +1562,13 @@ function log(message){
    DICE
 ===================================== */
 
-function rollDice(){
+async function rollDice(){
 
-  const a=Math.floor(Math.random()*6)+1;
-  const b=Math.floor(Math.random()*6)+1;
+  const a=
+    Math.floor(Math.random()*6)+1;
+
+  const b=
+    Math.floor(Math.random()*6)+1;
 
   const total=a+b;
 
@@ -1296,16 +1581,22 @@ function rollDice(){
     "⚅"
   ];
 
-  document.getElementById("dice").textContent=
-    faces[a-1]+" "+faces[b-1]+" = "+total;
+  document.getElementById(
+    "dice"
+  ).textContent=
+    faces[a-1]+" "+
+    faces[b-1]+" = "+
+    total;
 
-  log("🎲 Raven rolled "+total+".");
-
-  /* 7 = Pirate */
+  log(
+    "🎲 Raven rolled "+total+"."
+  );
 
   if(total===7){
 
-    log("🏴‍☠️ Pirate Attack!");
+    log(
+      "🏴‍☠️ Pirate Attack!"
+    );
 
     alert(
       "🎲 你擲出了 7！\n\n"+
@@ -1314,8 +1605,6 @@ function rollDice(){
 
     return;
   }
-
-  /* 資源生產 */
 
   const production={
 
@@ -1345,9 +1634,13 @@ function rollDice(){
       " 來自骰子 "+total
     );
 
+    await saveGameState();
+
   }else{
 
-    log("沒有對應資源。");
+    log(
+      "沒有對應資源。"
+    );
 
   }
 
@@ -1379,6 +1672,7 @@ function spend(cost){
   updateResources();
 
   return true;
+
 }
 
 
@@ -1386,7 +1680,7 @@ function spend(cost){
    BUILD ROAD
 ===================================== */
 
-function buildRoad(){
+async function buildRoad(){
 
   if(
     spend({
@@ -1412,6 +1706,8 @@ function buildRoad(){
       "🛣️ Raven built a Road! +1 VP"
     );
 
+    await saveGameState();
+
   }else{
 
     log(
@@ -1427,7 +1723,7 @@ function buildRoad(){
    BUILD VILLAGE
 ===================================== */
 
-function buildVillage(){
+async function buildVillage(){
 
   if(
     spend({
@@ -1445,8 +1741,6 @@ function buildVillage(){
       "🏘️ Raven built a Village! +1 VP"
     );
 
-    /* 自動標記一個節點 */
-
     const nodes=
       document.querySelectorAll(".node");
 
@@ -1457,6 +1751,8 @@ function buildVillage(){
       ].classList.add("built");
 
     }
+
+    await saveGameState();
 
   }else{
 
@@ -1473,7 +1769,7 @@ function buildVillage(){
    BUILD TOWN
 ===================================== */
 
-function buildTown(){
+async function buildTown(){
 
   if(
     spend({
@@ -1488,6 +1784,8 @@ function buildTown(){
     log(
       "🏰 Raven upgraded to a Town! +2 VP"
     );
+
+    await saveGameState();
 
   }else{
 
@@ -1504,7 +1802,7 @@ function buildTown(){
    TRADE
 ===================================== */
 
-function trade(){
+async function trade(){
 
   if(
     spend({
@@ -1519,6 +1817,8 @@ function trade(){
     log(
       "🤝 Traded 2 Timber → 1 Grain."
     );
+
+    await saveGameState();
 
   }else{
 
@@ -1542,15 +1842,11 @@ function selectHex(
   number
 ){
 
-  /* 清除上一個 */
-
   document
     .querySelectorAll(".hex")
     .forEach(hex=>{
       hex.classList.remove("selected");
     });
-
-  /* 選取 */
 
   element.classList.add("selected");
 
@@ -1576,7 +1872,7 @@ function selectHex(
    NODE
 ===================================== */
 
-function buildNode(number){
+async function buildNode(number){
 
   const node=
     document.querySelector(
@@ -1591,6 +1887,7 @@ function buildNode(number){
     );
 
     return;
+
   }
 
   node.classList.add("built");
@@ -1600,6 +1897,63 @@ function buildNode(number){
     number+
     " selected."
   );
+
+  await saveGameState();
+
+}
+
+
+/* =====================================
+   RESTORE BUILDINGS
+===================================== */
+
+function restoreBuildings(){
+
+  document
+    .querySelectorAll(".road")
+    .forEach(
+      road=>{
+        road.classList.remove("show");
+      }
+    );
+
+  for(
+    let i=1;
+    i<=Math.min(roadCount,3);
+    i++
+  ){
+
+    const road=
+      document.getElementById(
+        "road"+i
+      );
+
+    if(road){
+      road.classList.add("show");
+    }
+
+  }
+
+  document
+    .querySelectorAll(".node")
+    .forEach(
+      node=>{
+        node.classList.remove("built");
+      }
+    );
+
+  const nodes=
+    document.querySelectorAll(".node");
+
+  for(
+    let i=0;
+    i<Math.min(villageCount,nodes.length);
+    i++
+  ){
+
+    nodes[i].classList.add("built");
+
+  }
 
 }
 
@@ -1641,7 +1995,7 @@ function cityInfo(city){
    PIRATE
 ===================================== */
 
-function movePirate(){
+async function movePirate(){
 
   const regions=[
 
@@ -1665,7 +2019,9 @@ function movePirate(){
   ).textContent=pirateRegion;
 
   const pirate=
-    document.getElementById("pirate");
+    document.getElementById(
+      "pirate"
+    );
 
   pirate.classList.remove("moving");
 
@@ -1678,6 +2034,8 @@ function movePirate(){
     pirateRegion
   );
 
+  await saveGameState();
+
 }
 
 
@@ -1685,7 +2043,7 @@ function movePirate(){
    CHAT
 ===================================== */
 
-function sendChat(){
+async function sendChat(){
 
   const input=
     document.getElementById(
@@ -1714,6 +2072,170 @@ function sendChat(){
   chat.scrollTop=
     chat.scrollHeight;
 
+
+  /* 儲存到 Supabase */
+
+  if(currentUser){
+
+    try{
+
+      const {
+        error
+      } = await supabaseClient
+        .from("chat_messages")
+        .insert({
+
+          message:message,
+
+          player_name:"Raven",
+
+          user_id:currentUser.id
+
+        });
+
+      if(error){
+
+        console.warn(
+          "Chat save failed:",
+          error.message
+        );
+
+      }
+
+    }catch(error){
+
+      console.warn(error);
+
+    }
+
+  }
+
+}
+
+
+/* =====================================
+   LOAD CHAT
+===================================== */
+
+async function loadChat(){
+
+  try{
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("chat_messages")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending:true
+        }
+      )
+      .limit(50);
+
+    if(error){
+
+      console.warn(
+        "Chat load failed:",
+        error.message
+      );
+
+      return;
+
+    }
+
+    if(!data || !data.length){
+      return;
+    }
+
+    const chat=
+      document.getElementById("chat");
+
+    chat.innerHTML="";
+
+    data.forEach(row=>{
+
+      const name=
+        row.player_name ||
+        "Player";
+
+      chat.innerHTML+=
+        "💬 "+
+        escapeHTML(name)+
+        ": "+
+        escapeHTML(row.message || "")+
+        "<br>";
+
+    });
+
+    chat.scrollTop=
+      chat.scrollHeight;
+
+  }catch(error){
+
+    console.warn(error);
+
+  }
+
+}
+
+
+/* =====================================
+   REALTIME CHAT
+===================================== */
+
+function subscribeRealtime(){
+
+  supabaseClient
+    .channel("kingdoms-chat")
+
+    .on(
+
+      "postgres_changes",
+
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"chat_messages"
+      },
+
+      payload=>{
+
+        const row=payload.new;
+
+        if(!row){
+          return;
+        }
+
+        const chat=
+          document.getElementById(
+            "chat"
+          );
+
+        const name=
+          row.player_name ||
+          "Player";
+
+        chat.innerHTML+=
+          "💬 "+
+          escapeHTML(name)+
+          ": "+
+          escapeHTML(
+            row.message || ""
+          )+
+          "<br>";
+
+        chat.scrollTop=
+          chat.scrollHeight;
+
+      }
+
+    )
+
+    .subscribe();
+
 }
 
 
@@ -1724,7 +2246,9 @@ function sendChat(){
 function escapeHTML(text){
 
   const div=
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   div.textContent=text;
 
@@ -1737,7 +2261,30 @@ function escapeHTML(text){
    START GAME
 ===================================== */
 
-updateResources();
+async function startGame(){
+
+  updateResources();
+
+  await connectSupabase();
+
+  if(currentUser){
+
+    await loadGameState();
+
+    await loadChat();
+
+    subscribeRealtime();
+
+  }
+
+}
+
+
+/* =====================================
+   START
+===================================== */
+
+startGame();
 
 </script>
 

@@ -1,237 +1,135 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1,viewport-fit=cover"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kingdoms of England</title>
 
-
-<!-- =====================================
-     SUPABASE
-===================================== -->
-
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <style>
-
-/* =====================================
-   GLOBAL
-===================================== */
-
 *{
   box-sizing:border-box;
 }
 
-html,
-body{
-
+html,body{
   margin:0;
   padding:0;
-
   background:#07141b;
-
   color:#f5ead0;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
+  font-family:Georgia,"Times New Roman",serif;
 }
 
 body{
-
   min-height:100vh;
-
 }
 
 button,
 input{
-
   font-family:inherit;
-
 }
 
 button{
-
   cursor:pointer;
-
 }
 
-
-/* =====================================
+/* =========================
    HEADER
-===================================== */
+========================= */
 
 header{
-
-  background:
-    linear-gradient(
-      #17261f,
-      #0b1715
-    );
-
-  border-bottom:
-    2px solid #9e7c3f;
-
+  background:linear-gradient(#17261f,#0b1715);
+  border-bottom:2px solid #9e7c3f;
   text-align:center;
-
-  padding:
-    18px
-    10px
-    14px;
-
+  padding:18px 10px 14px;
 }
 
 header h1{
-
   margin:0;
-
   color:#e5c875;
-
   font-size:32px;
-
 }
 
 header p{
-
-  margin:
-    4px
-    0
-    0;
-
+  margin:4px 0 0;
   font-size:16px;
-
   color:#f5ead0;
-
 }
 
-#supabaseStatus{
-
-  margin-top:8px;
-
-  font-family:
-    Arial,
-    sans-serif;
-
+.connection{
+  margin-top:9px;
+  font-family:Arial,sans-serif;
   font-size:14px;
-
   font-weight:bold;
-
 }
 
+.connection.ok{
+  color:#67d36f;
+}
 
-/* =====================================
+.connection.bad{
+  color:#ff625b;
+}
+
+.connection.busy{
+  color:#e5c875;
+}
+
+/* =========================
    MAIN LAYOUT
-===================================== */
+========================= */
 
 .layout{
-
   display:grid;
-
-  grid-template-columns:
-    210px
-    minmax(500px,1fr)
-    290px;
-
+  grid-template-columns:210px minmax(500px,1fr) 290px;
   gap:10px;
-
   width:100%;
-
   max-width:1600px;
-
   margin:auto;
-
   padding:10px;
-
 }
 
 .panel{
-
   background:#15221f;
-
-  border:
-    1px solid #927343;
-
+  border:1px solid #927343;
   border-radius:10px;
-
   padding:11px;
-
   margin-bottom:10px;
-
-  box-shadow:
-    0 3px 12px #0008;
-
+  box-shadow:0 3px 12px #0008;
 }
 
 .panel h2{
-
-  margin:
-    0
-    0
-    9px;
-
+  margin:0 0 9px;
   padding-bottom:6px;
-
-  border-bottom:
-    1px solid #665636;
-
+  border-bottom:1px solid #665636;
   color:#e3c878;
-
   font-size:16px;
-
 }
 
-
-/* =====================================
+/* =========================
    LEFT
-===================================== */
+========================= */
 
 .status{
-
   line-height:1.5;
-
   font-size:14px;
-
 }
 
 .player{
-
   display:flex;
-
   justify-content:space-between;
-
   align-items:center;
-
-  padding:
-    8px
-    2px;
-
-  border-bottom:
-    1px solid #35433d;
-
+  padding:8px 2px;
+  border-bottom:1px solid #35433d;
 }
 
 .dot{
-
   display:inline-block;
-
   width:12px;
-
   height:12px;
-
   border-radius:50%;
-
   margin-right:6px;
-
 }
 
 .red{
@@ -251,1145 +149,601 @@ header p{
 }
 
 .guide div{
-
-  padding:
-    5px
-    0;
-
+  padding:5px 0;
 }
 
-
-/* =====================================
+/* =========================
    MAP
-===================================== */
+========================= */
 
 .map{
-
   position:relative;
-
   width:100%;
-
   aspect-ratio:1.42;
-
   min-height:620px;
-
   overflow:hidden;
-
-  border:
-    2px solid #927343;
-
+  border:2px solid #927343;
   border-radius:10px;
-
   background:#174d5b;
-
 }
 
 .mapImage{
-
   position:absolute;
-
   inset:0;
-
   width:100%;
-
   height:100%;
-
   object-fit:contain;
-
   background:#174d5b;
-
   z-index:1;
-
 }
 
 .mapShade{
-
   position:absolute;
-
   inset:0;
-
-  background:
-    linear-gradient(
-      90deg,
-      #00140a18,
-      transparent 50%,
-      #00140a18
-    );
-
+  background:linear-gradient(
+    90deg,
+    #00140a18,
+    transparent 50%,
+    #00140a18
+  );
   z-index:2;
-
   pointer-events:none;
-
 }
-
-
-/* =====================================
-   MAP TITLE
-===================================== */
 
 .mapTitle{
-
   position:absolute;
-
   top:10px;
-
   left:10px;
-
   z-index:30;
-
-  padding:
-    8px
-    12px;
-
-  border:
-    1px solid #b08b49;
-
+  padding:8px 12px;
+  border:1px solid #b08b49;
   border-radius:7px;
-
   background:#0b1714e8;
-
   color:#f5ead0;
-
   font-weight:bold;
-
   font-size:14px;
-
 }
 
-
-/* =====================================
+/* =========================
    HEX
-===================================== */
+========================= */
 
 .hexGrid{
-
   position:absolute;
-
   inset:0;
-
   z-index:10;
-
   pointer-events:none;
-
 }
 
 .hex{
-
   position:absolute;
-
   width:13.2%;
-
   aspect-ratio:1.155;
 
-  clip-path:
-    polygon(
-      25% 3%,
-      75% 3%,
-      98% 50%,
-      75% 97%,
-      25% 97%,
-      2% 50%
-    );
+  clip-path:polygon(
+    25% 3%,
+    75% 3%,
+    98% 50%,
+    75% 97%,
+    25% 97%,
+    2% 50%
+  );
 
   border:0;
-
   background:#ffffff08;
 
   pointer-events:auto;
 
   display:flex;
-
   align-items:center;
-
   justify-content:center;
 
   color:white;
-
   transition:.15s;
-
 }
 
 .hex:hover{
-
   background:#fff5a044;
-
   filter:brightness(1.2);
-
 }
 
 .hex.selected{
-
   background:#f4d36b55;
-
-  box-shadow:
-    inset
-    0
-    0
-    0
-    3px
-    #f3d67b;
-
+  box-shadow:inset 0 0 0 3px #f3d67b;
 }
 
 .hexInfo{
-
   text-align:center;
-
   font-weight:bold;
-
   font-size:11px;
-
-  text-shadow:
-    0
-    2px
-    5px
-    #000;
-
+  text-shadow:0 2px 5px #000;
   pointer-events:none;
-
 }
 
 .hexInfo small{
-
   display:block;
-
   margin-top:2px;
-
 }
 
 .number{
-
   display:inline-block;
-
   width:28px;
-
   height:28px;
-
   margin-top:3px;
-
   line-height:24px;
-
-  border:
-    2px solid #725a35;
-
+  border:2px solid #725a35;
   border-radius:50%;
-
   background:#f2e6bd;
-
   color:#30271b;
-
   font-size:13px;
-
 }
 
+/* HEX位置 */
 
-/* =====================================
-   HEX POSITIONS
-===================================== */
+.h1{left:24%;top:8%;}
+.h2{left:38%;top:8%;}
+.h3{left:52%;top:8%;}
 
-.h1{
-  left:24%;
-  top:8%;
-}
+.h4{left:17%;top:23%;}
+.h5{left:31%;top:23%;}
+.h6{left:45%;top:23%;}
+.h7{left:59%;top:23%;}
 
-.h2{
-  left:38%;
-  top:8%;
-}
+.h8{left:24%;top:38%;}
+.h9{left:38%;top:38%;}
+.h10{left:52%;top:38%;}
+.h11{left:66%;top:38%;}
 
-.h3{
-  left:52%;
-  top:8%;
-}
+.h12{left:31%;top:53%;}
+.h13{left:45%;top:53%;}
+.h14{left:59%;top:53%;}
 
-.h4{
-  left:17%;
-  top:23%;
-}
+.h15{left:38%;top:68%;}
+.h16{left:52%;top:68%;}
 
-.h5{
-  left:31%;
-  top:23%;
-}
-
-.h6{
-  left:45%;
-  top:23%;
-}
-
-.h7{
-  left:59%;
-  top:23%;
-}
-
-.h8{
-  left:24%;
-  top:38%;
-}
-
-.h9{
-  left:38%;
-  top:38%;
-}
-
-.h10{
-  left:52%;
-  top:38%;
-}
-
-.h11{
-  left:66%;
-  top:38%;
-}
-
-.h12{
-  left:31%;
-  top:53%;
-}
-
-.h13{
-  left:45%;
-  top:53%;
-}
-
-.h14{
-  left:59%;
-  top:53%;
-}
-
-.h15{
-  left:38%;
-  top:68%;
-}
-
-.h16{
-  left:52%;
-  top:68%;
-}
-
-
-/* =====================================
+/* =========================
    ROADS
-===================================== */
+========================= */
 
 .road{
-
   position:absolute;
-
   height:6px;
-
   background:#b57a3b;
-
-  border:
-    1px solid #4b301d;
-
+  border:1px solid #4b301d;
   border-radius:10px;
-
   transform-origin:left center;
-
   z-index:18;
-
-  box-shadow:
-    0
-    1px
-    4px
-    #000;
-
+  box-shadow:0 1px 4px #000;
   display:none;
-
 }
 
 .road.show{
-
   display:block;
-
 }
 
 .r1{
-
   left:31%;
-
   top:34%;
-
   width:11%;
-
 }
 
 .r2{
-
   left:45%;
-
   top:49%;
-
   width:11%;
-
 }
 
 .r3{
-
   left:52%;
-
   top:64%;
-
   width:11%;
-
 }
 
-
-/* =====================================
+/* =========================
    BUILD NODES
-===================================== */
+========================= */
 
 .node{
-
   position:absolute;
-
   width:17px;
-
   height:17px;
-
   border-radius:50%;
-
   background:#f5e6bd;
-
-  border:
-    3px solid #493622;
-
+  border:3px solid #493622;
   z-index:22;
-
   cursor:pointer;
-
-  box-shadow:
-    0
-    1px
-    5px
-    #000;
-
+  box-shadow:0 1px 5px #000;
 }
 
 .node:hover{
-
   transform:scale(1.3);
-
   background:#fff0a6;
-
 }
 
 .node.built{
-
   background:#d5a927;
-
   border-color:#fff0a6;
-
-  box-shadow:
-    0
-    0
-    12px
-    #e5c875;
-
+  box-shadow:0 0 12px #e5c875;
 }
 
-.n1{
-  left:29%;
-  top:33%;
-}
+.n1{left:29%;top:33%;}
+.n2{left:43%;top:33%;}
+.n3{left:57%;top:33%;}
+.n4{left:41%;top:48%;}
+.n5{left:55%;top:48%;}
+.n6{left:69%;top:48%;}
+.n7{left:48%;top:63%;}
+.n8{left:62%;top:63%;}
+.n9{left:55%;top:78%;}
 
-.n2{
-  left:43%;
-  top:33%;
-}
-
-.n3{
-  left:57%;
-  top:33%;
-}
-
-.n4{
-  left:41%;
-  top:48%;
-}
-
-.n5{
-  left:55%;
-  top:48%;
-}
-
-.n6{
-  left:69%;
-  top:48%;
-}
-
-.n7{
-  left:48%;
-  top:63%;
-}
-
-.n8{
-  left:62%;
-  top:63%;
-}
-
-.n9{
-  left:55%;
-  top:78%;
-}
-
-
-/* =====================================
+/* =========================
    CITIES
-===================================== */
+========================= */
 
 .city{
-
   position:absolute;
-
   z-index:25;
-
-  padding:
-    4px
-    7px;
-
-  border:
-    2px solid #62472b;
-
+  padding:4px 7px;
+  border:2px solid #62472b;
   border-radius:6px;
-
   background:#f0dfb5ee;
-
   color:#292016;
-
   font-size:10px;
-
   font-weight:bold;
-
   white-space:nowrap;
-
   cursor:pointer;
-
-  box-shadow:
-    0
-    2px
-    5px
-    #0008;
-
+  box-shadow:0 2px 5px #0008;
 }
 
 .city:hover{
-
   background:#fff0bc;
-
   transform:scale(1.04);
-
 }
 
-.c-newcastle{
-  left:61%;
-  top:7%;
-}
+.c-newcastle{left:61%;top:7%;}
+.c-leeds{left:64%;top:18%;}
+.c-manchester{left:29%;top:28%;}
+.c-sheffield{left:46%;top:31%;}
+.c-liverpool{left:10%;top:31%;}
+.c-nottingham{left:35%;top:40%;}
+.c-birmingham{left:39%;top:52%;}
+.c-bristol{left:25%;top:63%;}
+.c-bridgwater{left:28%;top:76%;}
+.c-oxford{left:48%;top:60%;}
+.c-london{left:65%;top:77%;}
+.c-plymouth{left:17%;top:86%;}
 
-.c-leeds{
-  left:64%;
-  top:18%;
-}
-
-.c-manchester{
-  left:29%;
-  top:28%;
-}
-
-.c-sheffield{
-  left:46%;
-  top:31%;
-}
-
-.c-liverpool{
-  left:10%;
-  top:31%;
-}
-
-.c-nottingham{
-  left:35%;
-  top:40%;
-}
-
-.c-birmingham{
-  left:39%;
-  top:52%;
-}
-
-.c-bristol{
-  left:25%;
-  top:63%;
-}
-
-.c-bridgwater{
-  left:28%;
-  top:76%;
-}
-
-.c-oxford{
-  left:48%;
-  top:60%;
-}
-
-.c-london{
-  left:65%;
-  top:77%;
-}
-
-.c-plymouth{
-  left:17%;
-  top:86%;
-}
-
-
-/* =====================================
+/* =========================
    PIRATE
-===================================== */
+========================= */
 
 .pirate{
-
   position:absolute;
-
   right:7%;
-
   top:15%;
-
   z-index:30;
 
   width:55px;
-
   height:55px;
 
   border-radius:50%;
-
-  border:
-    3px solid #bd8a3d;
-
+  border:3px solid #bd8a3d;
   background:#071c23dd;
 
   display:flex;
-
   align-items:center;
-
   justify-content:center;
 
   font-size:29px;
-
   cursor:pointer;
 
-  box-shadow:
-    0
-    3px
-    12px
-    #000;
-
+  box-shadow:0 3px 12px #000;
   transition:.2s;
-
 }
 
 .pirate:hover{
-
   transform:scale(1.1);
-
 }
 
 .pirate.moving{
-
-  animation:
-    pulse
-    .5s
-    ease;
-
+  animation:pulse .5s ease;
 }
 
 @keyframes pulse{
-
-  0%{
-    transform:scale(1);
-  }
-
-  50%{
-    transform:scale(1.25);
-  }
-
-  100%{
-    transform:scale(1);
-  }
-
+  0%{transform:scale(1);}
+  50%{transform:scale(1.25);}
+  100%{transform:scale(1);}
 }
 
-
-/* =====================================
-   SEA LABELS
-===================================== */
+/* =========================
+   SEA
+========================= */
 
 .seaLabel{
-
   position:absolute;
-
   z-index:4;
-
   color:#d0e0dd;
-
   opacity:.8;
-
   font-size:13px;
-
   font-style:italic;
-
   pointer-events:none;
-
 }
 
 .irish{
-
   left:5%;
-
   top:47%;
-
 }
 
 .north{
-
   right:6%;
-
   top:29%;
-
 }
 
 .channel{
-
   left:47%;
-
   bottom:2%;
-
 }
 
-
-/* =====================================
+/* =========================
    RIGHT
-===================================== */
+========================= */
 
 .turn{
-
   padding:11px;
-
   margin-bottom:10px;
-
-  border:
-    1px solid #b57d45;
-
+  border:1px solid #b57d45;
   border-radius:7px;
-
   background:#68352b;
-
   text-align:center;
-
   font-weight:bold;
-
   font-size:17px;
-
 }
 
 .dice{
-
   min-height:48px;
-
   display:flex;
-
   justify-content:center;
-
   align-items:center;
-
   gap:9px;
-
   padding:5px;
-
   font-size:35px;
-
 }
 
 .roll{
-
   width:100%;
-
   padding:12px;
-
-  border:
-    1px solid #9bb095;
-
+  border:1px solid #9bb095;
   border-radius:7px;
-
   background:#486b52;
-
   color:white;
-
   font-size:16px;
-
   font-weight:bold;
-
 }
 
 .roll:hover{
-
   background:#5b7f62;
-
 }
 
+.roll:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
 
-/* =====================================
+/* =========================
    RESOURCES
-===================================== */
+========================= */
 
 .resources{
-
   display:grid;
-
-  grid-template-columns:
-    1fr
-    1fr;
-
+  grid-template-columns:1fr 1fr;
   gap:6px;
-
 }
 
 .resource{
-
   padding:7px;
-
   border-radius:6px;
-
   background:#eee3cc;
-
   color:#332a20;
-
   text-align:center;
-
 }
 
 .resource span{
-
   display:block;
-
   font-size:20px;
-
 }
 
 .resource b{
-
   font-size:18px;
-
 }
 
-
-/* =====================================
+/* =========================
    BUILD
-===================================== */
+========================= */
 
 .build button{
-
   width:100%;
-
-  margin:
-    4px
-    0;
-
-  padding:
-    10px
-    6px;
-
-  border:
-    1px solid #6e8e76;
-
+  margin:4px 0;
+  padding:10px 6px;
+  border:1px solid #6e8e76;
   border-radius:7px;
-
   background:#31553d;
-
   color:white;
-
   font-weight:bold;
-
   font-size:14px;
-
 }
 
 .build button:hover{
-
   background:#406a4c;
-
 }
 
-
-/* =====================================
+/* =========================
    LOG / CHAT
-===================================== */
+========================= */
 
 .log,
 .chat{
-
   height:145px;
-
   overflow:auto;
-
   padding:8px;
-
   border-radius:7px;
-
   background:#eee3cf;
-
   color:#2e271e;
-
-  font-family:
-    Arial,
-    sans-serif;
-
+  font-family:Arial,sans-serif;
   font-size:12px;
-
   line-height:1.5;
-
 }
 
 .chatInput{
-
   display:flex;
-
   gap:5px;
-
   margin-top:6px;
-
 }
 
 .chatInput input{
-
   flex:1;
-
   min-width:0;
-
   padding:9px;
-
-  border:
-    1px solid #aaa;
-
+  border:1px solid #aaa;
   border-radius:6px;
-
   background:#f8f0dc;
-
   color:#222;
-
 }
 
 .chatInput button{
-
   width:45px;
-
   border:0;
-
   border-radius:6px;
-
   background:#b58b43;
-
   color:white;
-
   font-weight:bold;
-
 }
 
+.syncInfo{
+  margin-top:6px;
+  text-align:center;
+  color:#9db2aa;
+  font-family:Arial,sans-serif;
+  font-size:11px;
+}
 
-/* =====================================
+/* =========================
    MOBILE
-===================================== */
+========================= */
 
 @media(max-width:1100px){
 
   .layout{
-
-    grid-template-columns:
-      180px
-      1fr;
-
+    grid-template-columns:180px 1fr;
   }
 
   .right{
-
     grid-column:1/-1;
-
     display:grid;
-
-    grid-template-columns:
-      1fr
-      1fr;
-
+    grid-template-columns:1fr 1fr;
     gap:8px;
-
   }
 
   .right .panel{
-
     margin-bottom:0;
-
   }
 
   .map{
-
     min-height:520px;
-
   }
-
 }
-
 
 @media(max-width:700px){
 
   header{
-
-    padding:
-      13px
-      8px;
-
+    padding:13px 8px;
   }
 
   header h1{
-
     font-size:22px;
-
   }
 
   header p{
-
     font-size:13px;
-
   }
 
   .layout{
-
     display:flex;
-
     flex-direction:column;
-
     padding:4px;
-
   }
 
   .left{
-
     order:2;
-
   }
 
   .map{
-
     order:1;
-
     width:100%;
-
     min-height:0;
-
     aspect-ratio:1.05;
-
   }
 
   .right{
-
     order:3;
-
     display:block;
-
   }
 
   .right .panel{
-
     margin-bottom:8px;
-
   }
 
   .hexInfo{
-
     font-size:7px;
-
   }
 
   .number{
-
     width:22px;
-
     height:22px;
-
     line-height:18px;
-
     font-size:10px;
-
   }
 
   .city{
-
     font-size:7px;
-
-    padding:
-      2px
-      4px;
-
+    padding:2px 4px;
   }
 
   .node{
-
     width:13px;
-
     height:13px;
-
   }
 
   .pirate{
-
     width:43px;
-
     height:43px;
-
     font-size:23px;
-
   }
 
   .mapTitle{
-
     font-size:10px;
-
-    padding:
-      6px
-      8px;
-
+    padding:6px 8px;
   }
 
   .seaLabel{
-
     font-size:9px;
-
   }
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-
-<!-- =====================================
-     HEADER
-===================================== -->
-
 <header>
 
-  <h1>
-    ♜ Kingdoms of England
-  </h1>
+  <h1>♜ Kingdoms of England</h1>
 
   <p>
     Build • Trade • Conquer
   </p>
 
-  <div id="supabaseStatus">
+  <div
+    id="connectionStatus"
+    class="connection busy">
     🟡 Connecting to Supabase...
   </div>
 
@@ -1399,12 +753,11 @@ header p{
 <div class="layout">
 
 
-<!-- =====================================
+<!-- =====================================================
      LEFT PANEL
-===================================== -->
+===================================================== -->
 
 <aside class="left">
-
 
   <div class="panel">
 
@@ -1413,21 +766,14 @@ header p{
     </h2>
 
     <div class="status">
-
-      Players:
-      <b>4 / 4</b>
-
+      Players: <b>4 / 4</b>
     </div>
-
 
     <div class="player">
 
       <span>
-
         <i class="dot red"></i>
-
         Raven
-
       </span>
 
       <b id="ravenVP">
@@ -1436,59 +782,46 @@ header p{
 
     </div>
 
-
     <div class="player">
 
       <span>
-
         <i class="dot blue"></i>
-
         Lion
-
       </span>
 
-      <b>
+      <b id="lionVP">
         4 VP
       </b>
 
     </div>
 
-
     <div class="player">
 
       <span>
-
         <i class="dot green"></i>
-
         Stag
-
       </span>
 
-      <b>
+      <b id="stagVP">
         4 VP
       </b>
 
     </div>
 
-
     <div class="player">
 
       <span>
-
         <i class="dot yellow"></i>
-
         Falcon
-
       </span>
 
-      <b>
+      <b id="falconVP">
         4 VP
       </b>
 
     </div>
 
   </div>
-
 
 
   <div class="panel guide">
@@ -1497,32 +830,14 @@ header p{
       RESOURCE GUIDE
     </h2>
 
-    <div>
-      🌲 Timber
-    </div>
-
-    <div>
-      🌾 Grain
-    </div>
-
-    <div>
-      🐑 Wool
-    </div>
-
-    <div>
-      ⛏️ Iron
-    </div>
-
-    <div>
-      🪨 Stone
-    </div>
-
-    <div>
-      🪙 Gold
-    </div>
+    <div>🌲 Timber</div>
+    <div>🌾 Grain</div>
+    <div>🐑 Wool</div>
+    <div>⛏️ Iron</div>
+    <div>🪨 Stone</div>
+    <div>🪙 Gold</div>
 
   </div>
-
 
 
   <div class="panel">
@@ -1531,19 +846,13 @@ header p{
       🏴‍☠️ PIRATE
     </h2>
 
-    <div
-      style="
-        font-size:35px;
-        text-align:center
-      "
-    >
+    <div style="font-size:35px;text-align:center">
       🏴‍☠️
     </div>
 
     <div class="status">
 
       Current sea:
-
       <b id="pirateLocation">
         North Sea
       </b>
@@ -1554,24 +863,20 @@ header p{
 
     <div class="status">
 
-      Roll <b>7</b>
-      to activate the Pirate.
+      Roll <b>7</b> to activate the Pirate.
 
     </div>
 
   </div>
 
-
 </aside>
 
 
-
-<!-- =====================================
+<!-- =====================================================
      MAP
-===================================== -->
+===================================================== -->
 
 <main class="map">
-
 
   <img
     class="mapImage"
@@ -1579,42 +884,28 @@ header p{
     alt="Kingdoms of England Game Board"
   >
 
-
   <div class="mapShade"></div>
 
-
   <div class="mapTitle">
-
     🗺️ ENGLAND • STRATEGIC MAP
-
   </div>
-
 
   <div class="seaLabel irish">
-
     Irish Sea
-
   </div>
-
 
   <div class="seaLabel north">
-
     North Sea
-
   </div>
-
 
   <div class="seaLabel channel">
-
     English Channel
-
   </div>
 
 
-
-  <!-- =====================================
+  <!-- =====================================================
        HEXES
-  ===================================== -->
+  ===================================================== -->
 
   <div class="hexGrid">
 
@@ -1637,7 +928,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h2"
       onclick="selectHex(this,'Durham','Grain',6)"
@@ -1654,7 +944,6 @@ header p{
       </div>
 
     </button>
-
 
 
     <button
@@ -1675,7 +964,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h4"
       onclick="selectHex(this,'Cumbria','Stone',5)"
@@ -1692,7 +980,6 @@ header p{
       </div>
 
     </button>
-
 
 
     <button
@@ -1713,7 +1000,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h6"
       onclick="selectHex(this,'Pennines','Iron',10)"
@@ -1730,7 +1016,6 @@ header p{
       </div>
 
     </button>
-
 
 
     <button
@@ -1751,7 +1036,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h8"
       onclick="selectHex(this,'Shropshire','Wool',9)"
@@ -1768,7 +1052,6 @@ header p{
       </div>
 
     </button>
-
 
 
     <button
@@ -1789,7 +1072,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h10"
       onclick="selectHex(this,'Nottinghamshire','Timber',4)"
@@ -1806,7 +1088,6 @@ header p{
       </div>
 
     </button>
-
 
 
     <button
@@ -1827,7 +1108,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h12"
       onclick="selectHex(this,'Somerset','Grain',6)"
@@ -1844,7 +1124,6 @@ header p{
       </div>
 
     </button>
-
 
 
     <button
@@ -1865,7 +1144,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h14"
       onclick="selectHex(this,'Cambridgeshire','Grain',5)"
@@ -1882,7 +1160,6 @@ header p{
       </div>
 
     </button>
-
 
 
     <button
@@ -1903,7 +1180,6 @@ header p{
     </button>
 
 
-
     <button
       class="hex h16"
       onclick="selectHex(this,'Kent','Grain',10)"
@@ -1921,205 +1197,166 @@ header p{
 
     </button>
 
-
   </div>
 
 
-
-  <!-- =====================================
-       ROADS
-  ===================================== -->
+  <!-- ROADS -->
 
   <div
     class="road r1"
-    id="road1"
-  ></div>
+    id="road1">
+  </div>
 
   <div
     class="road r2"
-    id="road2"
-  ></div>
+    id="road2">
+  </div>
 
   <div
     class="road r3"
-    id="road3"
-  ></div>
+    id="road3">
+  </div>
 
 
-
-  <!-- =====================================
-       BUILD NODES
-  ===================================== -->
+  <!-- NODES -->
 
   <div
     class="node n1"
-    onclick="buildNode(1)"
-  ></div>
+    onclick="buildNode(1)">
+  </div>
 
   <div
     class="node n2"
-    onclick="buildNode(2)"
-  ></div>
+    onclick="buildNode(2)">
+  </div>
 
   <div
     class="node n3"
-    onclick="buildNode(3)"
-  ></div>
+    onclick="buildNode(3)">
+  </div>
 
   <div
     class="node n4"
-    onclick="buildNode(4)"
-  ></div>
+    onclick="buildNode(4)">
+  </div>
 
   <div
     class="node n5"
-    onclick="buildNode(5)"
-  ></div>
+    onclick="buildNode(5)">
+  </div>
 
   <div
     class="node n6"
-    onclick="buildNode(6)"
-  ></div>
+    onclick="buildNode(6)">
+  </div>
 
   <div
     class="node n7"
-    onclick="buildNode(7)"
-  ></div>
+    onclick="buildNode(7)">
+  </div>
 
   <div
     class="node n8"
-    onclick="buildNode(8)"
-  ></div>
+    onclick="buildNode(8)">
+  </div>
 
   <div
     class="node n9"
-    onclick="buildNode(9)"
-  ></div>
+    onclick="buildNode(9)">
+  </div>
 
 
-
-  <!-- =====================================
-       CITIES
-  ===================================== -->
+  <!-- CITIES -->
 
   <div
     class="city c-newcastle"
-    onclick="cityInfo('Newcastle')"
-  >
+    onclick="cityInfo('Newcastle')">
     Newcastle
   </div>
 
-
   <div
     class="city c-leeds"
-    onclick="cityInfo('Leeds')"
-  >
+    onclick="cityInfo('Leeds')">
     Leeds
   </div>
 
-
   <div
     class="city c-manchester"
-    onclick="cityInfo('Manchester')"
-  >
+    onclick="cityInfo('Manchester')">
     Manchester
   </div>
 
-
   <div
     class="city c-sheffield"
-    onclick="cityInfo('Sheffield')"
-  >
+    onclick="cityInfo('Sheffield')">
     Sheffield
   </div>
 
-
   <div
     class="city c-liverpool"
-    onclick="cityInfo('Liverpool')"
-  >
+    onclick="cityInfo('Liverpool')">
     Liverpool
   </div>
 
-
   <div
     class="city c-nottingham"
-    onclick="cityInfo('Nottingham')"
-  >
+    onclick="cityInfo('Nottingham')">
     Nottingham
   </div>
 
-
   <div
     class="city c-birmingham"
-    onclick="cityInfo('Birmingham')"
-  >
+    onclick="cityInfo('Birmingham')">
     Birmingham
   </div>
 
-
   <div
     class="city c-bristol"
-    onclick="cityInfo('Bristol')"
-  >
+    onclick="cityInfo('Bristol')">
     Bristol
   </div>
 
-
   <div
     class="city c-bridgwater"
-    onclick="cityInfo('Bridgwater')"
-  >
+    onclick="cityInfo('Bridgwater')">
     Bridgwater
   </div>
 
-
   <div
     class="city c-oxford"
-    onclick="cityInfo('Oxford')"
-  >
+    onclick="cityInfo('Oxford')">
     Oxford
   </div>
 
-
   <div
     class="city c-london"
-    onclick="cityInfo('London')"
-  >
+    onclick="cityInfo('London')">
     👑 London
   </div>
 
-
   <div
     class="city c-plymouth"
-    onclick="cityInfo('Plymouth')"
-  >
+    onclick="cityInfo('Plymouth')">
     Plymouth
   </div>
 
 
-
-  <!-- =====================================
-       PIRATE
-  ===================================== -->
+  <!-- PIRATE -->
 
   <div
     class="pirate"
     id="pirate"
     onclick="movePirate()"
-    title="Move Pirate"
-  >
+    title="Move Pirate">
     🏴‍☠️
   </div>
-
 
 </main>
 
 
-
-<!-- =====================================
+<!-- =====================================================
      RIGHT PANEL
-===================================== -->
+===================================================== -->
 
 <aside class="right">
 
@@ -2128,35 +1365,30 @@ header p{
 
   <div class="panel">
 
-    <div class="turn">
-
+    <div
+      class="turn"
+      id="turnDisplay">
       👑 Raven's Turn
-
     </div>
-
 
     <h2>
       🎲 DICE
     </h2>
 
-
     <div
       class="dice"
-      id="dice"
-    >
+      id="dice">
       ⚀ ⚀
     </div>
 
-
     <button
       class="roll"
-      onclick="rollDice()"
-    >
+      id="rollButton"
+      onclick="rollDice()">
       🎲 Roll Dice
     </button>
 
   </div>
-
 
 
   <!-- RESOURCES -->
@@ -2167,15 +1399,11 @@ header p{
       📦 RESOURCES
     </h2>
 
-
     <div class="resources">
-
 
       <div class="resource">
 
-        <span>
-          🌲
-        </span>
+        <span>🌲</span>
 
         <b id="wood">
           3
@@ -2188,12 +1416,9 @@ header p{
       </div>
 
 
-
       <div class="resource">
 
-        <span>
-          🌾
-        </span>
+        <span>🌾</span>
 
         <b id="grain">
           2
@@ -2206,12 +1431,9 @@ header p{
       </div>
 
 
-
       <div class="resource">
 
-        <span>
-          🐑
-        </span>
+        <span>🐑</span>
 
         <b id="wool">
           1
@@ -2224,12 +1446,9 @@ header p{
       </div>
 
 
-
       <div class="resource">
 
-        <span>
-          🪨
-        </span>
+        <span>🪨</span>
 
         <b id="stone">
           2
@@ -2242,12 +1461,9 @@ header p{
       </div>
 
 
-
       <div class="resource">
 
-        <span>
-          ⛏️
-        </span>
+        <span>⛏️</span>
 
         <b id="iron">
           2
@@ -2260,12 +1476,9 @@ header p{
       </div>
 
 
-
       <div class="resource">
 
-        <span>
-          🪙
-        </span>
+        <span>🪙</span>
 
         <b id="gold">
           0
@@ -2277,11 +1490,9 @@ header p{
 
       </div>
 
-
     </div>
 
   </div>
-
 
 
   <!-- BUILD -->
@@ -2292,10 +1503,7 @@ header p{
       🏗️ BUILD
     </h2>
 
-
-    <button
-      onclick="buildRoad()"
-    >
+    <button onclick="buildRoad()">
 
       🛣️ Build Road
       <br>
@@ -2305,9 +1513,7 @@ header p{
     </button>
 
 
-    <button
-      onclick="buildVillage()"
-    >
+    <button onclick="buildVillage()">
 
       🏘️ Build Village
       <br>
@@ -2317,9 +1523,7 @@ header p{
     </button>
 
 
-    <button
-      onclick="buildTown()"
-    >
+    <button onclick="buildTown()">
 
       🏰 Build Town
       <br>
@@ -2329,9 +1533,7 @@ header p{
     </button>
 
 
-    <button
-      onclick="trade()"
-    >
+    <button onclick="trade()">
 
       🤝 Trade
       <br>
@@ -2340,9 +1542,7 @@ header p{
 
     </button>
 
-
   </div>
-
 
 
   <!-- LOG -->
@@ -2353,11 +1553,9 @@ header p{
       GAME LOG
     </h2>
 
-
     <div
       class="log"
-      id="log"
-    >
+      id="log">
 
       🇬🇧 Welcome to Kingdoms of England!
       <br>
@@ -2370,8 +1568,13 @@ header p{
 
     </div>
 
-  </div>
+    <div
+      class="syncInfo"
+      id="syncInfo">
+      Supabase cloud sync
+    </div>
 
+  </div>
 
 
   <!-- CHAT -->
@@ -2382,11 +1585,9 @@ header p{
       💬 CHAT
     </h2>
 
-
     <div
       class="chat"
-      id="chat"
-    >
+      id="chat">
 
       🔴 Raven: Good luck everyone!
       <br>
@@ -2408,58 +1609,64 @@ header p{
       <input
         id="message"
         placeholder="Type a message..."
-        onkeydown="
-          if(event.key==='Enter')
-          sendChat()
-        "
+        onkeydown="if(event.key==='Enter')sendChat()"
       >
-
 
       <button
-        onclick="sendChat()"
-      >
+        onclick="sendChat()">
         ➤
       </button>
 
     </div>
 
-
   </div>
-
 
 </aside>
 
 </div>
 
 
-
 <script>
 
-/* =====================================
-   SUPABASE CONFIG
-===================================== */
+/* =========================================================
+   SUPABASE CONNECTION
+========================================================= */
+
+/*
+  這就是你的 Supabase Project URL
+*/
 
 const SUPABASE_URL =
   "https://aeqhrcdlmpqncddridaj.supabase.co";
 
-const SUPABASE_PUBLISHABLE_KEY =
+
+/*
+  這就是你的 Publishable Key
+*/
+
+const SUPABASE_KEY =
   "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
 
 
-/* =====================================
-   CREATE SUPABASE CLIENT
-===================================== */
+/*
+  建立 Supabase client
+*/
 
-const supabaseClient =
-  window.supabase.createClient(
+const {
+  createClient
+} = window.supabase;
+
+
+const db =
+  createClient(
     SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
+    SUPABASE_KEY
   );
 
 
-/* =====================================
+/* =========================================================
    GAME DATA
-===================================== */
+========================================================= */
 
 let resources = {
 
@@ -2497,175 +1704,95 @@ let villageCount = 0;
 let townCount = 0;
 
 
-/* =====================================
-   SUPABASE STATUS
-===================================== */
+let currentTurn =
+  "Raven";
 
-function setSupabaseStatus(
+
+let gameStateId =
+  null;
+
+
+let saveTimer =
+  null;
+
+
+/* =========================================================
+   UI STATUS
+========================================================= */
+
+function setConnection(
   text,
   type
 ){
 
-  const status =
+  const el =
     document.getElementById(
-      "supabaseStatus"
+      "connectionStatus"
     );
 
-  if(!status){
-    return;
-  }
+  el.textContent =
+    text;
+
+  el.className =
+    "connection " +
+    (type || "");
+
+}
 
 
-  if(type === "success"){
+function setSync(
+  text
+){
 
-    status.textContent =
-      "🟢 " + text;
+  const el =
+    document.getElementById(
+      "syncInfo"
+    );
 
-    status.style.color =
-      "#7fd18a";
+  if(el){
 
-  }
-
-  else if(type === "warning"){
-
-    status.textContent =
-      "🟡 " + text;
-
-    status.style.color =
-      "#e5c875";
-
-  }
-
-  else{
-
-    status.textContent =
-      "🔴 " + text;
-
-    status.style.color =
-      "#ff5555";
+    el.textContent =
+      text;
 
   }
 
 }
 
 
-/* =====================================
-   TEST SUPABASE
-===================================== */
+/* =========================================================
+   SECURITY
+========================================================= */
 
-async function testSupabase(){
+function escapeHTML(
+  text
+){
 
-  try{
-
-    const result =
-      await supabaseClient
-        .from("game_state")
-        .select("id")
-        .limit(1);
-
-
-    if(result.error){
-
-      console.error(
-        "Supabase database error:",
-        result.error
-      );
-
-
-      /*
-       * 這裡不直接說「連線失敗」。
-       * 因為可能是 RLS 權限問題。
-       */
-
-      if(
-        result.error.code ===
-        "42501"
-      ){
-
-        setSupabaseStatus(
-          "Supabase connected • Database permission denied",
-          "warning"
-        );
-
-        log(
-          "🟡 Supabase 已連線，但 game_state 權限需要設定。"
-        );
-
-      }
-
-      else{
-
-        setSupabaseStatus(
-          "Supabase connected • Database error",
-          "warning"
-        );
-
-        log(
-          "⚠️ Supabase：" +
-          result.error.message
-        );
-
-      }
-
-      return false;
-
-    }
-
-
-    setSupabaseStatus(
-      "Supabase connected",
-      "success"
+  const div =
+    document.createElement(
+      "div"
     );
 
+  div.textContent =
+    text;
 
-    log(
-      "🟢 Supabase 已成功連線！"
-    );
-
-
-    return true;
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-
-    setSupabaseStatus(
-      "Supabase connection failed",
-      "error"
-    );
-
-
-    log(
-      "❌ Supabase 連線失敗。"
-    );
-
-
-    return false;
-
-  }
+  return div.innerHTML;
 
 }
 
 
-/* =====================================
+/* =========================================================
    RESOURCE UPDATE
-===================================== */
+========================================================= */
 
 function updateResources(){
 
-  Object.keys(
-    resources
-  ).forEach(
+  Object.keys(resources).forEach(
     key => {
 
       const el =
         document.getElementById(
           key
         );
-
 
       if(el){
 
@@ -2678,27 +1805,38 @@ function updateResources(){
   );
 
 
-  const ravenVP =
-    document.getElementById(
-      "ravenVP"
-    );
-
-
-  if(ravenVP){
-
-    ravenVP.textContent =
-      vp + " VP";
-
-  }
+  document.getElementById(
+    "ravenVP"
+  ).textContent =
+    vp + " VP";
 
 }
 
 
-/* =====================================
-   GAME LOG
-===================================== */
+/* =========================================================
+   TURN
+========================================================= */
 
-function log(message){
+function updateTurn(){
+
+  document.getElementById(
+    "turnDisplay"
+  ).textContent =
+    "👑 " +
+    currentTurn +
+    "'s Turn";
+
+}
+
+
+/* =========================================================
+   GAME LOG
+========================================================= */
+
+function log(
+  message,
+  save = true
+){
 
   const box =
     document.getElementById(
@@ -2706,39 +1844,1051 @@ function log(message){
     );
 
 
-  if(!box){
-    return;
-  }
-
-
   box.innerHTML =
     message +
     "<br>" +
     box.innerHTML;
 
+
+  if(save){
+
+    saveLog(
+      message
+    );
+
+  }
+
 }
 
 
-/* =====================================
-   DICE
-===================================== */
+/* =========================================================
+   SAVE GAME LOG TO SUPABASE
+========================================================= */
 
-async function rollDice(){
+async function saveLog(
+  message
+){
+
+  try{
+
+    const payload = {
+
+      room_id:
+        "ENGLAND-001",
+
+      player_name:
+        "Raven",
+
+      message:
+        String(message)
+
+    };
+
+
+    const {
+      error
+    } =
+      await db
+        .from("game_logs")
+        .insert(
+          payload
+        );
+
+
+    if(error){
+
+      console.warn(
+        "game_logs:",
+        error
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD GAME LOG
+========================================================= */
+
+async function loadLogs(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await db
+        .from("game_logs")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        )
+        .limit(40);
+
+
+    if(error){
+
+      console.warn(
+        "loadLogs:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    if(
+      !data ||
+      !data.length
+    ){
+
+      return;
+
+    }
+
+
+    const box =
+      document.getElementById(
+        "log"
+      );
+
+
+    const rows =
+      data.map(
+        row => {
+
+          const player =
+            row.player_name ||
+            row.player ||
+            "Player";
+
+
+          const msg =
+            row.message ||
+            row.log ||
+            row.content ||
+            "";
+
+
+          return (
+            "• " +
+            escapeHTML(
+              player
+            ) +
+            ": " +
+            escapeHTML(
+              msg
+            )
+          );
+
+        }
+      );
+
+
+    box.innerHTML =
+      rows.join(
+        "<br>"
+      );
+
+  }catch(error){
+
+    console.warn(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   GAME STATE LOAD
+========================================================= */
+
+async function loadGameState(){
+
+  try{
+
+    setSync(
+      "Reading game state..."
+    );
+
+
+    const {
+      data,
+      error
+    } =
+      await db
+        .from("game_state")
+        .select("*")
+        .limit(1);
+
+
+    if(error){
+
+      console.warn(
+        "game_state:",
+        error
+      );
+
+      setSync(
+        "Game state table unavailable"
+      );
+
+      return;
+
+    }
+
+
+    if(
+      data &&
+      data.length
+    ){
+
+      const row =
+        data[0];
+
+
+      gameStateId =
+        row.id ??
+        null;
+
+
+      /*
+        如果 resources 是 JSONB
+      */
+
+      if(
+        row.resources &&
+        typeof row.resources ===
+          "object"
+      ){
+
+        resources =
+          {
+            ...resources,
+            ...row.resources
+          };
+
+      }
+
+
+      if(
+        typeof row.vp ===
+        "number"
+      ){
+
+        vp =
+          row.vp;
+
+      }
+
+
+      if(
+        row.pirate_region
+      ){
+
+        pirateRegion =
+          row.pirate_region;
+
+      }
+
+
+      if(
+        row.current_turn
+      ){
+
+        currentTurn =
+          row.current_turn;
+
+      }
+
+
+      if(
+        typeof row.road_count ===
+        "number"
+      ){
+
+        roadCount =
+          row.road_count;
+
+      }
+
+
+      if(
+        typeof row.village_count ===
+        "number"
+      ){
+
+        villageCount =
+          row.village_count;
+
+      }
+
+
+      if(
+        typeof row.town_count ===
+        "number"
+      ){
+
+        townCount =
+          row.town_count;
+
+      }
+
+
+      if(
+        row.dice_display
+      ){
+
+        document.getElementById(
+          "dice"
+        ).textContent =
+          row.dice_display;
+
+      }
+
+
+      updateResources();
+
+      updateTurn();
+
+      document.getElementById(
+        "pirateLocation"
+      ).textContent =
+        pirateRegion;
+
+
+      renderBuildings();
+
+
+      setSync(
+        "☁️ Game state synced"
+      );
+
+    }else{
+
+      await createInitialGameState();
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    setSync(
+      "Game state sync error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CREATE INITIAL GAME STATE
+========================================================= */
+
+async function createInitialGameState(){
+
+  const payload = {
+
+    resources:
+      resources,
+
+    vp:
+      vp,
+
+    pirate_region:
+      pirateRegion,
+
+    current_turn:
+      currentTurn,
+
+    road_count:
+      roadCount,
+
+    village_count:
+      villageCount,
+
+    town_count:
+      townCount,
+
+    dice_display:
+      "⚀ ⚀"
+
+  };
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await db
+        .from("game_state")
+        .insert(
+          payload
+        )
+        .select()
+        .limit(1);
+
+
+    if(error){
+
+      console.warn(
+        "create game state:",
+        error
+      );
+
+      setSync(
+        "☁️ Local game active"
+      );
+
+      return;
+
+    }
+
+
+    if(
+      data &&
+      data.length
+    ){
+
+      gameStateId =
+        data[0].id ??
+        null;
+
+    }
+
+
+    setSync(
+      "☁️ Game state created"
+    );
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SAVE GAME STATE
+========================================================= */
+
+async function saveGameState(){
+
+  clearTimeout(
+    saveTimer
+  );
+
+
+  saveTimer =
+    setTimeout(
+      async () => {
+
+        const payload = {
+
+          resources:
+            resources,
+
+          vp:
+            vp,
+
+          pirate_region:
+            pirateRegion,
+
+          current_turn:
+            currentTurn,
+
+          road_count:
+            roadCount,
+
+          village_count:
+            villageCount,
+
+          town_count:
+            townCount,
+
+          dice_display:
+            document.getElementById(
+              "dice"
+            ).textContent
+
+        };
+
+
+        try{
+
+          let result;
+
+
+          if(gameStateId){
+
+            result =
+              await db
+                .from("game_state")
+                .update(
+                  payload
+                )
+                .eq(
+                  "id",
+                  gameStateId
+                );
+
+          }else{
+
+            result =
+              await db
+                .from("game_state")
+                .insert(
+                  payload
+                )
+                .select()
+                .limit(1);
+
+
+            if(
+              result.data &&
+              result.data.length
+            ){
+
+              gameStateId =
+                result.data[0].id ??
+                null;
+
+            }
+
+          }
+
+
+          if(result.error){
+
+            console.warn(
+              "saveGameState:",
+              result.error
+            );
+
+
+            setSync(
+              "⚠️ Supabase save blocked"
+            );
+
+          }else{
+
+            setSync(
+              "☁️ Saved to Supabase"
+            );
+
+          }
+
+        }catch(error){
+
+          console.error(
+            error
+          );
+
+
+          setSync(
+            "⚠️ Supabase save error"
+          );
+
+        }
+
+      },
+      250
+    );
+
+}
+
+
+/* =========================================================
+   CHAT SAVE
+========================================================= */
+
+async function saveChatMessage(
+  message
+){
+
+  try{
+
+    const payload = {
+
+      room_id:
+        "ENGLAND-001",
+
+      player_name:
+        "Raven",
+
+      message:
+        String(message)
+
+    };
+
+
+    const {
+      error
+    } =
+      await db
+        .from("chat_messages")
+        .insert(
+          payload
+        );
+
+
+    if(error){
+
+      console.warn(
+        "chat_messages:",
+        error
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD CHAT
+========================================================= */
+
+async function loadChat(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await db
+        .from("chat_messages")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:true
+          }
+        )
+        .limit(60);
+
+
+    if(error){
+
+      console.warn(
+        "loadChat:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    if(
+      !data ||
+      !data.length
+    ){
+
+      return;
+
+    }
+
+
+    const chat =
+      document.getElementById(
+        "chat"
+      );
+
+
+    chat.innerHTML =
+      data
+        .map(
+          row => {
+
+            const player =
+              row.player_name ||
+              row.player ||
+              "Player";
+
+
+            const msg =
+              row.message ||
+              row.content ||
+              "";
+
+
+            const icon =
+              player === "Raven"
+                ? "🔴"
+                : player === "Lion"
+                ? "🔵"
+                : player === "Stag"
+                ? "🟢"
+                : "🟡";
+
+
+            return (
+              icon +
+              " " +
+              escapeHTML(
+                player
+              ) +
+              ": " +
+              escapeHTML(
+                msg
+              )
+            );
+
+          }
+        )
+        .join(
+          "<br>"
+        );
+
+
+    chat.scrollTop =
+      chat.scrollHeight;
+
+  }catch(error){
+
+    console.warn(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CHAT REALTIME
+========================================================= */
+
+function appendChatRow(
+  player,
+  message
+){
+
+  const chat =
+    document.getElementById(
+      "chat"
+    );
+
+
+  const icon =
+    player === "Raven"
+      ? "🔴"
+      : player === "Lion"
+      ? "🔵"
+      : player === "Stag"
+      ? "🟢"
+      : "🟡";
+
+
+  const safe =
+    icon +
+    " " +
+    escapeHTML(
+      player
+    ) +
+    ": " +
+    escapeHTML(
+      message
+    );
+
+
+  chat.innerHTML +=
+    (chat.innerHTML
+      ? "<br>"
+      : "") +
+    safe;
+
+
+  chat.scrollTop =
+    chat.scrollHeight;
+
+}
+
+
+/* =========================================================
+   REALTIME
+========================================================= */
+
+function subscribeRealtime(){
+
+  try{
+
+    db
+      .channel(
+        "kingdoms-of-england-live"
+      )
+
+
+      /*
+        GAME STATE
+      */
+
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"game_state"
+        },
+        payload => {
+
+          if(
+            !payload.new
+          ){
+
+            return;
+
+          }
+
+
+          const row =
+            payload.new;
+
+
+          if(
+            gameStateId &&
+            row.id !==
+              gameStateId
+          ){
+
+            return;
+
+          }
+
+
+          if(
+            row.resources &&
+            typeof row.resources ===
+              "object"
+          ){
+
+            resources =
+              {
+                ...resources,
+                ...row.resources
+              };
+
+          }
+
+
+          if(
+            typeof row.vp ===
+            "number"
+          ){
+
+            vp =
+              row.vp;
+
+          }
+
+
+          if(
+            row.pirate_region
+          ){
+
+            pirateRegion =
+              row.pirate_region;
+
+          }
+
+
+          if(
+            row.current_turn
+          ){
+
+            currentTurn =
+              row.current_turn;
+
+          }
+
+
+          if(
+            typeof row.road_count ===
+            "number"
+          ){
+
+            roadCount =
+              row.road_count;
+
+          }
+
+
+          if(
+            typeof row.village_count ===
+            "number"
+          ){
+
+            villageCount =
+              row.village_count;
+
+          }
+
+
+          if(
+            typeof row.town_count ===
+            "number"
+          ){
+
+            townCount =
+              row.town_count;
+
+          }
+
+
+          if(
+            row.dice_display
+          ){
+
+            document.getElementById(
+              "dice"
+            ).textContent =
+              row.dice_display;
+
+          }
+
+
+          updateResources();
+
+          updateTurn();
+
+          document.getElementById(
+            "pirateLocation"
+          ).textContent =
+            pirateRegion;
+
+
+          renderBuildings();
+
+
+          setSync(
+            "⚡ Live sync"
+          );
+
+        }
+      )
+
+
+      /*
+        CHAT
+      */
+
+      .on(
+        "postgres_changes",
+        {
+          event:"INSERT",
+          schema:"public",
+          table:"chat_messages"
+        },
+        payload => {
+
+          const row =
+            payload.new;
+
+
+          appendChatRow(
+
+            row.player_name ||
+            row.player ||
+            "Player",
+
+            row.message ||
+            row.content ||
+            ""
+
+          );
+
+        }
+      )
+
+
+      .subscribe(
+        status => {
+
+          console.log(
+            "Realtime:",
+            status
+          );
+
+        }
+      );
+
+  }catch(error){
+
+    console.warn(
+      "Realtime:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DICE
+========================================================= */
+
+function rollDice(){
+
+  const button =
+    document.getElementById(
+      "rollButton"
+    );
+
+
+  button.disabled =
+    true;
+
 
   const a =
     Math.floor(
-      Math.random()*6
+      Math.random() * 6
     ) + 1;
 
 
   const b =
     Math.floor(
-      Math.random()*6
+      Math.random() * 6
     ) + 1;
 
 
   const total =
-    a+b;
+    a + b;
 
 
   const faces = [
@@ -2757,9 +2907,9 @@ async function rollDice(){
     "dice"
   ).textContent =
 
-    faces[a-1] +
+    faces[a - 1] +
     " " +
-    faces[b-1] +
+    faces[b - 1] +
     " = " +
     total;
 
@@ -2771,9 +2921,9 @@ async function rollDice(){
   );
 
 
-  /* =================================
-     PIRATE
-  ================================= */
+  /*
+    7 = Pirate
+  */
 
   if(total === 7){
 
@@ -2783,93 +2933,103 @@ async function rollDice(){
 
 
     alert(
+
       "🎲 你擲出了 7！\n\n" +
       "🏴‍☠️ 請點擊地圖上的海盜移動它。"
+
     );
 
+  }else{
 
-    await saveGame();
+
+    const production = {
+
+      3:"iron",
+
+      4:"wood",
+
+      5:"iron",
+
+      6:"grain",
+
+      8:"wood",
+
+      9:"wool",
+
+      10:"stone",
+
+      11:"grain",
+
+      12:"gold"
+
+    };
 
 
-    return;
+    const resource =
+      production[total];
+
+
+    if(resource){
+
+      resources[resource]++;
+
+
+      updateResources();
+
+
+      log(
+
+        "📦 +1 " +
+        resource +
+        " 來自骰子 " +
+        total
+
+      );
+
+    }else{
+
+      log(
+        "沒有對應資源。"
+      );
+
+    }
 
   }
 
 
-  /* =================================
-     RESOURCE PRODUCTION
-  ================================= */
-
-  const production = {
-
-    3:"iron",
-
-    4:"wood",
-
-    5:"iron",
-
-    6:"grain",
-
-    8:"wood",
-
-    9:"wool",
-
-    10:"stone",
-
-    11:"grain",
-
-    12:"gold"
-
-  };
+  saveGameState();
 
 
-  const resource =
-    production[total];
+  setTimeout(
 
+    () => {
 
-  if(resource){
+      button.disabled =
+        false;
 
-    resources[resource]++;
+    },
 
+    500
 
-    updateResources();
-
-
-    log(
-      "📦 +1 " +
-      resource +
-      " 來自骰子 " +
-      total
-    );
-
-  }
-
-  else{
-
-    log(
-      "沒有對應資源。"
-    );
-
-  }
-
-
-  await saveGame();
+  );
 
 }
 
 
-/* =====================================
-   SPEND
-===================================== */
+/* =========================================================
+   SPEND RESOURCES
+========================================================= */
 
-function spend(cost){
+function spend(
+  cost
+){
 
   for(
     const key in cost
   ){
 
     if(
-      resources[key] <
+      (resources[key] || 0) <
       cost[key]
     ){
 
@@ -2892,20 +3052,35 @@ function spend(cost){
 
   updateResources();
 
+  saveGameState();
+
 
   return true;
 
 }
 
 
-/* =====================================
+/* =========================================================
    BUILD ROAD
-===================================== */
+========================================================= */
 
-async function buildRoad(){
+function buildRoad(){
 
   if(
-    spend({
+    roadCount >= 3
+  ){
+
+    log(
+      "❌ All visible Road slots are already used."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !spend({
 
       wood:1,
 
@@ -2914,58 +3089,67 @@ async function buildRoad(){
     })
   ){
 
-    vp++;
-
-    roadCount++;
-
-
-    const road =
-      document.getElementById(
-        "road" +
-        Math.min(
-          roadCount,
-          3
-        )
-      );
-
-
-    if(road){
-
-      road.classList.add(
-        "show"
-      );
-
-    }
-
-
-    log(
-      "🛣️ Raven built a Road! +1 VP"
-    );
-
-
-    await saveGame();
-
-  }
-
-  else{
-
     log(
       "❌ Not enough resources for Road."
     );
 
+    return;
+
   }
+
+
+  vp++;
+
+  roadCount++;
+
+
+  const road =
+    document.getElementById(
+      "road" +
+      roadCount
+    );
+
+
+  if(road){
+
+    road.classList.add(
+      "show"
+    );
+
+  }
+
+
+  log(
+    "🛣️ Raven built a Road! +1 VP"
+  );
+
+
+  saveGameState();
 
 }
 
 
-/* =====================================
+/* =========================================================
    BUILD VILLAGE
-===================================== */
+========================================================= */
 
-async function buildVillage(){
+function buildVillage(){
 
   if(
-    spend({
+    villageCount >= 9
+  ){
+
+    log(
+      "❌ All building nodes are occupied."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !spend({
 
       wood:1,
 
@@ -2978,59 +3162,58 @@ async function buildVillage(){
     })
   ){
 
-    vp++;
-
-    villageCount++;
-
-
-    log(
-      "🏘️ Raven built a Village! +1 VP"
-    );
-
-
-    const nodes =
-      document.querySelectorAll(
-        ".node"
-      );
-
-
-    if(
-      villageCount <=
-      nodes.length
-    ){
-
-      nodes[
-        villageCount-1
-      ].classList.add(
-        "built"
-      );
-
-    }
-
-
-    await saveGame();
-
-  }
-
-  else{
-
     log(
       "❌ Not enough resources for Village."
     );
 
+    return;
+
   }
+
+
+  vp++;
+
+  villageCount++;
+
+
+  log(
+    "🏘️ Raven built a Village! +1 VP"
+  );
+
+
+  const nodes =
+    document.querySelectorAll(
+      ".node"
+    );
+
+
+  if(
+    villageCount <=
+    nodes.length
+  ){
+
+    nodes[
+      villageCount - 1
+    ].classList.add(
+      "built"
+    );
+
+  }
+
+
+  saveGameState();
 
 }
 
 
-/* =====================================
+/* =========================================================
    BUILD TOWN
-===================================== */
+========================================================= */
 
-async function buildTown(){
+function buildTown(){
 
   if(
-    spend({
+    !spend({
 
       grain:2,
 
@@ -3039,80 +3222,83 @@ async function buildTown(){
     })
   ){
 
-    vp += 2;
-
-    townCount++;
-
-
-    log(
-      "🏰 Raven upgraded to a Town! +2 VP"
-    );
-
-
-    await saveGame();
-
-  }
-
-  else{
-
     log(
       "❌ Not enough resources for Town."
     );
 
+    return;
+
   }
+
+
+  vp += 2;
+
+  townCount++;
+
+
+  log(
+    "🏰 Raven upgraded to a Town! +2 VP"
+  );
+
+
+  saveGameState();
 
 }
 
 
-/* =====================================
+/* =========================================================
    TRADE
-===================================== */
+========================================================= */
 
-async function trade(){
+function trade(){
 
   if(
-    spend({
+    !spend({
 
       wood:2
 
     })
   ){
 
-    resources.grain++;
-
-
-    updateResources();
-
-
-    log(
-      "🤝 Traded 2 Timber → 1 Grain."
-    );
-
-
-    await saveGame();
-
-  }
-
-  else{
-
     log(
       "❌ Need 2 Timber."
     );
 
+    return;
+
   }
+
+
+  resources.grain++;
+
+
+  updateResources();
+
+
+  log(
+    "🤝 Traded 2 Timber → 1 Grain."
+  );
+
+
+  saveGameState();
 
 }
 
 
-/* =====================================
+/* =========================================================
    HEX CLICK
-===================================== */
+========================================================= */
 
 function selectHex(
+
   element,
+
   name,
+
   resource,
+
   number
+
 ){
 
   document
@@ -3147,32 +3333,32 @@ function selectHex(
 
 
   log(
+
     "🗺️ Selected " +
     name +
     " • " +
     resource +
     " • Dice " +
     number
+
   );
 
 }
 
 
-/* =====================================
+/* =========================================================
    NODE
-===================================== */
+========================================================= */
 
-function buildNode(number){
+function buildNode(
+  number
+){
 
   const node =
     document.querySelector(
-      ".n" + number
+      ".n" +
+      number
     );
-
-
-  if(!node){
-    return;
-  }
 
 
   if(
@@ -3182,9 +3368,11 @@ function buildNode(number){
   ){
 
     log(
+
       "🏘️ Node " +
       number +
       " 已經有建築。"
+
     );
 
 
@@ -3199,19 +3387,23 @@ function buildNode(number){
 
 
   log(
+
     "📍 Node " +
     number +
     " selected."
+
   );
 
 }
 
 
-/* =====================================
+/* =========================================================
    CITY
-===================================== */
+========================================================= */
 
-function cityInfo(city){
+function cityInfo(
+  city
+){
 
   const cityData = {
 
@@ -3255,6 +3447,7 @@ function cityInfo(city){
 
 
   log(
+
     "🏙️ " +
     city +
     " — " +
@@ -3262,16 +3455,17 @@ function cityInfo(city){
       cityData[city] ||
       "City"
     )
+
   );
 
 }
 
 
-/* =====================================
+/* =========================================================
    PIRATE
-===================================== */
+========================================================= */
 
-async function movePirate(){
+function movePirate(){
 
   const regions = [
 
@@ -3294,25 +3488,15 @@ async function movePirate(){
 
   pirateRegion =
     regions[
-      (
-        current + 1
-      ) %
+      (current + 1) %
       regions.length
     ];
 
 
-  const location =
-    document.getElementById(
-      "pirateLocation"
-    );
-
-
-  if(location){
-
-    location.textContent =
-      pirateRegion;
-
-  }
+  document.getElementById(
+    "pirateLocation"
+  ).textContent =
+    pirateRegion;
 
 
   const pirate =
@@ -3321,37 +3505,35 @@ async function movePirate(){
     );
 
 
-  if(pirate){
-
-    pirate.classList.remove(
-      "moving"
-    );
-
-
-    void pirate.offsetWidth;
-
-
-    pirate.classList.add(
-      "moving"
-    );
-
-  }
-
-
-  log(
-    "🏴‍☠️ Pirate moved to " +
-    pirateRegion
+  pirate.classList.remove(
+    "moving"
   );
 
 
-  await saveGame();
+  void pirate.offsetWidth;
+
+
+  pirate.classList.add(
+    "moving"
+  );
+
+
+  log(
+
+    "🏴‍☠️ Pirate moved to " +
+    pirateRegion
+
+  );
+
+
+  saveGameState();
 
 }
 
 
-/* =====================================
+/* =========================================================
    CHAT
-===================================== */
+========================================================= */
 
 async function sendChat(){
 
@@ -3372,386 +3554,387 @@ async function sendChat(){
   }
 
 
-  const chat =
-    document.getElementById(
-      "chat"
-    );
+  /*
+    先立即顯示
+  */
+
+  appendChatRow(
+    "Raven",
+    message
+  );
 
 
-  chat.innerHTML +=
-
-    "🔴 Raven: " +
-    escapeHTML(message) +
-    "<br>";
+  input.value =
+    "";
 
 
-  input.value = "";
+  /*
+    再寫入 Supabase
+  */
 
-
-  chat.scrollTop =
-    chat.scrollHeight;
-
-
-  /* =================================
-     SAVE CHAT
-  ================================= */
-
-  try{
-
-    const result =
-      await supabaseClient
-        .from("chat_messages")
-        .insert({
-
-          player_name:"Raven",
-
-          message:message
-
-        });
-
-
-    if(result.error){
-
-      console.error(
-        "Chat save error:",
-        result.error
-      );
-
-
-      log(
-        "⚠️ 聊天已顯示，但 Supabase 沒有儲存聊天。"
-      );
-
-    }
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-  }
+  await saveChatMessage(
+    message
+  );
 
 }
 
 
-/* =====================================
-   SECURITY
-===================================== */
-
-function escapeHTML(text){
-
-  const div =
-    document.createElement(
-      "div"
-    );
-
-
-  div.textContent =
-    text;
-
-
-  return div.innerHTML;
-
-}
-
-
-/* =====================================
-   SAVE GAME
-===================================== */
-
-async function saveGame(){
-
-  try{
-
-    const result =
-      await supabaseClient
-        .from("game_state")
-        .upsert({
-
-          id:1,
-
-          current_player:
-            "Raven",
-
-          pirate_region:
-            pirateRegion,
-
-          raven_vp:
-            vp,
-
-          wood:
-            resources.wood,
-
-          grain:
-            resources.grain,
-
-          wool:
-            resources.wool,
-
-          stone:
-            resources.stone,
-
-          iron:
-            resources.iron,
-
-          gold:
-            resources.gold
-
-        });
-
-
-    if(result.error){
-
-      console.error(
-        "Save game error:",
-        result.error
-      );
-
-
-      log(
-        "⚠️ 遊戲資料沒有成功儲存到 Supabase。"
-      );
-
-
-      return false;
-
-    }
-
-
-    console.log(
-      "Game saved successfully."
-    );
-
-
-    return true;
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-
-    return false;
-
-  }
-
-}
-
-
-/* =====================================
-   LOAD GAME
-===================================== */
-
-async function loadGame(){
-
-  try{
-
-    const result =
-      await supabaseClient
-        .from("game_state")
-        .select("*")
-        .eq("id",1)
-        .maybeSingle();
-
-
-    if(result.error){
-
-      console.error(
-        "Load game error:",
-        result.error
-      );
-
-
-      return false;
-
-    }
-
-
-    const data =
-      result.data;
-
-
-    if(!data){
-
-      log(
-        "🆕 找不到舊遊戲，開始新遊戲。"
-      );
-
-
-      return true;
-
-    }
-
-
-    /* ===============================
-       RESOURCES
-    =============================== */
-
-    if(
-      data.wood !== null &&
-      data.wood !== undefined
-    ){
-
-      resources.wood =
-        data.wood;
-
-    }
-
-
-    if(
-      data.grain !== null &&
-      data.grain !== undefined
-    ){
-
-      resources.grain =
-        data.grain;
-
-    }
-
-
-    if(
-      data.wool !== null &&
-      data.wool !== undefined
-    ){
-
-      resources.wool =
-        data.wool;
-
-    }
-
-
-    if(
-      data.stone !== null &&
-      data.stone !== undefined
-    ){
-
-      resources.stone =
-        data.stone;
-
-    }
-
-
-    if(
-      data.iron !== null &&
-      data.iron !== undefined
-    ){
-
-      resources.iron =
-        data.iron;
-
-    }
-
-
-    if(
-      data.gold !== null &&
-      data.gold !== undefined
-    ){
-
-      resources.gold =
-        data.gold;
-
-    }
-
-
-    /* ===============================
-       VP
-    =============================== */
-
-    if(
-      data.raven_vp !== null &&
-      data.raven_vp !== undefined
-    ){
-
-      vp =
-        data.raven_vp;
-
-    }
-
-
-    /* ===============================
-       PIRATE
-    =============================== */
-
-    if(
-      data.pirate_region
-    ){
-
-      pirateRegion =
-        data.pirate_region;
-
-
-      const location =
-        document.getElementById(
-          "pirateLocation"
+/* =========================================================
+   BUILDING RENDER
+========================================================= */
+
+function renderBuildings(){
+
+  /*
+    Roads
+  */
+
+  document
+    .querySelectorAll(
+      ".road"
+    )
+    .forEach(
+      road => {
+
+        road.classList.remove(
+          "show"
         );
 
-
-      if(location){
-
-        location.textContent =
-          pirateRegion;
-
       }
-
-    }
-
-
-    updateResources();
-
-
-    log(
-      "🟢 已從 Supabase 載入遊戲資料。"
     );
 
 
-    return true;
+  for(
+    let i = 1;
+    i <= Math.min(
+      roadCount,
+      3
+    );
+    i++
+  ){
+
+    const road =
+      document.getElementById(
+        "road" + i
+      );
+
+
+    if(road){
+
+      road.classList.add(
+        "show"
+      );
+
+    }
 
   }
 
-  catch(error){
 
-    console.error(error);
+  /*
+    Villages
+  */
 
-    return false;
+  document
+    .querySelectorAll(
+      ".node"
+    )
+    .forEach(
+      node => {
+
+        node.classList.remove(
+          "built"
+        );
+
+      }
+    );
+
+
+  const nodes =
+    document.querySelectorAll(
+      ".node"
+    );
+
+
+  for(
+
+    let i = 0;
+
+    i <
+    Math.min(
+      villageCount,
+      nodes.length
+    );
+
+    i++
+
+  ){
+
+    nodes[i].classList.add(
+      "built"
+    );
 
   }
 
 }
 
 
-/* =====================================
-   START GAME
-===================================== */
+/* =========================================================
+   PLAYERS
+========================================================= */
 
-async function startGame(){
+async function loadPlayers(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await db
+        .from("players")
+        .select("*")
+        .limit(20);
+
+
+    if(error){
+
+      console.warn(
+        "players:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    if(
+      !data ||
+      !data.length
+    ){
+
+      return;
+
+    }
+
+
+    data.forEach(
+      row => {
+
+        const name =
+          String(
+
+            row.name ||
+            row.player_name ||
+            row.username ||
+            ""
+
+          ).toLowerCase();
+
+
+        const score =
+          Number(
+
+            row.vp ??
+            row.points ??
+            row.score ??
+            NaN
+
+          );
+
+
+        if(
+          !Number.isFinite(
+            score
+          )
+        ){
+
+          return;
+
+        }
+
+
+        if(
+          name === "raven"
+        ){
+
+          vp =
+            score;
+
+
+          document.getElementById(
+            "ravenVP"
+          ).textContent =
+            score +
+            " VP";
+
+        }
+
+
+        if(
+          name === "lion"
+        ){
+
+          document.getElementById(
+            "lionVP"
+          ).textContent =
+            score +
+            " VP";
+
+        }
+
+
+        if(
+          name === "stag"
+        ){
+
+          document.getElementById(
+            "stagVP"
+          ).textContent =
+            score +
+            " VP";
+
+        }
+
+
+        if(
+          name === "falcon"
+        ){
+
+          document.getElementById(
+            "falconVP"
+          ).textContent =
+            score +
+            " VP";
+
+        }
+
+      }
+    );
+
+  }catch(error){
+
+    console.warn(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+async function initGame(){
 
   updateResources();
 
+  updateTurn();
 
-  const connected =
-    await testSupabase();
+  renderBuildings();
 
 
-  if(connected){
+  setConnection(
 
-    await loadGame();
+    "🟡 Connecting to Supabase...",
+
+    "busy"
+
+  );
+
+
+  /*
+    測試 Supabase
+  */
+
+  try{
+
+    const {
+      error
+    } =
+      await db
+        .from("game_state")
+        .select("*")
+        .limit(1);
+
+
+    if(error){
+
+      console.warn(
+        "Supabase connection test:",
+        error
+      );
+
+
+      setConnection(
+
+        "🔴 Supabase connected, but database access failed",
+
+        "bad"
+
+      );
+
+    }else{
+
+      setConnection(
+
+        "🟢 Supabase connected",
+
+        "ok"
+
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    setConnection(
+
+      "🔴 Supabase connection failed",
+
+      "bad"
+
+    );
 
   }
+
+
+  /*
+    載入資料
+  */
+
+  await loadGameState();
+
+  await loadPlayers();
+
+  await loadLogs();
+
+  await loadChat();
+
+
+  /*
+    啟動即時同步
+  */
+
+  subscribeRealtime();
 
 }
 
 
-/* =====================================
+/* =========================================================
    START
-===================================== */
+========================================================= */
 
-startGame();
+initGame();
 
 </script>
 
-
 </body>
-
 </html>

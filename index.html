@@ -3,58 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-               maximum-scale=1.0, user-scalable=no">
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>MONOPOLY UK - Supabase Multiplayer</title>
+<title>UK MONOPOLY · Multiplayer</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root {
-    --bg: #07101d;
-    --bg2: #0c1a2c;
-    --card: #101d2e;
-    --card2: #16263a;
-    --border: #263b55;
-    --text: #f4f7fb;
-    --muted: #9eacbd;
-    --green: #21d58a;
-    --blue: #3f7cff;
-    --purple: #6250ef;
-    --red: #ff5d73;
-    --yellow: #e5c65a;
-    --shadow: 0 25px 80px rgba(0,0,0,.35);
-}
-
 * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
-html,
-body {
+html, body {
     margin: 0;
     padding: 0;
     min-height: 100%;
-    background:
-        radial-gradient(
-            circle at 50% 0%,
-            #1a3559 0%,
-            #0b1b2f 35%,
-            #050c16 80%
-        );
-    color: var(--text);
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
-        "Noto Sans TC",
-        "PingFang TC",
+        Arial,
         sans-serif;
+    background:
+        radial-gradient(circle at top, #26354a 0%, #111722 45%, #090d14 100%);
+    color: #fff;
 }
 
 body {
-    min-height: 100vh;
+    padding: 14px;
 }
 
 button,
@@ -66,1337 +43,795 @@ button {
     cursor: pointer;
 }
 
-button:disabled {
-    cursor: not-allowed;
-    opacity: .45;
+.hidden {
+    display: none !important;
 }
 
-/* =========================
+.container {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+/* =========================================================
    HEADER
-========================= */
+========================================================= */
 
 .header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-
-    height: 78px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    padding: 0 28px;
-
-    background: rgba(4, 12, 22, .94);
-    border-bottom: 1px solid #1c2d43;
-    backdrop-filter: blur(14px);
+    gap: 10px;
+    margin-bottom: 14px;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: .5px;
-}
-
-.logo-mark {
-    width: 48px;
-    height: 48px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 13px;
-
-    background: linear-gradient(
-        135deg,
-        #24dc91,
-        #18b978
-    );
-
-    color: #062016;
     font-weight: 900;
-    font-size: 25px;
+    letter-spacing: 1px;
+    font-size: 22px;
 }
 
 .connection {
     display: flex;
     align-items: center;
-    gap: 9px;
-
-    padding: 11px 16px;
-
-    border-radius: 999px;
-
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.06);
-
-    color: var(--muted);
-    font-size: 14px;
+    gap: 7px;
+    font-size: 12px;
+    color: #b9c4d5;
 }
 
 .connection-dot {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    background: var(--yellow);
+    background: #777;
 }
 
-.connection.connected .connection-dot {
-    background: var(--green);
-    box-shadow: 0 0 12px rgba(33,213,138,.7);
+.connection.online .connection-dot {
+    background: #35d07f;
+    box-shadow: 0 0 10px rgba(53,208,127,.7);
 }
 
 .connection.error .connection-dot {
-    background: var(--red);
+    background: #ff4f64;
 }
 
-/* =========================
-   LAYOUT
-========================= */
+/* =========================================================
+   CARD
+========================================================= */
 
-.container {
-    width: min(1250px, calc(100% - 30px));
-    margin: 0 auto;
-    padding: 45px 0 80px;
+.card {
+    background: rgba(22, 29, 41, .94);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.28);
 }
 
-.screen {
-    display: none;
+.panel {
+    padding: 18px;
 }
 
-.screen.active {
-    display: block;
+/* =========================================================
+   LOBBY
+========================================================= */
+
+.lobby {
+    max-width: 520px;
+    margin: 45px auto;
 }
 
-/* =========================
-   LOGIN
-========================= */
-
-.login-card {
-    width: min(760px, 100%);
-    margin: 80px auto 0;
-
-    padding: 42px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(18,34,54,.96),
-            rgba(10,23,39,.96)
-        );
-
-    border: 1px solid rgba(116,151,190,.25);
-    border-radius: 25px;
-
-    box-shadow: var(--shadow);
+.lobby h1 {
+    margin: 0 0 6px;
+    font-size: 30px;
 }
 
-.login-title {
-    margin: 0 0 10px;
-
-    font-size: clamp(32px, 6vw, 48px);
-    font-weight: 850;
-}
-
-.login-subtitle {
-    margin: 0 0 28px;
-
-    color: var(--muted);
-    font-size: 18px;
-    line-height: 1.7;
-}
-
-.notice {
-    margin-bottom: 25px;
-    padding: 17px 18px;
-
-    border-radius: 16px;
-
-    border: 1px solid rgba(229,198,90,.35);
-    background: rgba(229,198,90,.08);
-
-    color: #e9d993;
-    line-height: 1.65;
+.subtitle {
+    color: #9ca9bb;
+    font-size: 14px;
+    margin-bottom: 24px;
 }
 
 .field {
-    margin-bottom: 18px;
+    margin-bottom: 14px;
 }
 
 .field label {
     display: block;
-    margin-bottom: 8px;
-
-    color: #b5c0ce;
-    font-size: 14px;
-    font-weight: 650;
+    font-size: 12px;
+    color: #9ca9bb;
+    margin-bottom: 7px;
 }
 
 .field input {
     width: 100%;
-    height: 60px;
-
-    padding: 0 18px;
-
-    border-radius: 15px;
-
-    border: 1px solid #30465f;
-    outline: none;
-
-    background: #101e30;
+    height: 48px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px solid #354154;
+    background: #0d131d;
     color: white;
-
-    font-size: 17px;
+    outline: none;
 }
 
 .field input:focus {
-    border-color: #4e7bc0;
-    box-shadow: 0 0 0 3px rgba(63,124,255,.12);
+    border-color: #668cff;
 }
 
 .button-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .btn {
-    min-height: 58px;
-
     border: 0;
-    border-radius: 15px;
-
-    font-size: 17px;
+    border-radius: 12px;
+    min-height: 46px;
+    padding: 0 17px;
     font-weight: 800;
-
-    transition:
-        transform .15s ease,
-        filter .15s ease;
+    color: white;
+    background: #2a3547;
 }
 
-.btn:not(:disabled):active {
-    transform: scale(.98);
+.btn:hover {
+    filter: brightness(1.1);
 }
 
 .btn-primary {
-    background: linear-gradient(
-        135deg,
-        #20db8a,
-        #19bd76
-    );
-    color: #041a10;
+    background: linear-gradient(135deg, #587cff, #7859e8);
 }
 
-.btn-blue {
-    background: linear-gradient(
-        135deg,
-        #397aff,
-        #6350ec
-    );
-    color: white;
+.btn-success {
+    background: linear-gradient(135deg, #20a66a, #2cc784);
 }
 
-.btn-dark {
-    background: #1b2b40;
-    color: white;
-    border: 1px solid #30445d;
+.btn-warning {
+    background: linear-gradient(135deg, #d99727, #f2b83f);
+    color: #161616;
 }
 
 .btn-danger {
-    background: rgba(255,93,115,.13);
-    color: #ff8292;
-    border: 1px solid rgba(255,93,115,.25);
+    background: #9c3143;
 }
 
-.btn-small {
-    min-height: 44px;
-    padding: 0 16px;
-    font-size: 14px;
-}
-
-/* =========================
-   ROOM
-========================= */
-
-.room-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 24px;
-}
-
-.room-title {
-    margin: 0;
-    font-size: 32px;
+.btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
 }
 
 .room-code {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
-    margin-top: 8px;
-
-    color: var(--muted);
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    text-align: center;
+    padding: 16px;
+    border-radius: 14px;
+    background: #0b111a;
+    margin: 14px 0;
 }
 
-.room-code strong {
-    color: white;
-    letter-spacing: 2px;
-}
-
-.status-card {
-    padding: 25px;
-
-    border-radius: 22px;
-
-    background: rgba(13,27,44,.92);
-    border: 1px solid var(--border);
-}
-
-.status-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-}
-
-.status-title {
-    font-size: 21px;
-    font-weight: 800;
-}
-
-.status-desc {
-    margin-top: 7px;
-    color: var(--muted);
-}
-
-.player-count {
-    padding: 10px 15px;
-
-    border-radius: 999px;
-
-    background: #1b2c42;
-    color: #dce6f2;
-
-    white-space: nowrap;
-}
-
-/* =========================
-   PLAYERS
-========================= */
-
-.players-grid {
-    display: grid;
-    grid-template-columns:
-        repeat(auto-fit, minmax(210px, 1fr));
-
-    gap: 14px;
-    margin-top: 18px;
-}
-
-.player-card {
-    padding: 17px;
-
-    border-radius: 18px;
-
-    background: #132237;
-    border: 1px solid #263b55;
-
-    transition: .2s ease;
-}
-
-.player-card.current {
-    border-color: var(--green);
-    box-shadow:
-        0 0 0 1px rgba(33,213,138,.2),
-        0 0 30px rgba(33,213,138,.08);
-}
-
-.player-card.me {
-    background:
-        linear-gradient(
-            145deg,
-            rgba(25,55,67,.9),
-            rgba(17,34,49,.95)
-        );
-}
-
-.player-name-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
-}
-
-.player-name {
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.badge {
-    padding: 4px 8px;
-    border-radius: 999px;
-
-    background: rgba(255,255,255,.08);
-    color: #aeb9c7;
-
-    font-size: 11px;
-}
-
-.badge.turn {
-    background: rgba(33,213,138,.12);
-    color: var(--green);
-}
-
-.player-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-
-    margin-top: 14px;
-}
-
-.info-box {
-    padding: 10px;
-    border-radius: 12px;
-    background: rgba(255,255,255,.045);
-}
-
-.info-label {
-    color: #8090a4;
-    font-size: 11px;
-}
-
-.info-value {
-    margin-top: 3px;
-    font-weight: 750;
-}
-
-/* =========================
-   GAME
-========================= */
+/* =========================================================
+   GAME LAYOUT
+========================================================= */
 
 .game-layout {
     display: grid;
-    grid-template-columns:
-        minmax(0, 1.55fr)
-        minmax(320px, .75fr);
-
-    gap: 20px;
-
-    margin-top: 20px;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 14px;
 }
 
-.panel {
-    border-radius: 22px;
-
-    background: rgba(12,25,42,.95);
-    border: 1px solid var(--border);
-
-    box-shadow: 0 15px 50px rgba(0,0,0,.18);
+@media (max-width: 900px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
-.panel-header {
-    padding: 20px 22px;
+/* =========================================================
+   GAME TOP
+========================================================= */
 
-    border-bottom: 1px solid #1e3148;
+.game-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    margin-bottom: 14px;
+}
 
+.game-info {
+    padding: 16px;
+}
+
+.game-status {
+    font-size: 13px;
+    color: #9ca9bb;
+}
+
+.current-player {
+    margin-top: 4px;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.turn-number {
+    color: #8e9aab;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.dice-box {
+    min-width: 180px;
+    padding: 15px;
+    text-align: center;
+}
+
+.dice-label {
+    color: #9ca9bb;
+    font-size: 11px;
+    margin-bottom: 7px;
+}
+
+.dice {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.die {
+    width: 48px;
+    height: 48px;
+    border-radius: 11px;
+    background: white;
+    color: #111;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: 900;
 }
 
-.panel-title {
-    font-size: 20px;
-    font-weight: 800;
-}
-
-/* =========================
+/* =========================================================
    BOARD
-========================= */
+========================================================= */
+
+.board-wrap {
+    padding: 12px;
+}
 
 .board {
+    width: 100%;
+    aspect-ratio: 1 / 1;
     display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    gap: 3px;
+    background: #060a10;
+    border-radius: 14px;
+    padding: 4px;
+}
 
-    grid-template-columns:
-        repeat(5, minmax(0, 1fr));
+.board-center {
+    grid-column: 2 / 11;
+    grid-row: 2 / 11;
+    border-radius: 12px;
+    background:
+        radial-gradient(circle, #27344a 0%, #192230 65%, #131a25 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    z-index: 0;
+}
 
-    gap: 7px;
-
-    padding: 15px;
+.board-title {
+    font-size: clamp(16px, 4vw, 34px);
+    font-weight: 1000;
+    letter-spacing: 3px;
+    transform: rotate(-10deg);
+    color: rgba(255,255,255,.8);
 }
 
 .space {
     position: relative;
-
-    min-height: 108px;
-
-    padding: 10px;
-
-    border-radius: 13px;
-
-    background: #17273b;
-    border: 1px solid #2a4059;
-
+    min-width: 0;
+    min-height: 0;
     overflow: hidden;
-}
-
-.space:hover {
-    border-color: #426384;
+    background: #f0eee7;
+    color: #111;
+    border-radius: 4px;
+    border: 1px solid #555;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    font-size: clamp(5px, .75vw, 10px);
 }
 
 .space-color {
-    height: 7px;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-
-    border-radius: 13px 13px 0 0;
-
-    background: #536273;
+    width: 100%;
+    height: 18%;
+    min-height: 4px;
+    background: #888;
+    margin-bottom: 2px;
 }
 
 .space-name {
-    margin-top: 8px;
-
-    font-size: 12px;
     font-weight: 800;
-
-    line-height: 1.3;
-}
-
-.space-city {
-    margin-top: 4px;
-
-    color: #8796a8;
-    font-size: 10px;
+    line-height: 1.05;
+    word-break: break-word;
 }
 
 .space-price {
-    margin-top: 7px;
-
-    color: #c9d3df;
-    font-size: 11px;
+    margin-top: 2px;
+    font-size: .8em;
+    color: #555;
 }
 
-.space-owner {
-    margin-top: 5px;
-
-    color: var(--green);
-    font-size: 10px;
-    font-weight: 750;
-}
-
-.tokens {
+.space-tokens {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 3px;
-
-    margin-top: 8px;
+    gap: 2px;
 }
 
 .token {
-    width: 18px;
-    height: 18px;
-
-    display: grid;
-    place-items: center;
-
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,.6);
+}
 
-    background: #fff;
-    color: #111;
+.owner-mark {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid white;
+}
 
-    font-size: 9px;
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.players-panel,
+.action-panel,
+.log-panel {
+    padding: 16px;
+}
+
+.panel-title {
     font-weight: 900;
+    font-size: 16px;
+    margin-bottom: 12px;
 }
 
-.color-brown { background: #8a6348; }
-.color-light_blue { background: #72c8df; }
-.color-pink { background: #e477a9; }
-.color-orange { background: #e8994e; }
-.color-red { background: #e94d58; }
-.color-yellow { background: #e8ce4e; }
-.color-green { background: #53bd77; }
-.color-dark_blue { background: #586fdb; }
-
-.space-special {
-    background: #1b2a3c;
+.player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.space-current {
-    box-shadow:
-        inset 0 0 0 2px var(--green),
-        0 0 18px rgba(33,213,138,.08);
-}
-
-/* =========================
-   GAME CONTROL
-========================= */
-
-.control-panel {
-    padding-bottom: 20px;
-}
-
-.turn-box {
-    margin: 20px;
-
-    padding: 18px;
-
-    border-radius: 17px;
-
-    background: #14273d;
-    border: 1px solid #29415c;
-}
-
-.turn-label {
-    color: #8394a8;
-    font-size: 13px;
-}
-
-.turn-player {
-    margin-top: 4px;
-
-    font-size: 24px;
-    font-weight: 850;
-}
-
-.dice-result {
+.player {
+    border: 1px solid rgba(255,255,255,.07);
+    background: #121a26;
+    border-radius: 12px;
+    padding: 11px;
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-
+    grid-template-columns: 36px 1fr auto;
+    gap: 9px;
     align-items: center;
-
-    gap: 10px;
-
-    margin: 20px;
 }
 
-.die {
-    min-height: 78px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 17px;
-
-    background: #182b41;
-    border: 1px solid #304b69;
-
-    font-size: 32px;
-    font-weight: 900;
+.player.active {
+    border-color: #6d8cff;
+    box-shadow: 0 0 0 1px rgba(109,140,255,.25);
 }
 
-.dice-plus {
-    color: #74859a;
-    font-weight: 900;
+.player.me {
+    background: #17233a;
 }
 
-.total {
-    margin: 0 20px 20px;
+.player-token {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
 
-    padding: 13px;
-
-    text-align: center;
-
-    border-radius: 13px;
-
-    background: rgba(33,213,138,.08);
-    color: var(--green);
-
+.player-name {
     font-weight: 800;
+    font-size: 14px;
 }
 
-.action-area {
-    display: grid;
-    gap: 10px;
-
-    padding: 0 20px;
-}
-
-.message {
-    margin: 20px;
-
-    min-height: 50px;
-
-    padding: 13px 15px;
-
-    border-radius: 13px;
-
-    background: rgba(255,255,255,.045);
-
-    color: #aeb9c7;
-
-    font-size: 13px;
-    line-height: 1.55;
-}
-
-.message.success {
-    color: #7fe9ba;
-    background: rgba(33,213,138,.08);
-}
-
-.message.error {
-    color: #ff8a98;
-    background: rgba(255,93,115,.08);
-}
-
-/* =========================
-   EVENTS
-========================= */
-
-.events {
-    max-height: 380px;
-    overflow: auto;
-    padding: 12px 20px 20px;
-}
-
-.event {
-    padding: 12px 0;
-
-    border-bottom: 1px solid #1b2d42;
-
-    color: #aab6c4;
-    font-size: 13px;
-    line-height: 1.55;
-}
-
-.event:last-child {
-    border-bottom: 0;
-}
-
-.event-time {
-    margin-right: 8px;
-    color: #65778c;
+.player-meta {
+    color: #8794a8;
     font-size: 11px;
+    margin-top: 2px;
 }
 
-/* =========================
-   MODAL
-========================= */
-
-.modal {
-    position: fixed;
-    inset: 0;
-
-    z-index: 100;
-
-    display: none;
-    place-items: center;
-
-    padding: 20px;
-
-    background: rgba(0,0,0,.7);
-    backdrop-filter: blur(5px);
+.player-money {
+    font-weight: 900;
+    font-size: 13px;
 }
 
-.modal.active {
-    display: grid;
+/* =========================================================
+   ACTION
+========================================================= */
+
+.action-message {
+    padding: 11px;
+    border-radius: 10px;
+    background: #0c121c;
+    color: #aab5c5;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 12px;
 }
 
-.modal-card {
-    width: min(520px, 100%);
-
-    padding: 30px;
-
-    border-radius: 23px;
-
-    background: #102034;
-    border: 1px solid #304966;
-
-    box-shadow: 0 30px 100px rgba(0,0,0,.5);
-}
-
-.modal-title {
-    margin: 0 0 10px;
-
-    font-size: 25px;
-}
-
-.modal-text {
-    color: var(--muted);
-    line-height: 1.65;
-}
-
-.modal-actions {
+.action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-
-    margin-top: 22px;
+    gap: 8px;
 }
 
-/* =========================
+.action-buttons .btn:first-child {
+    grid-column: 1 / -1;
+    min-height: 54px;
+    font-size: 17px;
+}
+
+.property-info {
+    margin-top: 12px;
+    padding: 11px;
+    background: #101824;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   LOG
+========================================================= */
+
+.log {
+    max-height: 250px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.log-item {
+    font-size: 12px;
+    line-height: 1.4;
+    padding: 8px 9px;
+    background: #0e151f;
+    border-radius: 8px;
+    color: #aeb9c9;
+}
+
+.log-item strong {
+    color: white;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast-container {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: min(92vw, 480px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.toast {
+    background: #161f2d;
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    padding: 12px 14px;
+    border-radius: 11px;
+    font-size: 13px;
+    animation: toastIn .2s ease;
+}
+
+.toast.error {
+    border-color: rgba(255,75,95,.45);
+}
+
+.toast.success {
+    border-color: rgba(48,205,124,.45);
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
    LOADING
-========================= */
+========================================================= */
 
 .loading {
-    position: fixed;
-    inset: 0;
-
-    z-index: 200;
-
-    display: none;
-    place-items: center;
-
-    background: rgba(4,10,18,.78);
-    backdrop-filter: blur(4px);
+    opacity: .6;
+    pointer-events: none;
 }
 
-.loading.active {
-    display: grid;
+.small {
+    font-size: 11px;
+    color: #7f8b9d;
 }
 
-.loading-card {
-    padding: 25px 30px;
-
-    border-radius: 18px;
-
-    background: #102034;
-    border: 1px solid #2b425d;
-
-    text-align: center;
-}
-
-.spinner {
-    width: 35px;
-    height: 35px;
-
-    margin: 0 auto 12px;
-
-    border: 4px solid rgba(255,255,255,.12);
-    border-top-color: var(--green);
-
-    border-radius: 50%;
-
-    animation: spin .8s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 900px) {
-
-    .game-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .login-card {
-        margin-top: 30px;
-    }
-}
-
-@media (max-width: 650px) {
-
-    .header {
-        height: 68px;
-        padding: 0 15px;
-    }
-
-    .logo {
-        font-size: 19px;
-    }
-
-    .logo-mark {
-        width: 40px;
-        height: 40px;
-        font-size: 21px;
-    }
-
-    .connection {
-        padding: 8px 11px;
-        font-size: 12px;
-    }
-
-    .container {
-        width: min(100% - 20px, 1250px);
-        padding-top: 25px;
-    }
-
-    .login-card {
-        padding: 25px 18px;
-        border-radius: 20px;
-    }
-
-    .button-row {
-        grid-template-columns: 1fr;
-    }
-
-    .room-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .status-top {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .board {
-        gap: 5px;
-        padding: 9px;
-    }
-
-    .space {
-        min-height: 92px;
-        padding: 7px;
-    }
-
-    .space-name {
-        font-size: 10px;
-    }
-
-    .space-price,
-    .space-city,
-    .space-owner {
-        font-size: 9px;
-    }
-
-    .die {
-        min-height: 65px;
-        font-size: 27px;
-    }
-
-    .modal-actions {
-        grid-template-columns: 1fr;
-    }
+.divider {
+    height: 1px;
+    background: rgba(255,255,255,.07);
+    margin: 14px 0;
 }
 </style>
 </head>
 
 <body>
 
-<header class="header">
+<div class="toast-container" id="toastContainer"></div>
 
-    <div class="logo">
-        <div class="logo-mark">M</div>
-        <div>MONOPOLY UK</div>
+<div class="container">
+
+    <div class="header">
+        <div class="logo">MONOPOLY</div>
+
+        <div class="connection" id="connectionStatus">
+            <span class="connection-dot"></span>
+            <span id="connectionText">連線中...</span>
+        </div>
     </div>
 
-    <div id="connection"
-         class="connection">
-        <span class="connection-dot"></span>
-        <span id="connectionText">
-            Supabase 連線中...
-        </span>
-    </div>
+    <!-- =====================================================
+         LOBBY
+    ====================================================== -->
 
-</header>
+    <section id="lobbyScreen" class="card lobby panel">
 
-<main class="container">
+        <h1>UK MONOPOLY</h1>
 
-    <!-- =====================
-         HOME
-    ====================== -->
+        <div class="subtitle">
+            Supabase Multiplayer Edition
+        </div>
 
-    <section id="homeScreen"
-             class="screen active">
+        <div class="field">
+            <label>你的名字</label>
+            <input
+                id="nameInput"
+                maxlength="20"
+                placeholder="例如：Alice"
+                autocomplete="off">
+        </div>
 
-        <div class="login-card">
+        <div class="field">
+            <label>房間代碼</label>
+            <input
+                id="roomInput"
+                maxlength="12"
+                placeholder="例如：ABCD"
+                autocomplete="off"
+                style="text-transform:uppercase">
+        </div>
 
-            <h1 class="login-title">
-                🎲 加入遊戲
-            </h1>
+        <div class="button-row">
 
-            <p class="login-subtitle">
-                Supabase 多人即時版。<br>
-                每位玩家使用自己的玩家身份，
-                遊戲狀態由 Supabase 控制。
-            </p>
+            <button
+                class="btn btn-primary"
+                id="createRoomBtn">
+                建立房間
+            </button>
 
-            <div class="notice">
-                建議每位玩家使用自己的手機或瀏覽器加入同一個房間。
-                房間、玩家、骰子與回合會自動同步。
-            </div>
+            <button
+                class="btn btn-success"
+                id="joinRoomBtn">
+                加入房間
+            </button>
 
-            <div class="field">
-                <label for="playerName">
-                    玩家名稱
-                </label>
+        </div>
 
-                <input
-                    id="playerName"
-                    type="text"
-                    maxlength="30"
-                    placeholder="輸入你的名字"
-                    autocomplete="off">
-            </div>
+        <div class="divider"></div>
 
-            <div class="field">
-                <label for="roomCode">
-                    房間代碼
-                </label>
-
-                <input
-                    id="roomCode"
-                    type="text"
-                    maxlength="20"
-                    placeholder="例如 ABC123"
-                    autocomplete="off">
-            </div>
-
-            <div class="button-row">
-
-                <button
-                    id="createRoomBtn"
-                    class="btn btn-primary">
-                    建立房間
-                </button>
-
-                <button
-                    id="joinRoomBtn"
-                    class="btn btn-blue">
-                    加入房間
-                </button>
-
-            </div>
-
-            <div id="homeMessage"
-                 class="message"
-                 style="margin-left:0;margin-right:0;">
-                等待連線...
-            </div>
-
+        <div class="small">
+            目前版本支援多人房間、Realtime 同步、輪流擲骰、移動及購買地產。
         </div>
 
     </section>
 
+    <!-- =====================================================
+         GAME
+    ====================================================== -->
 
-    <!-- =====================
-         ROOM
-    ====================== -->
+    <section id="gameScreen" class="hidden">
 
-    <section id="roomScreen"
-             class="screen">
+        <div class="game-top">
 
-        <div class="room-header">
+            <div class="card game-info">
 
-            <div>
+                <div class="game-status">
+                    房間：
+                    <strong id="roomCodeDisplay">----</strong>
+                </div>
 
-                <h1 class="room-title">
-                    遊戲房間
-                </h1>
+                <div
+                    class="current-player"
+                    id="currentPlayerDisplay">
+                    等待遊戲開始
+                </div>
 
-                <div class="room-code">
-                    房間代碼：
-                    <strong id="roomCodeDisplay">
-                        -
-                    </strong>
+                <div
+                    class="turn-number"
+                    id="turnNumberDisplay">
+                    回合：0
+                </div>
+
+            </div>
+
+            <div class="card dice-box">
+
+                <div class="dice-label">
+                    最近一次骰子
+                </div>
+
+                <div class="dice">
+
+                    <div
+                        class="die"
+                        id="die1">
+                        —
+                    </div>
+
+                    <div
+                        class="die"
+                        id="die2">
+                        —
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="game-layout">
+
+            <!-- BOARD -->
+
+            <div class="card board-wrap">
+
+                <div id="board" class="board">
+
+                    <div class="board-center">
+                        <div class="board-title">
+                            UK<br>MONOPOLY
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- SIDEBAR -->
+
+            <aside class="sidebar">
+
+                <!-- PLAYERS -->
+
+                <div class="card players-panel">
+
+                    <div class="panel-title">
+                        玩家
+                    </div>
+
+                    <div
+                        id="playerList"
+                        class="player-list">
+                    </div>
+
+                    <div class="divider"></div>
 
                     <button
-                        id="copyRoomBtn"
-                        class="btn btn-dark btn-small">
-                        複製
+                        id="startGameBtn"
+                        class="btn btn-primary"
+                        style="width:100%">
+                        開始遊戲
                     </button>
-                </div>
-
-            </div>
-
-            <button
-                id="leaveRoomBtn"
-                class="btn btn-danger btn-small">
-                離開
-            </button>
-
-        </div>
-
-
-        <div class="status-card">
-
-            <div class="status-top">
-
-                <div>
-
-                    <div id="roomStatusTitle"
-                         class="status-title">
-                        等待玩家
-                    </div>
-
-                    <div id="roomStatusDesc"
-                         class="status-desc">
-                        -
-                    </div>
 
                 </div>
 
-                <div id="playerCount"
-                     class="player-count">
-                    0 / 4
-                </div>
+                <!-- ACTION -->
 
-            </div>
+                <div class="card action-panel">
 
+                    <div class="panel-title">
+                        回合操作
+                    </div>
 
-            <div id="playersGrid"
-                 class="players-grid">
-            </div>
+                    <div
+                        id="actionMessage"
+                        class="action-message">
+                        等待玩家加入。
+                    </div>
 
+                    <div class="action-buttons">
 
-            <div
-                style="
-                    display:grid;
-                    grid-template-columns:1fr;
-                    gap:10px;
-                    margin-top:18px;
-                ">
+                        <button
+                            id="rollBtn"
+                            class="btn btn-success">
+                            🎲 擲骰子
+                        </button>
 
-                <button
-                    id="startGameBtn"
-                    class="btn btn-primary"
-                    disabled>
-                    開始遊戲
-                </button>
+                        <button
+                            id="buyBtn"
+                            class="btn btn-warning"
+                            disabled>
+                            🏠 購買地產
+                        </button>
 
-            </div>
-
-        </div>
-
-
-        <div id="gameArea"
-             style="display:none;">
-
-            <div class="game-layout">
-
-                <!-- BOARD -->
-
-                <div class="panel">
-
-                    <div class="panel-header">
-
-                        <div class="panel-title">
-                            🇬🇧 英國地產棋盤
-                        </div>
-
-                        <div id="turnNumberLabel"
-                             style="
-                                color:#8192a7;
-                                font-size:13px;
-                             ">
-                            回合 0
-                        </div>
+                        <button
+                            id="refreshBtn"
+                            class="btn">
+                            ↻ 同步
+                        </button>
 
                     </div>
 
-                    <div id="board"
-                         class="board">
+                    <div
+                        id="propertyInfo"
+                        class="property-info hidden">
                     </div>
 
                 </div>
 
+                <!-- LOG -->
 
-                <!-- CONTROL -->
+                <div class="card log-panel">
 
-                <div>
-
-                    <div class="panel control-panel">
-
-                        <div class="panel-header">
-
-                            <div class="panel-title">
-                                🎲 遊戲控制
-                            </div>
-
-                        </div>
-
-
-                        <div class="turn-box">
-
-                            <div class="turn-label">
-                                目前回合
-                            </div>
-
-                            <div id="currentTurnPlayer"
-                                 class="turn-player">
-                                -
-                            </div>
-
-                        </div>
-
-
-                        <div class="dice-result">
-
-                            <div id="dice1"
-                                 class="die">
-                                -
-                            </div>
-
-                            <div class="dice-plus">
-                                +
-                            </div>
-
-                            <div id="dice2"
-                                 class="die">
-                                -
-                            </div>
-
-                        </div>
-
-
-                        <div id="diceTotal"
-                             class="total">
-                            尚未擲骰
-                        </div>
-
-
-                        <div class="action-area">
-
-                            <button
-                                id="rollDiceBtn"
-                                class="btn btn-blue"
-                                disabled>
-                                🎲 擲骰
-                            </button>
-
-                            <button
-                                id="buyPropertyBtn"
-                                class="btn btn-primary"
-                                disabled>
-                                🏠 購買地產
-                            </button>
-
-                        </div>
-
-
-                        <div id="gameMessage"
-                             class="message">
-                            -
-                        </div>
-
+                    <div class="panel-title">
+                        遊戲紀錄
                     </div>
 
-
-                    <!-- PLAYERS -->
-
-                    <div class="panel"
-                         style="margin-top:20px;">
-
-                        <div class="panel-header">
-
-                            <div class="panel-title">
-                                👥 玩家
-                            </div>
-
-                        </div>
-
-                        <div id="sidePlayers"
-                             style="padding:12px 20px 20px;">
-                        </div>
-
-                    </div>
-
-
-                    <!-- EVENTS -->
-
-                    <div class="panel"
-                         style="margin-top:20px;">
-
-                        <div class="panel-header">
-
-                            <div class="panel-title">
-                                📜 遊戲紀錄
-                            </div>
-
-                        </div>
-
-                        <div id="events"
-                             class="events">
-                        </div>
-
+                    <div
+                        id="eventLog"
+                        class="log">
                     </div>
 
                 </div>
 
-            </div>
+            </aside>
 
         </div>
 
     </section>
 
-</main>
-
-
-<!-- =====================
-     MODAL
-====================== -->
-
-<div id="errorModal"
-     class="modal">
-
-    <div class="modal-card">
-
-        <h2 class="modal-title">
-            發生錯誤
-        </h2>
-
-        <div id="modalText"
-             class="modal-text">
-            -
-        </div>
-
-        <div class="modal-actions">
-
-            <button
-                id="modalCloseBtn"
-                class="btn btn-dark">
-                關閉
-            </button>
-
-            <button
-                id="modalReloadBtn"
-                class="btn btn-blue">
-                重新整理
-            </button>
-
-        </div>
-
-    </div>
-
 </div>
-
-
-<!-- =====================
-     LOADING
-====================== -->
-
-<div id="loading"
-     class="loading">
-
-    <div class="loading-card">
-
-        <div class="spinner"></div>
-
-        <div id="loadingText">
-            處理中...
-        </div>
-
-    </div>
-
-</div>
-
 
 <script>
 /* =========================================================
@@ -1409,330 +844,206 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
 
-
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
     );
 
-
-/* =========================================================
-   LOCAL PLAYER SESSION
-========================================================= */
-
-const STORAGE_KEY =
-    "monopoly_supabase_player_v3";
-
-
-let session = {
-    roomId: null,
-    gameId: null,
-    playerId: null,
-    roomCode: null,
-    playerName: null
-};
-
-
-try {
-
-    const saved =
-        localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
-        session = {
-            ...session,
-            ...JSON.parse(saved)
-        };
-    }
-
-} catch (e) {
-
-    console.warn(
-        "localStorage unavailable",
-        e
-    );
-
-}
+/*
+ * 注意：
+ * 這是 publishable key，可以放在前端。
+ * 絕對不要把 service_role key 放進 GitHub。
+ */
 
 
 /* =========================================================
    GAME STATE
 ========================================================= */
 
-let gameState = {
+let state = {
+
+    room: null,
+
     game: null,
+
     players: [],
+
     board: [],
-    events: []
+
+    events: [],
+
+    me: null,
+
+    realtimeChannel: null,
+
+    lastRolledPosition: null
+
 };
 
-let realtimeChannel = null;
-
-let pollTimer = null;
-
-let isBusy = false;
-
 
 /* =========================================================
-   DOM
+   PLAYER TOKEN COLORS
 ========================================================= */
 
-const $ = id =>
-    document.getElementById(id);
+const TOKEN_COLORS = [
+    "#ff4d5e",
+    "#4d8dff",
+    "#34d58b",
+    "#ffc34d",
+    "#b56cff",
+    "#ff7a3d"
+];
 
 
 /* =========================================================
-   UI HELPERS
+   BOARD POSITION → CSS GRID
+========================================================= */
+
+function positionToGrid(position) {
+
+    /*
+     * 40格標準 Monopoly 走法：
+
+     * 0  = 左下 GO
+     * 1~10 = 底部 → 右下
+     * 11~20 = 右側 → 右上
+     * 21~30 = 上方 → 左上
+     * 31~39 = 左側 → 左下
+     */
+
+    if (position === 0)
+        return { row: 11, col: 1 };
+
+    if (position >= 1 && position <= 10)
+        return {
+            row: 11,
+            col: position + 1
+        };
+
+    if (position >= 11 && position <= 20)
+        return {
+            row: 21 - position,
+            col: 11
+        };
+
+    if (position >= 21 && position <= 30)
+        return {
+            row: 1,
+            col: 31 - position
+        };
+
+    return {
+        row: position - 29,
+        col: 1
+    };
+}
+
+
+/* =========================================================
+   COLOR GROUP
+========================================================= */
+
+function groupColor(group) {
+
+    const colors = {
+
+        brown: "#8d5a35",
+
+        light_blue: "#8dd8f2",
+
+        pink: "#d96ba8",
+
+        orange: "#e98a35",
+
+        red: "#d84444",
+
+        yellow: "#e8c84b",
+
+        green: "#4caf72",
+
+        dark_blue: "#3959bd"
+
+    };
+
+    return colors[group] || "#777";
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function toast(message, type = "") {
+
+    const container =
+        document.getElementById("toastContainer");
+
+    const el =
+        document.createElement("div");
+
+    el.className =
+        "toast " + type;
+
+    el.textContent = message;
+
+    container.appendChild(el);
+
+    setTimeout(() => {
+
+        el.remove();
+
+    }, 3500);
+}
+
+
+/* =========================================================
+   CONNECTION
+========================================================= */
+
+function setConnection(status, text) {
+
+    const el =
+        document.getElementById("connectionStatus");
+
+    const label =
+        document.getElementById("connectionText");
+
+    el.classList.remove(
+        "online",
+        "error"
+    );
+
+    if (status === "online")
+        el.classList.add("online");
+
+    if (status === "error")
+        el.classList.add("error");
+
+    label.textContent = text;
+}
+
+
+/* =========================================================
+   SAVE SESSION
 ========================================================= */
 
 function saveSession() {
 
     localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(session)
+        "monopoly_session",
+        JSON.stringify({
+            roomCode:
+                state.room?.room_code || null,
+
+            playerId:
+                state.me?.id || null,
+
+            playerName:
+                state.me?.name || null
+        })
     );
-
-}
-
-
-function clearSession() {
-
-    localStorage.removeItem(
-        STORAGE_KEY
-    );
-
-    session = {
-        roomId: null,
-        gameId: null,
-        playerId: null,
-        roomCode: null,
-        playerName: null
-    };
-
-}
-
-
-function showScreen(name) {
-
-    $("homeScreen")
-        .classList.remove("active");
-
-    $("roomScreen")
-        .classList.remove("active");
-
-
-    if (name === "home") {
-
-        $("homeScreen")
-            .classList.add("active");
-
-    }
-
-    if (name === "room") {
-
-        $("roomScreen")
-            .classList.add("active");
-
-    }
-
-}
-
-
-function setLoading(
-    active,
-    text = "處理中..."
-) {
-
-    $("loadingText").textContent = text;
-
-    $("loading")
-        .classList.toggle(
-            "active",
-            active
-        );
-
-}
-
-
-function setHomeMessage(
-    text,
-    type = ""
-) {
-
-    const el = $("homeMessage");
-
-    el.textContent = text;
-
-    el.className =
-        "message" +
-        (type ? " " + type : "");
-
-}
-
-
-function setGameMessage(
-    text,
-    type = ""
-) {
-
-    const el = $("gameMessage");
-
-    el.textContent = text;
-
-    el.className =
-        "message" +
-        (type ? " " + type : "");
-
-}
-
-
-function showError(error) {
-
-    console.error(error);
-
-    let message =
-        error?.message ||
-        error?.error_description ||
-        String(error) ||
-        "未知錯誤";
-
-    $("modalText").textContent =
-        message;
-
-    $("errorModal")
-        .classList.add("active");
-}
-
-
-function hideError() {
-
-    $("errorModal")
-        .classList.remove("active");
-
-}
-
-
-/* =========================================================
-   CONNECTION STATUS
-========================================================= */
-
-function setConnectionStatus(
-    state,
-    text
-) {
-
-    const el =
-        $("connection");
-
-    el.classList.remove(
-        "connected",
-        "error"
-    );
-
-    if (state === "connected") {
-        el.classList.add("connected");
-    }
-
-    if (state === "error") {
-        el.classList.add("error");
-    }
-
-    $("connectionText")
-        .textContent = text;
-}
-
-
-/* =========================================================
-   SUPABASE CONNECTION TEST
-========================================================= */
-
-async function testSupabaseConnection() {
-
-    setConnectionStatus(
-        "loading",
-        "Supabase 連線中..."
-    );
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("board_spaces")
-                .select("position")
-                .limit(1);
-
-        if (error) {
-            throw error;
-        }
-
-        if (!data) {
-            throw new Error(
-                "Supabase 沒有回傳資料"
-            );
-        }
-
-        setConnectionStatus(
-            "connected",
-            "Supabase 已連線"
-        );
-
-        setHomeMessage(
-            "Supabase 已連線，可以建立或加入房間。",
-            "success"
-        );
-
-        return true;
-
-    } catch (error) {
-
-        setConnectionStatus(
-            "error",
-            "Supabase 連線失敗"
-        );
-
-        setHomeMessage(
-            "Supabase 連線失敗：" +
-            (error.message || error),
-            "error"
-        );
-
-        console.error(
-            "Supabase connection test failed:",
-            error
-        );
-
-        return false;
-    }
-}
-
-
-/* =========================================================
-   RPC HELPER
-========================================================= */
-
-async function rpc(
-    functionName,
-    params
-) {
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient.rpc(
-            functionName,
-            params
-        );
-
-    if (error) {
-        throw error;
-    }
-
-    return data;
 }
 
 
@@ -1743,123 +1054,86 @@ async function rpc(
 async function createRoom() {
 
     const name =
-        $("playerName")
-            .value
-            .trim();
-
-    const roomCode =
-        $("roomCode")
-            .value
-            .trim()
-            .toUpperCase();
-
+        document.getElementById("nameInput")
+        .value.trim();
 
     if (!name) {
 
-        setHomeMessage(
-            "請先輸入玩家名稱。",
-            "error"
-        );
-
+        toast("請先輸入你的名字", "error");
         return;
+
     }
 
+    const roomCode =
+        generateRoomCode();
 
-    if (!roomCode) {
-
-        setHomeMessage(
-            "請輸入房間代碼。",
-            "error"
-        );
-
-        return;
-    }
-
-
-    if (isBusy) return;
-
-    isBusy = true;
-
-    setLoading(
-        true,
-        "正在建立房間..."
-    );
-
+    setLoading(true);
 
     try {
 
-        const result =
-            await rpc(
+        const { data, error } =
+            await supabaseClient.rpc(
                 "create_room",
                 {
-                    p_room_code:
-                        roomCode
+                    p_room_code: roomCode
                 }
             );
 
+        if (error)
+            throw error;
 
-        /*
-         * create_room 只建立 room/game。
-         * 所以建立後還要自己 join_room。
-         */
+        document.getElementById("roomInput")
+            .value = roomCode;
 
-        const joined =
-            await rpc(
-                "join_room",
-                {
-                    p_room_code:
-                        roomCode,
-
-                    p_name:
-                        name
-                }
-            );
-
-
-        session.roomId =
-            result.room_id;
-
-        session.gameId =
-            result.game_id;
-
-        session.playerId =
-            joined.player_id;
-
-        session.roomCode =
-            result.room_code;
-
-        session.playerName =
-            joined.name;
-
-
-        saveSession();
-
-
-        $("playerName")
-            .value = "";
-
-        $("roomCode")
-            .value = "";
-
-
-        await enterRoom();
-
-        setGameMessage(
-            "房間建立成功，你已經加入遊戲。",
+        toast(
+            "房間建立成功：" + roomCode,
             "success"
         );
 
+        await joinRoom(roomCode, name);
 
     } catch (error) {
 
-        showError(error);
+        console.error(error);
+
+        toast(
+            "建立房間失敗：" +
+            getErrorMessage(error),
+            "error"
+        );
 
     } finally {
 
-        isBusy = false;
-
         setLoading(false);
+
     }
+}
+
+
+/* =========================================================
+   GENERATE ROOM CODE
+========================================================= */
+
+function generateRoomCode() {
+
+    const chars =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let result = "";
+
+    for (let i = 0; i < 4; i++) {
+
+        result +=
+            chars[
+                Math.floor(
+                    Math.random() * chars.length
+                )
+            ];
+
+    }
+
+    return result;
+
 }
 
 
@@ -1867,248 +1141,209 @@ async function createRoom() {
    JOIN ROOM
 ========================================================= */
 
-async function joinRoom() {
+async function joinRoom(
+    roomCodeArg = null,
+    nameArg = null
+) {
 
     const name =
-        $("playerName")
-            .value
-            .trim();
+        nameArg ||
+        document.getElementById("nameInput")
+            .value.trim();
 
     const roomCode =
-        $("roomCode")
-            .value
-            .trim()
-            .toUpperCase();
-
+        (
+            roomCodeArg ||
+            document.getElementById("roomInput")
+                .value.trim()
+        ).toUpperCase();
 
     if (!name) {
 
-        setHomeMessage(
-            "請先輸入玩家名稱。",
-            "error"
-        );
-
+        toast("請輸入名字", "error");
         return;
-    }
 
+    }
 
     if (!roomCode) {
 
-        setHomeMessage(
-            "請輸入房間代碼。",
-            "error"
-        );
-
+        toast("請輸入房間代碼", "error");
         return;
+
     }
 
-
-    if (isBusy) return;
-
-    isBusy = true;
-
-    setLoading(
-        true,
-        "正在加入房間..."
-    );
-
+    setLoading(true);
 
     try {
 
-        const result =
-            await rpc(
+        /*
+         * 呼叫：
+         * join_room(text,text)
+         */
+
+        const { data, error } =
+            await supabaseClient.rpc(
                 "join_room",
                 {
-                    p_room_code:
-                        roomCode,
-
-                    p_name:
-                        name
+                    p_room_code: roomCode,
+                    p_name: name
                 }
             );
 
+        if (error)
+            throw error;
 
-        session.roomId =
-            result.room_id;
+        if (!data)
+            throw new Error("加入房間沒有返回資料");
 
-        session.gameId =
-            result.game_id;
+        /*
+         * data:
+         * player_id
+         * game_id
+         * room_id
+         * player_number
+         * name
+         * money
+         * position
+         */
 
-        session.playerId =
-            result.player_id;
-
-        session.roomCode =
-            roomCode;
-
-        session.playerName =
-            result.name;
-
+        state.me = {
+            id: data.player_id,
+            game_id: data.game_id,
+            room_id: data.room_id,
+            player_number: data.player_number,
+            name: data.name,
+            money: data.money,
+            position: data.position
+        };
 
         saveSession();
 
+        await loadRoomAndGame();
 
-        $("playerName")
-            .value = "";
+        showGameScreen();
 
-        $("roomCode")
-            .value = "";
+        await subscribeRealtime();
 
+        await refreshGame();
 
-        await enterRoom();
-
-        setGameMessage(
-            "成功加入房間。",
+        toast(
+            "成功加入房間 " + roomCode,
             "success"
         );
 
-
     } catch (error) {
 
-        showError(error);
+        console.error(error);
+
+        toast(
+            "加入房間失敗：" +
+            getErrorMessage(error),
+            "error"
+        );
 
     } finally {
 
-        isBusy = false;
-
         setLoading(false);
+
     }
 }
 
 
 /* =========================================================
-   ENTER ROOM
+   LOAD ROOM / GAME
 ========================================================= */
 
-async function enterRoom() {
+async function loadRoomAndGame() {
 
-    showScreen("room");
-
-    $("roomCodeDisplay")
-        .textContent =
-        session.roomCode || "-";
-
-
-    await loadGameState();
-
-    await loadEvents();
-
-    setupRealtime();
-
-    startPolling();
-}
-
-
-/* =========================================================
-   LOAD GAME STATE
-========================================================= */
-
-async function loadGameState() {
-
-    if (!session.gameId) {
+    if (!state.me)
         return;
-    }
 
+    const { data: room, error: roomError } =
+        await supabaseClient
+            .from("rooms")
+            .select("*")
+            .eq("id", state.me.room_id)
+            .single();
+
+    if (roomError)
+        throw roomError;
+
+    const { data: game, error: gameError } =
+        await supabaseClient
+            .from("games")
+            .select("*")
+            .eq("id", state.me.game_id)
+            .single();
+
+    if (gameError)
+        throw gameError;
+
+    state.room = room;
+    state.game = game;
+
+}
+
+
+/* =========================================================
+   REFRESH GAME
+========================================================= */
+
+async function refreshGame() {
+
+    if (!state.me)
+        return;
 
     try {
 
-        const result =
-            await rpc(
+        /*
+         * 使用 get_game_state RPC。
+         */
+
+        const { data, error } =
+            await supabaseClient.rpc(
                 "get_game_state",
                 {
-                    p_game_id:
-                        session.gameId
+                    p_game_id: state.me.game_id
                 }
             );
 
+        if (error)
+            throw error;
 
-        if (!result) {
-            throw new Error(
-                "get_game_state 沒有回傳資料"
-            );
-        }
+        if (!data)
+            throw new Error("沒有取得遊戲狀態");
 
+        state.game = data.game;
+        state.players = data.players || [];
+        state.board = data.board || [];
 
-        gameState.game =
-            result.game || null;
+        /*
+         * 找出自己的最新 player row
+         */
 
-        gameState.players =
-            result.players || [];
+        state.me =
+            state.players.find(
+                p => p.id === state.me.id
+            ) || state.me;
 
-        gameState.board =
-            result.board || [];
-
-
-        renderEverything();
-
+        renderAll();
 
     } catch (error) {
 
         console.error(
-            "loadGameState:",
+            "refreshGame:",
             error
         );
 
-        setGameMessage(
-            "讀取遊戲狀態失敗：" +
-            error.message,
+        toast(
+            "同步失敗：" +
+            getErrorMessage(error),
             "error"
         );
-    }
-}
 
-
-/* =========================================================
-   LOAD EVENTS
-========================================================= */
-
-async function loadEvents() {
-
-    if (!session.gameId) {
-        return;
     }
 
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("game_events")
-                .select("*")
-                .eq(
-                    "game_id",
-                    session.gameId
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: false
-                    }
-                )
-                .limit(80);
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        gameState.events =
-            data || [];
-
-
-        renderEvents();
-
-
-    } catch (error) {
-
-        console.error(
-            "loadEvents:",
-            error
-        );
-    }
 }
 
 
@@ -2116,371 +1351,511 @@ async function loadEvents() {
    REALTIME
 ========================================================= */
 
-function setupRealtime() {
+async function subscribeRealtime() {
 
-    if (!session.gameId) {
+    if (!state.me)
         return;
+
+    /*
+     * 移除舊 channel
+     */
+
+    if (state.realtimeChannel) {
+
+        await supabaseClient.removeChannel(
+            state.realtimeChannel
+        );
+
+        state.realtimeChannel = null;
+
     }
-
-
-    if (realtimeChannel) {
-
-        try {
-            supabaseClient
-                .removeChannel(
-                    realtimeChannel
-                );
-        } catch (e) {
-            console.warn(e);
-        }
-
-        realtimeChannel = null;
-    }
-
 
     const channelName =
         "monopoly-game-" +
-        session.gameId;
+        state.me.game_id;
 
-
-    realtimeChannel =
-        supabaseClient
-            .channel(channelName)
-
-
-            /* GAME */
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "games",
-                    filter:
-                        "id=eq." +
-                        session.gameId
-                },
-                async payload => {
-
-                    console.log(
-                        "GAME CHANGE",
-                        payload
-                    );
-
-                    await loadGameState();
-                }
-            )
-
-
-            /* PLAYERS */
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "players",
-                    filter:
-                        "game_id=eq." +
-                        session.gameId
-                },
-                async payload => {
-
-                    console.log(
-                        "PLAYER CHANGE",
-                        payload
-                    );
-
-                    await loadGameState();
-                }
-            )
-
-
-            /* EVENTS */
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "game_events",
-                    filter:
-                        "game_id=eq." +
-                        session.gameId
-                },
-                async payload => {
-
-                    console.log(
-                        "EVENT CHANGE",
-                        payload
-                    );
-
-                    await loadEvents();
-
-                    await loadGameState();
-                }
-            )
-
-
-            /* ROOM */
-
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "rooms",
-                    filter:
-                        "id=eq." +
-                        session.roomId
-                },
-                async payload => {
-
-                    console.log(
-                        "ROOM CHANGE",
-                        payload
-                    );
-
-                    await loadGameState();
-                }
-            )
-
-
-            .subscribe(
-                status => {
-
-                    console.log(
-                        "Realtime status:",
-                        status
-                    );
-
-
-                    if (
-                        status ===
-                        "SUBSCRIBED"
-                    ) {
-
-                        setConnectionStatus(
-                            "connected",
-                            "Supabase 已連線・即時同步"
-                        );
-
-                    }
-
-
-                    if (
-                        status ===
-                        "CHANNEL_ERROR"
-                    ) {
-
-                        setConnectionStatus(
-                            "error",
-                            "Realtime 連線錯誤・使用自動同步"
-                        );
-
-                    }
-
-
-                    if (
-                        status ===
-                        "TIMED_OUT"
-                    ) {
-
-                        setConnectionStatus(
-                            "error",
-                            "Realtime 逾時・使用自動同步"
-                        );
-
-                    }
-
-
-                    if (
-                        status ===
-                        "CLOSED"
-                    ) {
-
-                        setConnectionStatus(
-                            "error",
-                            "Realtime 已關閉・使用自動同步"
-                        );
-                    }
-
-                }
-            );
-}
-
-
-/* =========================================================
-   POLLING FALLBACK
-========================================================= */
-
-function startPolling() {
-
-    stopPolling();
-
+    const channel =
+        supabaseClient.channel(
+            channelName
+        );
 
     /*
-     * Realtime 是主要同步。
-     *
-     * 每 2 秒再抓一次 state，
-     * 作為 fallback。
-     *
-     * 這樣即使手機瀏覽器暫時沒有收到
-     * Realtime event，也不會卡在舊回合。
+     * games
      */
 
-    pollTimer =
-        setInterval(
-            async () => {
+    channel.on(
+        "postgres_changes",
+        {
+            event: "*",
+            schema: "public",
+            table: "games",
+            filter:
+                "id=eq." +
+                state.me.game_id
+        },
+        async payload => {
 
-                if (!session.gameId) {
-                    return;
-                }
+            console.log(
+                "Realtime games:",
+                payload
+            );
 
-                await loadGameState();
+            await refreshGame();
 
-                await loadEvents();
+        }
+    );
 
-            },
-            2000
-        );
-}
+    /*
+     * players
+     */
 
+    channel.on(
+        "postgres_changes",
+        {
+            event: "*",
+            schema: "public",
+            table: "players",
+            filter:
+                "game_id=eq." +
+                state.me.game_id
+        },
+        async payload => {
 
-function stopPolling() {
+            console.log(
+                "Realtime players:",
+                payload
+            );
 
-    if (pollTimer) {
+            await refreshGame();
 
-        clearInterval(
-            pollTimer
-        );
+        }
+    );
 
-        pollTimer = null;
-    }
+    /*
+     * events
+     */
+
+    channel.on(
+        "postgres_changes",
+        {
+            event: "INSERT",
+            schema: "public",
+            table: "game_events",
+            filter:
+                "game_id=eq." +
+                state.me.game_id
+        },
+        async payload => {
+
+            console.log(
+                "Realtime event:",
+                payload
+            );
+
+            addEventToLog(
+                payload.new
+            );
+
+            await refreshGame();
+
+        }
+    );
+
+    state.realtimeChannel =
+        channel;
+
+    channel.subscribe(
+        status => {
+
+            console.log(
+                "Realtime status:",
+                status
+            );
+
+            if (
+                status === "SUBSCRIBED"
+            ) {
+
+                setConnection(
+                    "online",
+                    "Realtime 已連線"
+                );
+
+            } else if (
+                status === "CHANNEL_ERROR" ||
+                status === "TIMED_OUT"
+            ) {
+
+                setConnection(
+                    "error",
+                    "Realtime 連線錯誤"
+                );
+
+            } else {
+
+                setConnection(
+                    "",
+                    "連線中..."
+                );
+
+            }
+
+        }
+    );
+
 }
 
 
 /* =========================================================
-   RENDER EVERYTHING
+   START GAME
 ========================================================= */
 
-function renderEverything() {
+async function startGame() {
 
-    renderRoom();
+    if (!state.me)
+        return;
+
+    /*
+     * 目前 SQL 的 start_game(uuid)
+     * 不限制只有房主可以開始。
+     *
+     * 所以這裡任何玩家都能按。
+     */
+
+    setActionLoading(true);
+
+    try {
+
+        const { data, error } =
+            await supabaseClient.rpc(
+                "start_game",
+                {
+                    p_game_id:
+                        state.me.game_id
+                }
+            );
+
+        if (error)
+            throw error;
+
+        await refreshGame();
+
+        toast(
+            "遊戲開始！",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        toast(
+            "開始遊戲失敗：" +
+            getErrorMessage(error),
+            "error"
+        );
+
+    } finally {
+
+        setActionLoading(false);
+
+    }
+
+}
+
+
+/* =========================================================
+   ROLL DICE
+========================================================= */
+
+async function rollDice() {
+
+    if (!state.me || !state.game)
+        return;
+
+    /*
+     * 最重要的判斷：
+     *
+     * 不看「我是第一個玩家」。
+     * 不看 localStorage。
+     * 不看 player_number。
+     *
+     * 唯一判斷：
+     *
+     * games.current_player_id === me.id
+     *
+     * 這樣第二台手機拿到相同 DB 狀態後，
+     * 就可以正常成為下一位。
+     */
+
+    if (
+        state.game.current_player_id !==
+        state.me.id
+    ) {
+
+        const current =
+            getPlayer(
+                state.game.current_player_id
+            );
+
+        toast(
+            "現在輪到 " +
+            (current?.name || "其他玩家") +
+            "，不是你的回合。",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (
+        state.game.status !==
+        "playing"
+    ) {
+
+        toast(
+            "遊戲尚未開始。",
+            "error"
+        );
+
+        return;
+
+    }
+
+    setActionLoading(true);
+
+    try {
+
+        /*
+         * Server-side dice:
+         *
+         * roll_dice(uuid,uuid)
+         */
+
+        const { data, error } =
+            await supabaseClient.rpc(
+                "roll_dice",
+                {
+                    p_game_id:
+                        state.me.game_id,
+
+                    p_player_id:
+                        state.me.id
+                }
+            );
+
+        if (error)
+            throw error;
+
+        console.log(
+            "ROLL RESULT:",
+            data
+        );
+
+        if (data) {
+
+            showDice(
+                data.dice1,
+                data.dice2
+            );
+
+            state.lastRolledPosition =
+                data.new_position;
+
+            toast(
+                "你擲出了 " +
+                data.dice1 +
+                " + " +
+                data.dice2 +
+                " = " +
+                data.total,
+                "success"
+            );
+
+            /*
+             * 如果落在地產：
+             * 顯示購買按鈕。
+             */
+
+            if (
+                data.space_type ===
+                "property"
+            ) {
+
+                state.lastRolledPosition =
+                    data.new_position;
+
+            }
+
+        }
+
+        /*
+         * 等待 DB / Realtime 狀態
+         */
+
+        await refreshGame();
+
+    } catch (error) {
+
+        console.error(
+            "rollDice:",
+            error
+        );
+
+        toast(
+            "擲骰失敗：" +
+            getErrorMessage(error),
+            "error"
+        );
+
+    } finally {
+
+        setActionLoading(false);
+
+    }
+
+}
+
+
+/* =========================================================
+   BUY PROPERTY
+========================================================= */
+
+async function buyProperty() {
+
+    if (!state.me || !state.game)
+        return;
+
+    if (
+        state.game.current_player_id !==
+        state.me.id
+    ) {
+
+        toast(
+            "現在不是你的回合。",
+            "error"
+        );
+
+        return;
+
+    }
+
+    setActionLoading(true);
+
+    try {
+
+        const { data, error } =
+            await supabaseClient.rpc(
+                "buy_property",
+                {
+                    p_game_id:
+                        state.me.game_id,
+
+                    p_player_id:
+                        state.me.id
+                }
+            );
+
+        if (error)
+            throw error;
+
+        console.log(
+            "BUY RESULT:",
+            data
+        );
+
+        toast(
+            "成功購買 " +
+            data.property +
+            "！",
+            "success"
+        );
+
+        await refreshGame();
+
+    } catch (error) {
+
+        console.error(
+            "buyProperty:",
+            error
+        );
+
+        toast(
+            "購買失敗：" +
+            getErrorMessage(error),
+            "error"
+        );
+
+    } finally {
+
+        setActionLoading(false);
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER ALL
+========================================================= */
+
+function renderAll() {
+
+    renderHeader();
 
     renderPlayers();
 
     renderBoard();
 
-    renderGameControl();
+    renderActions();
 
-    renderEvents();
 }
 
 
 /* =========================================================
-   RENDER ROOM
+   HEADER
 ========================================================= */
 
-function renderRoom() {
+function renderHeader() {
 
-    const game =
-        gameState.game;
+    document.getElementById(
+        "roomCodeDisplay"
+    ).textContent =
+        state.room?.room_code || "----";
 
-    const players =
-        gameState.players;
+    const current =
+        getPlayer(
+            state.game?.current_player_id
+        );
 
+    document.getElementById(
+        "currentPlayerDisplay"
+    ).textContent =
+        current
+            ? "🎲 " + current.name + " 的回合"
+            : "等待遊戲開始";
 
-    $("playerCount")
-        .textContent =
-        `${players.length} / 4`;
+    document.getElementById(
+        "turnNumberDisplay"
+    ).textContent =
+        "回合：" +
+        (state.game?.turn_number || 0);
 
+    if (state.game) {
 
-    if (!game) {
+        document.getElementById(
+            "die1"
+        ).textContent =
+            state.game.dice_1 || "—";
 
-        $("roomStatusTitle")
-            .textContent =
-            "找不到遊戲";
-
-        $("roomStatusDesc")
-            .textContent =
-            "請重新加入房間。";
-
-        return;
-    }
-
-
-    if (
-        game.status ===
-        "waiting"
-    ) {
-
-        $("roomStatusTitle")
-            .textContent =
-            "等待開始遊戲";
-
-        $("roomStatusDesc")
-            .textContent =
-            players.length >= 2
-                ? "玩家已經足夠，可以開始遊戲。"
-                : "至少建議 2 名玩家一起遊玩。";
-
-        $("gameArea")
-            .style.display =
-            "none";
-
-
-        $("startGameBtn")
-            .disabled =
-            players.length < 2;
+        document.getElementById(
+            "die2"
+        ).textContent =
+            state.game.dice_2 || "—";
 
     }
 
-
-    if (
-        game.status ===
-        "playing"
-    ) {
-
-        $("roomStatusTitle")
-            .textContent =
-            "🎲 遊戲進行中";
-
-        $("roomStatusDesc")
-            .textContent =
-            "目前回合由 Supabase 控制。";
-
-        $("gameArea")
-            .style.display =
-            "block";
-
-
-        $("startGameBtn")
-            .disabled = true;
-    }
-
-
-    if (
-        game.status ===
-        "finished"
-    ) {
-
-        $("roomStatusTitle")
-            .textContent =
-            "🏆 遊戲結束";
-
-        $("roomStatusDesc")
-            .textContent =
-            "本局遊戲已結束。";
-
-        $("gameArea")
-            .style.display =
-            "block";
-
-
-        $("startGameBtn")
-            .disabled = true;
-    }
 }
 
 
@@ -2490,171 +1865,81 @@ function renderRoom() {
 
 function renderPlayers() {
 
+    const list =
+        document.getElementById(
+            "playerList"
+        );
+
+    list.innerHTML = "";
+
     const players =
-        gameState.players;
+        [...state.players]
+            .sort(
+                (a,b) =>
+                    a.player_number -
+                    b.player_number
+            );
 
-    const game =
-        gameState.game;
+    players.forEach(player => {
 
+        const el =
+            document.createElement("div");
 
-    const currentId =
-        game?.current_player_id;
+        const isMe =
+            player.id === state.me?.id;
 
+        const isCurrent =
+            player.id ===
+            state.game?.current_player_id;
 
-    $("playersGrid")
-        .innerHTML =
-        players
-            .map(
-                player => {
+        el.className =
+            "player" +
+            (isCurrent
+                ? " active"
+                : "") +
+            (isMe
+                ? " me"
+                : "");
 
-                    const isMe =
-                        player.id ===
-                        session.playerId;
+        const color =
+            TOKEN_COLORS[
+                (player.player_number - 1) %
+                TOKEN_COLORS.length
+            ];
 
-                    const isCurrent =
-                        player.id ===
-                        currentId;
+        el.innerHTML = `
 
+            <div
+                class="player-token"
+                style="background:${color}">
+            </div>
 
-                    return `
-                    <div class="
-                        player-card
-                        ${isMe ? "me" : ""}
-                        ${isCurrent ? "current" : ""}
-                    ">
+            <div>
 
-                        <div class="player-name-row">
+                <div class="player-name">
+                    ${escapeHtml(player.name)}
+                    ${isMe ? "（你）" : ""}
+                </div>
 
-                            <div class="player-name">
-                                ${escapeHtml(player.name)}
-                            </div>
+                <div class="player-meta">
+                    玩家 ${player.player_number}
+                    · 位置 ${player.position}
+                    ${player.is_in_jail
+                        ? " · 🚔 監獄"
+                        : ""}
+                </div>
 
-                            <div class="
-                                badge
-                                ${isCurrent ? "turn" : ""}
-                            ">
-                                ${
-                                    isCurrent
-                                        ? "目前回合"
-                                        : "玩家 " +
-                                          player.player_number
-                                }
-                            </div>
+            </div>
 
-                        </div>
+            <div class="player-money">
+                £${Number(player.money).toLocaleString()}
+            </div>
+        `;
 
+        list.appendChild(el);
 
-                        <div class="player-info">
+    });
 
-                            <div class="info-box">
-
-                                <div class="info-label">
-                                    金錢
-                                </div>
-
-                                <div class="info-value">
-                                    £${player.money}
-                                </div>
-
-                            </div>
-
-
-                            <div class="info-box">
-
-                                <div class="info-label">
-                                    位置
-                                </div>
-
-                                <div class="info-value">
-                                    ${player.position}
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    `;
-                }
-            )
-            .join("");
-
-
-    $("sidePlayers")
-        .innerHTML =
-        players
-            .map(
-                player => {
-
-                    const isCurrent =
-                        player.id ===
-                        currentId;
-
-                    const isMe =
-                        player.id ===
-                        session.playerId;
-
-
-                    return `
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:space-between;
-                            gap:10px;
-                            padding:12px 0;
-                            border-bottom:1px solid #1c2e43;
-                        "
-                    >
-
-                        <div>
-
-                            <div
-                                style="
-                                    font-weight:800;
-                                "
-                            >
-                                ${escapeHtml(player.name)}
-                                ${
-                                    isMe
-                                        ? "（你）"
-                                        : ""
-                                }
-                            </div>
-
-                            <div
-                                style="
-                                    margin-top:3px;
-                                    color:#7f90a4;
-                                    font-size:12px;
-                                "
-                            >
-                                £${player.money}
-                                ・位置 ${player.position}
-                            </div>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                badge
-                                ${isCurrent ? "turn" : ""}
-                            "
-                        >
-                            ${
-                                isCurrent
-                                    ? "🎲 回合"
-                                    : "#" +
-                                      player.player_number
-                            }
-                        </div>
-
-                    </div>
-                    `;
-                }
-            )
-            .join("");
 }
 
 
@@ -2665,872 +1950,670 @@ function renderPlayers() {
 function renderBoard() {
 
     const board =
-        gameState.board;
-
-    const players =
-        gameState.players;
-
-
-    if (!board.length) {
-
-        $("board").innerHTML =
-            `<div style="
-                grid-column:1/-1;
-                padding:30px;
-                text-align:center;
-                color:#8c9bad;
-            ">
-                尚未載入棋盤。
-            </div>`;
-
-        return;
-    }
-
+        document.getElementById("board");
 
     /*
-     * 由 game_events 判斷地產所有權。
-     *
-     * 因為目前 SQL 沒有 property_ownership table。
+     * 保留中央區域
      */
 
-    const owners =
-        getPropertyOwners();
+    board.innerHTML = `
 
+        <div class="board-center">
+            <div class="board-title">
+                UK<br>MONOPOLY
+            </div>
+        </div>
 
-    $("board").innerHTML =
-        board
-            .map(
-                space => {
-
-                    const playersHere =
-                        players.filter(
-                            player =>
-                                player.position ===
-                                space.position
-                        );
-
-
-                    const owner =
-                        owners[space.position];
-
-
-                    const colorClass =
-                        space.color_group
-                            ? "color-" +
-                              space.color_group
-                            : "";
-
-
-                    const special =
-                        space.type !==
-                        "property";
-
-
-                    const currentHere =
-                        playersHere.some(
-                            p =>
-                                p.id ===
-                                session.playerId
-                        );
-
-
-                    return `
-                    <div class="
-                        space
-                        ${special ? "space-special" : ""}
-                        ${currentHere ? "space-current" : ""}
-                    ">
-
-                        <div class="
-                            space-color
-                            ${colorClass}
-                        "></div>
-
-
-                        <div class="space-name">
-                            ${escapeHtml(space.name)}
-                        </div>
-
-
-                        ${
-                            space.city
-                                ? `
-                                <div class="space-city">
-                                    ${escapeHtml(space.city)}
-                                </div>
-                                `
-                                : ""
-                        }
-
-
-                        ${
-                            space.price > 0
-                                ? `
-                                <div class="space-price">
-                                    £${space.price}
-                                </div>
-                                `
-                                : ""
-                        }
-
-
-                        ${
-                            owner
-                                ? `
-                                <div class="space-owner">
-                                    🏠 ${escapeHtml(owner.name)}
-                                </div>
-                                `
-                                : ""
-                        }
-
-
-                        ${
-                            playersHere.length
-                                ? `
-                                <div class="tokens">
-
-                                    ${
-                                        playersHere
-                                            .map(
-                                                p => `
-                                                <div
-                                                    class="token"
-                                                    title="${escapeAttr(p.name)}"
-                                                >
-                                                    ${p.player_number}
-                                                </div>
-                                                `
-                                            )
-                                            .join("")
-                                    }
-
-                                </div>
-                                `
-                                : ""
-                        }
-
-                    </div>
-                    `;
-                }
-            )
-            .join("");
-}
-
-
-/* =========================================================
-   PROPERTY OWNERS
-========================================================= */
-
-function getPropertyOwners() {
-
-    const owners = {};
-
+    `;
 
     /*
-     * property_purchase data:
-     *
-     * {
-     *    position,
-     *    property,
-     *    price
-     * }
+     * 如果 board 還沒載入
      */
-
-
-    for (
-        let i =
-            gameState.events.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const event =
-            gameState.events[i];
-
-
-        if (
-            event.event_type !==
-            "property_purchase"
-        ) {
-            continue;
-        }
-
-
-        const position =
-            Number(
-                event.data?.position
-            );
-
-
-        if (
-            Number.isNaN(position)
-        ) {
-            continue;
-        }
-
-
-        if (
-            owners[position]
-        ) {
-            continue;
-        }
-
-
-        const player =
-            gameState.players.find(
-                p =>
-                    p.id ===
-                    event.player_id
-            );
-
-
-        if (player) {
-
-            owners[position] =
-                player;
-        }
-    }
-
-
-    return owners;
-}
-
-
-/* =========================================================
-   RENDER GAME CONTROL
-========================================================= */
-
-function renderGameControl() {
-
-    const game =
-        gameState.game;
-
-
-    if (!game) {
-        return;
-    }
-
-
-    $("turnNumberLabel")
-        .textContent =
-        "回合 " +
-        (game.turn_number || 0);
-
-
-    const currentPlayer =
-        gameState.players.find(
-            p =>
-                p.id ===
-                game.current_player_id
-        );
-
-
-    $("currentTurnPlayer")
-        .textContent =
-        currentPlayer
-            ? currentPlayer.name
-            : "-";
-
-
-    $("dice1")
-        .textContent =
-        game.dice_1 || "-";
-
-
-    $("dice2")
-        .textContent =
-        game.dice_2 || "-";
-
 
     if (
-        game.dice_1 &&
-        game.dice_2
+        !state.board ||
+        state.board.length === 0
+    )
+        return;
+
+    state.board.forEach(space => {
+
+        const grid =
+            positionToGrid(
+                space.position
+            );
+
+        const el =
+            document.createElement("div");
+
+        el.className =
+            "space";
+
+        el.style.gridRow =
+            grid.row;
+
+        el.style.gridColumn =
+            grid.col;
+
+        const color =
+            groupColor(
+                space.color_group
+            );
+
+        const owner =
+            getPropertyOwner(
+                space.position
+            );
+
+        let priceText = "";
+
+        if (
+            space.price &&
+            Number(space.price) > 0
+        ) {
+
+            priceText =
+                "£" +
+                Number(
+                    space.price
+                ).toLocaleString();
+
+        }
+
+        el.innerHTML = `
+
+            ${
+                space.color_group
+                ? `
+                    <div
+                        class="space-color"
+                        style="background:${color}">
+                    </div>
+                  `
+                : `
+                    <div
+                        class="space-color"
+                        style="background:#aaa">
+                    </div>
+                  `
+            }
+
+            <div class="space-name">
+                ${escapeHtml(space.name)}
+            </div>
+
+            ${
+                priceText
+                ? `
+                    <div class="space-price">
+                        ${priceText}
+                    </div>
+                  `
+                : ""
+            }
+
+            ${
+                owner
+                ? `
+                    <div
+                        class="owner-mark"
+                        title="Owner: ${escapeHtml(owner.name)}"
+                        style="background:
+                            ${tokenColor(owner.player_number)}">
+                    </div>
+                  `
+                : ""
+            }
+
+            <div
+                class="space-tokens"
+                id="tokens-${space.position}">
+            </div>
+        `;
+
+        board.appendChild(el);
+
+    });
+
+    /*
+     * 加入玩家棋子
+     */
+
+    state.players.forEach(player => {
+
+        const tokenContainer =
+            document.getElementById(
+                "tokens-" +
+                player.position
+            );
+
+        if (!tokenContainer)
+            return;
+
+        const token =
+            document.createElement("div");
+
+        token.className =
+            "token";
+
+        token.style.background =
+            tokenColor(
+                player.player_number
+            );
+
+        token.title =
+            player.name;
+
+        tokenContainer.appendChild(
+            token
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   RENDER ACTIONS
+========================================================= */
+
+function renderActions() {
+
+    const rollBtn =
+        document.getElementById(
+            "rollBtn"
+        );
+
+    const buyBtn =
+        document.getElementById(
+            "buyBtn"
+        );
+
+    const startBtn =
+        document.getElementById(
+            "startGameBtn"
+        );
+
+    const message =
+        document.getElementById(
+            "actionMessage"
+        );
+
+    if (!state.game) {
+
+        rollBtn.disabled = true;
+        buyBtn.disabled = true;
+
+        return;
+
+    }
+
+    const current =
+        getPlayer(
+            state.game.current_player_id
+        );
+
+    const isMyTurn =
+        state.game.current_player_id ===
+        state.me?.id;
+
+    const isPlaying =
+        state.game.status ===
+        "playing";
+
+    /*
+     * 開始遊戲
+     */
+
+    startBtn.disabled =
+        isPlaying;
+
+    /*
+     * 擲骰
+     */
+
+    rollBtn.disabled =
+        !isMyTurn ||
+        !isPlaying;
+
+    /*
+     * 購買
+     */
+
+    const landed =
+        state.players.find(
+            p =>
+                p.id === state.me?.id
+        )?.position;
+
+    const landedSpace =
+        state.board.find(
+            b =>
+                b.position === landed
+        );
+
+    const canBuy =
+        isMyTurn &&
+        isPlaying &&
+        landedSpace &&
+        landedSpace.type === "property" &&
+        Number(landedSpace.price) > 0 &&
+        !getPropertyOwner(
+            landedSpace.position
+        ) &&
+        Number(
+            state.me?.money || 0
+        ) >= Number(
+            landedSpace.price
+        );
+
+    buyBtn.disabled =
+        !canBuy;
+
+    /*
+     * Message
+     */
+
+    if (
+        state.game.status ===
+        "waiting"
     ) {
 
-        $("diceTotal")
-            .textContent =
-            "本回合：" +
-            (game.dice_1 +
-             game.dice_2);
+        message.textContent =
+            "遊戲尚未開始。按「開始遊戲」後即可進行。";
+
+    } else if (isMyTurn) {
+
+        message.textContent =
+            "現在輪到你。擲骰子吧！";
 
     } else {
 
-        $("diceTotal")
-            .textContent =
-            "尚未擲骰";
+        message.textContent =
+            "現在輪到 " +
+            (current?.name || "其他玩家") +
+            "。請等待對方完成回合。";
+
     }
 
-
-    const isMyTurn =
-        game.current_player_id ===
-        session.playerId;
-
-
-    const isPlaying =
-        game.status ===
-        "playing";
-
-
-    $("rollDiceBtn")
-        .disabled =
-        !isPlaying ||
-        !isMyTurn ||
-        isBusy;
-
-
     /*
-     * 注意：
-     *
-     * 目前 SQL 的 roll_dice()
-     * 會在骰完後立即切換
-     * current_player_id。
-     *
-     * 所以這裡不假裝可以成功購買。
+     * Property information
      */
 
-    $("buyPropertyBtn")
-        .disabled = true;
+    renderPropertyInfo(
+        landedSpace
+    );
+
 }
 
 
 /* =========================================================
-   RENDER EVENTS
+   PROPERTY INFO
 ========================================================= */
 
-function renderEvents() {
+function renderPropertyInfo(space) {
 
-    const events =
-        gameState.events;
+    const box =
+        document.getElementById(
+            "propertyInfo"
+        );
 
+    if (!space) {
 
-    if (!events.length) {
-
-        $("events").innerHTML =
-            `
-            <div
-                style="
-                    padding:15px 0;
-                    color:#738398;
-                "
-            >
-                尚無遊戲紀錄。
-            </div>
-            `;
+        box.classList.add(
+            "hidden"
+        );
 
         return;
+
     }
 
+    box.classList.remove(
+        "hidden"
+    );
 
-    $("events").innerHTML =
-        events
-            .map(
-                event => {
+    const owner =
+        getPropertyOwner(
+            space.position
+        );
 
-                    const date =
-                        new Date(
-                            event.created_at
-                        );
+    let html = `
+        <strong>
+            ${escapeHtml(space.name)}
+        </strong>
+        <br>
+        類型：${escapeHtml(space.type)}
+    `;
+
+    if (
+        Number(space.price) > 0
+    ) {
+
+        html += `
+            <br>
+            價格：£${Number(
+                space.price
+            ).toLocaleString()}
+        `;
+
+    }
+
+    if (owner) {
+
+        html += `
+            <br>
+            所有者：
+            <strong>
+                ${escapeHtml(owner.name)}
+            </strong>
+        `;
+
+    } else if (
+        space.type === "property"
+    ) {
+
+        html += `
+            <br>
+            <strong>
+                尚未有人購買
+            </strong>
+        `;
+
+    }
+
+    box.innerHTML = html;
+
+}
 
 
-                    const time =
-                        date.toLocaleTimeString(
-                            "zh-Hant",
-                            {
-                                hour: "2-digit",
-                                minute: "2-digit"
-                            }
-                        );
+/* =========================================================
+   GET PLAYER
+========================================================= */
+
+function getPlayer(id) {
+
+    return state.players.find(
+        p => p.id === id
+    );
+
+}
 
 
-                    return `
-                    <div class="event">
+/* =========================================================
+   PROPERTY OWNER
+========================================================= */
 
-                        <span class="event-time">
-                            ${time}
-                        </span>
+function getPropertyOwner(position) {
 
-                        ${escapeHtml(
-                            event.message ||
-                            event.event_type
-                        )}
+    /*
+     * 目前 SQL 沒有 properties 表。
+     *
+     * 所有權是從：
+     *
+     * game_events.event_type =
+     * property_purchase
+     *
+     * 推算。
+     */
 
-                    </div>
-                    `;
+    const purchases =
+        state.events
+            .filter(
+                e =>
+                    e.event_type ===
+                    "property_purchase"
+            )
+            .slice()
+            .reverse();
+
+    const purchase =
+        purchases.find(
+            e =>
+                Number(
+                    e.data?.position
+                ) === Number(position)
+        );
+
+    if (!purchase)
+        return null;
+
+    return getPlayer(
+        purchase.player_id
+    );
+
+}
+
+
+/* =========================================================
+   LOAD EVENTS
+========================================================= */
+
+async function loadEvents() {
+
+    if (!state.me)
+        return;
+
+    const { data, error } =
+        await supabaseClient
+            .from("game_events")
+            .select("*")
+            .eq(
+                "game_id",
+                state.me.game_id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
                 }
             )
-            .join("");
-}
+            .limit(100);
 
-
-/* =========================================================
-   START GAME
-========================================================= */
-
-async function startGame() {
-
-    if (!session.gameId) {
-        return;
-    }
-
-
-    if (isBusy) {
-        return;
-    }
-
-
-    isBusy = true;
-
-    setLoading(
-        true,
-        "正在開始遊戲..."
-    );
-
-
-    try {
-
-        await rpc(
-            "start_game",
-            {
-                p_game_id:
-                    session.gameId
-            }
-        );
-
-
-        await loadGameState();
-
-        setGameMessage(
-            "遊戲開始！輪到目前顯示的玩家。",
-            "success"
-        );
-
-
-    } catch (error) {
-
-        showError(error);
-
-    } finally {
-
-        isBusy = false;
-
-        setLoading(false);
-
-        renderGameControl();
-    }
-}
-
-
-/* =========================================================
-   ROLL DICE
-========================================================= */
-
-async function rollDice() {
-
-    if (!session.gameId ||
-        !session.playerId) {
-
-        return;
-    }
-
-
-    const game =
-        gameState.game;
-
-
-    if (!game) {
-        return;
-    }
-
-
-    if (
-        game.current_player_id !==
-        session.playerId
-    ) {
-
-        setGameMessage(
-            "現在不是你的回合。",
-            "error"
-        );
-
-        return;
-    }
-
-
-    if (
-        game.status !==
-        "playing"
-    ) {
-
-        setGameMessage(
-            "遊戲尚未開始。",
-            "error"
-        );
-
-        return;
-    }
-
-
-    if (isBusy) {
-        return;
-    }
-
-
-    isBusy = true;
-
-    $("rollDiceBtn")
-        .disabled = true;
-
-
-    setLoading(
-        true,
-        "🎲 擲骰中..."
-    );
-
-
-    try {
-
-        const result =
-            await rpc(
-                "roll_dice",
-                {
-                    p_game_id:
-                        session.gameId,
-
-                    p_player_id:
-                        session.playerId
-                }
-            );
-
-
-        console.log(
-            "ROLL RESULT",
-            result
-        );
-
-
-        if (result) {
-
-            $("dice1")
-                .textContent =
-                result.dice1;
-
-            $("dice2")
-                .textContent =
-                result.dice2;
-
-            $("diceTotal")
-                .textContent =
-                "本次擲出 " +
-                result.total;
-        }
-
-
-        /*
-         * 重要：
-         *
-         * SQL 已經在 roll_dice()
-         * 裡面切換下一位。
-         *
-         * 所以這裡重新讀取 DB，
-         * 不自行修改 current_player。
-         */
-
-        await loadGameState();
-
-        await loadEvents();
-
-
-        setGameMessage(
-            `你擲出了 ${result.dice1} + ${result.dice2} = ${result.total}。` +
-            ` 已經同步到其他玩家。`,
-            "success"
-        );
-
-
-    } catch (error) {
+    if (error) {
 
         console.error(
-            "rollDice:",
+            "loadEvents:",
             error
         );
 
+        return;
 
-        setGameMessage(
-            error.message ||
-            "擲骰失敗",
-            "error"
-        );
-
-    } finally {
-
-        isBusy = false;
-
-        setLoading(false);
-
-        renderGameControl();
     }
+
+    state.events =
+        (data || []).reverse();
+
+    renderEventLog();
+
 }
 
 
 /* =========================================================
-   BUY PROPERTY
+   ADD EVENT
 ========================================================= */
 
-async function buyProperty() {
+function addEventToLog(event) {
+
+    if (!event)
+        return;
 
     /*
-     * 保留這個 function，
-     * 因為你的 SQL 有 buy_property RPC。
-     *
-     * 但目前 SQL 的 roll_dice()
-     * 在擲骰後已經切換 current_player_id。
-     *
-     * 所以正常流程下，
-     * buy_property() 會被 DB 拒絕。
-     *
-     * 等你把 roll_dice SQL 改成
-     * "購買/結束回合後才換玩家"，
-     * 這裡即可直接啟用。
+     * 避免重複
      */
 
+    const exists =
+        state.events.some(
+            e => e.id === event.id
+        );
 
-    if (!session.gameId ||
-        !session.playerId) {
-
+    if (exists)
         return;
-    }
 
+    state.events.push(event);
 
-    try {
+    if (state.events.length > 100)
+        state.events.shift();
 
-        const result =
-            await rpc(
-                "buy_property",
-                {
-                    p_game_id:
-                        session.gameId,
+    renderEventLog();
 
-                    p_player_id:
-                        session.playerId
-                }
-            );
-
-
-        await loadGameState();
-
-        await loadEvents();
-
-
-        setGameMessage(
-            `成功購買 ${result.property}，花費 £${result.price}。`,
-            "success"
-        );
-
-
-    } catch (error) {
-
-        setGameMessage(
-            error.message ||
-            "購買地產失敗",
-            "error"
-        );
-    }
 }
 
 
 /* =========================================================
-   COPY ROOM
+   EVENT LOG
 ========================================================= */
 
-async function copyRoomCode() {
+function renderEventLog() {
 
-    const code =
-        session.roomCode;
-
-
-    if (!code) {
-        return;
-    }
-
-
-    try {
-
-        await navigator.clipboard.writeText(
-            code
+    const box =
+        document.getElementById(
+            "eventLog"
         );
 
-        setGameMessage(
-            "房間代碼已複製：" +
-            code,
-            "success"
-        );
+    box.innerHTML = "";
 
-    } catch (error) {
+    state.events
+        .slice()
+        .reverse()
+        .forEach(event => {
 
-        setGameMessage(
-            "複製失敗，房間代碼是：" +
-            code,
-            "error"
-        );
-    }
-}
+            const el =
+                document.createElement("div");
 
+            el.className =
+                "log-item";
 
-/* =========================================================
-   LEAVE ROOM
-========================================================= */
-
-function leaveRoom() {
-
-    stopPolling();
-
-
-    if (realtimeChannel) {
-
-        try {
-
-            supabaseClient
-                .removeChannel(
-                    realtimeChannel
+            const time =
+                new Date(
+                    event.created_at
                 );
 
-        } catch (error) {
+            const timeText =
+                time.toLocaleTimeString(
+                    "zh-TW",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                );
 
-            console.warn(error);
-        }
+            el.innerHTML = `
+                <span class="small">
+                    ${timeText}
+                </span>
+                <br>
+                ${escapeHtml(
+                    event.message ||
+                    event.event_type
+                )}
+            `;
 
-        realtimeChannel = null;
-    }
+            box.appendChild(el);
 
+        });
 
-    clearSession();
-
-
-    gameState = {
-        game: null,
-        players: [],
-        board: [],
-        events: []
-    };
-
-
-    showScreen("home");
+}
 
 
-    setHomeMessage(
-        "你已離開目前房間。",
-        ""
+/* =========================================================
+   SHOW DICE
+========================================================= */
+
+function showDice(d1, d2) {
+
+    document.getElementById(
+        "die1"
+    ).textContent =
+        d1 || "—";
+
+    document.getElementById(
+        "die2"
+    ).textContent =
+        d2 || "—";
+
+}
+
+
+/* =========================================================
+   TOKEN COLOR
+========================================================= */
+
+function tokenColor(playerNumber) {
+
+    return TOKEN_COLORS[
+        (Number(playerNumber) - 1) %
+        TOKEN_COLORS.length
+    ];
+
+}
+
+
+/* =========================================================
+   SHOW GAME SCREEN
+========================================================= */
+
+function showGameScreen() {
+
+    document.getElementById(
+        "lobbyScreen"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "gameScreen"
+    ).classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function setLoading(isLoading) {
+
+    document.body.classList.toggle(
+        "loading",
+        isLoading
     );
+
 }
 
 
 /* =========================================================
-   RESTORE SESSION
+   ACTION LOADING
 ========================================================= */
 
-async function restoreSession() {
+function setActionLoading(isLoading) {
 
-    if (
-        !session.gameId ||
-        !session.playerId
-    ) {
+    document.getElementById(
+        "rollBtn"
+    ).disabled =
+        isLoading;
 
-        return false;
-    }
+    document.getElementById(
+        "buyBtn"
+    ).disabled =
+        isLoading;
 
-
-    try {
-
-        setLoading(
-            true,
-            "正在恢復遊戲..."
-        );
+}
 
 
-        const result =
-            await rpc(
-                "get_game_state",
-                {
-                    p_game_id:
-                        session.gameId
-                }
-            );
+/* =========================================================
+   ERROR MESSAGE
+========================================================= */
 
+function getErrorMessage(error) {
 
-        if (!result ||
-            !result.game) {
+    if (!error)
+        return "未知錯誤";
 
-            throw new Error(
-                "找不到這個遊戲"
-            );
-        }
+    return (
+        error.message ||
+        error.details ||
+        error.hint ||
+        String(error)
+    );
 
-
-        const playerExists =
-            (result.players || [])
-                .some(
-                    p =>
-                        p.id ===
-                        session.playerId
-                );
-
-
-        if (!playerExists) {
-
-            throw new Error(
-                "這個玩家已不存在"
-            );
-        }
-
-
-        gameState.game =
-            result.game;
-
-        gameState.players =
-            result.players || [];
-
-        gameState.board =
-            result.board || [];
-
-
-        $("roomCodeDisplay")
-            .textContent =
-            session.roomCode || "-";
-
-
-        showScreen("room");
-
-
-        await loadEvents();
-
-        setupRealtime();
-
-        startPolling();
-
-        renderEverything();
-
-
-        return true;
-
-
-    } catch (error) {
-
-        console.warn(
-            "Unable to restore session:",
-            error
-        );
-
-
-        clearSession();
-
-        return false;
-
-
-    } finally {
-
-        setLoading(false);
-    }
 }
 
 
@@ -3546,197 +2629,209 @@ function escapeHtml(value) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-}
 
-
-function escapeAttr(value) {
-
-    return escapeHtml(value);
 }
 
 
 /* =========================================================
-   EVENTS
+   RESTORE SESSION
 ========================================================= */
 
-$("createRoomBtn")
-    .addEventListener(
-        "click",
-        createRoom
-    );
-
-
-$("joinRoomBtn")
-    .addEventListener(
-        "click",
-        joinRoom
-    );
-
-
-$("startGameBtn")
-    .addEventListener(
-        "click",
-        startGame
-    );
-
-
-$("rollDiceBtn")
-    .addEventListener(
-        "click",
-        rollDice
-    );
-
-
-$("buyPropertyBtn")
-    .addEventListener(
-        "click",
-        buyProperty
-    );
-
-
-$("copyRoomBtn")
-    .addEventListener(
-        "click",
-        copyRoomCode
-    );
-
-
-$("leaveRoomBtn")
-    .addEventListener(
-        "click",
-        leaveRoom
-    );
-
-
-$("modalCloseBtn")
-    .addEventListener(
-        "click",
-        hideError
-    );
-
-
-$("modalReloadBtn")
-    .addEventListener(
-        "click",
-        () => location.reload()
-    );
-
-
-$("roomCode")
-    .addEventListener(
-        "input",
-        event => {
-
-            event.target.value =
-                event.target.value
-                    .toUpperCase();
-        }
-    );
-
-
-$("playerName")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                $("joinRoomBtn")
-                    .click();
-            }
-        }
-    );
-
-
-$("roomCode")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                $("joinRoomBtn")
-                    .click();
-            }
-        }
-    );
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-async function init() {
+async function restoreSession() {
 
     /*
-     * 先測試 Supabase。
+     * 這裡不直接相信 localStorage 的 player ID。
+     * 只是用來填入房間資訊。
+     *
+     * 真正狀態仍然重新從 Supabase 取得。
      */
 
-    const connected =
-        await testSupabaseConnection();
+    const raw =
+        localStorage.getItem(
+            "monopoly_session"
+        );
 
-
-    if (!connected) {
+    if (!raw)
         return;
-    }
 
+    try {
 
-    /*
-     * 如果這個瀏覽器之前已經加入過房間，
-     * 自動恢復。
-     */
+        const session =
+            JSON.parse(raw);
 
-    if (
-        session.gameId &&
-        session.playerId
-    ) {
+        if (
+            session.roomCode
+        ) {
 
-        const restored =
-            await restoreSession();
+            document.getElementById(
+                "roomInput"
+            ).value =
+                session.roomCode;
 
-
-        if (restored) {
-
-            setGameMessage(
-                "已恢復上一個遊戲。",
-                "success"
-            );
-
-            return;
         }
+
+        if (
+            session.playerName
+        ) {
+
+            document.getElementById(
+                "nameInput"
+            ).value =
+                session.playerName;
+
+        }
+
+    } catch (e) {
+
+        console.error(e);
+
     }
 
-
-    showScreen("home");
 }
 
 
-init();
-
-
 /* =========================================================
-   BEFORE UNLOAD
+   INITIAL LOAD
 ========================================================= */
 
-window.addEventListener(
-    "beforeunload",
-    () => {
+async function initialize() {
+
+    setConnection(
+        "",
+        "連線中..."
+    );
+
+    try {
 
         /*
-         * 不刪 localStorage。
-         *
-         * 這樣重新整理後可以恢復玩家身份。
+         * 測試 Supabase 是否可以正常存取。
          */
 
-        stopPolling();
+        const { error } =
+            await supabaseClient
+                .from("board_spaces")
+                .select("position")
+                .limit(1);
+
+        if (error)
+            throw error;
+
+        setConnection(
+            "online",
+            "Supabase 已連線"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        setConnection(
+            "error",
+            "Supabase 連線失敗"
+        );
+
+    }
+
+    await restoreSession();
+
+}
+
+
+/* =========================================================
+   BUTTON EVENTS
+========================================================= */
+
+document.getElementById(
+    "createRoomBtn"
+).addEventListener(
+    "click",
+    createRoom
+);
+
+document.getElementById(
+    "joinRoomBtn"
+).addEventListener(
+    "click",
+    () => joinRoom()
+);
+
+document.getElementById(
+    "startGameBtn"
+).addEventListener(
+    "click",
+    startGame
+);
+
+document.getElementById(
+    "rollBtn"
+).addEventListener(
+    "click",
+    rollDice
+);
+
+document.getElementById(
+    "buyBtn"
+).addEventListener(
+    "click",
+    buyProperty
+);
+
+document.getElementById(
+    "refreshBtn"
+).addEventListener(
+    "click",
+    async () => {
+
+        await refreshGame();
+        await loadEvents();
+
+        toast(
+            "已同步最新遊戲狀態",
+            "success"
+        );
+
     }
 );
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+document.getElementById(
+    "roomInput"
+).addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter"
+        )
+            joinRoom();
+
+    }
+);
+
+document.getElementById(
+    "nameInput"
+).addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter"
+        )
+            joinRoom();
+
+    }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initialize();
 
 </script>
 

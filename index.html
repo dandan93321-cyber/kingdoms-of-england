@@ -4,11 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<title>Kingdoms of England — Catan Style</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Kingdoms of England</title>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
@@ -25,7 +24,7 @@ body{
   min-height:100vh;
 }
 
-button,input{
+button,input,select{
   font-family:inherit;
 }
 
@@ -33,115 +32,40 @@ button{
   cursor:pointer;
 }
 
-button:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-
 /* =========================
- HEADER
+   HEADER
 ========================= */
 
 header{
-  background:linear-gradient(#17261f,#081410);
-  border-bottom:2px solid #a98442;
+  background:linear-gradient(#17261f,#0b1715);
+  border-bottom:2px solid #9e7c3f;
   text-align:center;
   padding:18px 10px 14px;
 }
 
 header h1{
   margin:0;
-  color:#e8cb78;
+  color:#e5c875;
   font-size:32px;
 }
 
 header p{
-  margin:4px 0 8px;
-  color:#f4ead5;
-}
-
-.connection{
-  display:inline-block;
-  padding:5px 13px;
-  border-radius:20px;
-  background:#111;
-  font-family:Arial,sans-serif;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.connected{
-  color:#71df78;
-}
-
-.failed{
-  color:#ff6666;
+  margin:4px 0 0;
+  font-size:16px;
 }
 
 /* =========================
- TOP
-========================= */
-
-.topbar{
-  max-width:1500px;
-  margin:auto;
-  padding:10px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-
-.roomBox{
-  flex:1;
-  min-width:230px;
-  padding:10px 14px;
-  background:#15221f;
-  border:1px solid #927343;
-  border-radius:9px;
-}
-
-.roomBox b{
-  color:#e6ca78;
-}
-
-.nameBox{
-  display:flex;
-  gap:6px;
-}
-
-.nameBox input{
-  width:150px;
-  padding:9px;
-  border-radius:6px;
-  border:1px solid #927343;
-  background:#f5ead0;
-  color:#222;
-}
-
-.nameBox button,
-.actionButton{
-  border:1px solid #9c7d48;
-  border-radius:6px;
-  background:#31553d;
-  color:white;
-  padding:9px 13px;
-  font-weight:bold;
-}
-
-/* =========================
- LAYOUT
+   LAYOUT
 ========================= */
 
 .layout{
-  width:100%;
-  max-width:1500px;
-  margin:auto;
-  padding:0 10px 20px;
-
   display:grid;
-  grid-template-columns:230px minmax(520px,1fr) 300px;
+  grid-template-columns:210px minmax(500px,1fr) 300px;
   gap:10px;
+  width:100%;
+  max-width:1600px;
+  margin:auto;
+  padding:10px;
 }
 
 .panel{
@@ -155,22 +79,27 @@ header p{
 
 .panel h2{
   margin:0 0 9px;
-  padding-bottom:7px;
+  padding-bottom:6px;
   border-bottom:1px solid #665636;
-  color:#e4ca7d;
-  font-size:17px;
+  color:#e3c878;
+  font-size:16px;
 }
 
 /* =========================
- PLAYERS
+   PLAYERS
 ========================= */
+
+.status{
+  line-height:1.5;
+  font-size:14px;
+}
 
 .player{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:9px 3px;
-  border-bottom:1px solid #34423d;
+  align-items:center;
+  padding:8px 2px;
+  border-bottom:1px solid #35433d;
 }
 
 .dot{
@@ -178,475 +107,963 @@ header p{
   width:12px;
   height:12px;
   border-radius:50%;
-  margin-right:7px;
+  margin-right:6px;
 }
 
-.red{background:#d0443b}
-.blue{background:#3d82c5}
-.green{background:#54a34f}
-.yellow{background:#d9ad25}
-
-.player.current{
-  background:#6b4d2638;
-  border-radius:6px;
+.red{
+  background:#bd382f;
 }
 
-.playerName{
-  font-weight:bold;
+.blue{
+  background:#3479bd;
 }
 
-.stats{
-  font-size:11px;
-  color:#cdbf9e;
+.green{
+  background:#4e9849;
+}
+
+.yellow{
+  background:#d5a927;
 }
 
 /* =========================
- BOARD
+   MAP
 ========================= */
 
 .map{
   position:relative;
   width:100%;
-  min-height:680px;
-  border:2px solid #927343;
-  border-radius:11px;
+  aspect-ratio:1.42;
+  min-height:620px;
   overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 40%,#277080,#123e49 70%);
+  border:2px solid #927343;
+  border-radius:10px;
+  background:#174d5b;
+}
+
+.mapImage{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#174d5b;
+  z-index:1;
+}
+
+.mapShade{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    90deg,
+    #00140a18,
+    transparent 50%,
+    #00140a18
+  );
+  z-index:2;
+  pointer-events:none;
 }
 
 .mapTitle{
   position:absolute;
-  z-index:20;
   top:10px;
   left:10px;
+  z-index:60;
   padding:8px 12px;
   border:1px solid #b08b49;
   border-radius:7px;
-  background:#0b1714ee;
-  color:#f5ead0;
+  background:#0b1714e8;
   font-weight:bold;
+  font-size:14px;
 }
 
-.board{
+/* =========================
+   HEX
+========================= */
+
+.hexGrid{
   position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-48%);
-  width:min(760px,92%);
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:5px;
-  justify-items:center;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
 }
 
-.tile{
-  width:108px;
-  height:94px;
+.hex{
+  position:absolute;
+
+  width:13%;
+  aspect-ratio:1.155;
 
   clip-path:polygon(
-    25% 2%,
-    75% 2%,
+    25% 3%,
+    75% 3%,
     98% 50%,
-    75% 98%,
-    25% 98%,
+    75% 97%,
+    25% 97%,
     2% 50%
   );
 
-  border:0;
-  position:relative;
+  border:2px solid transparent;
+
+  background:#ffffff07;
+
+  pointer-events:auto;
 
   display:flex;
   align-items:center;
   justify-content:center;
+
+  color:white;
 
   transition:.15s;
 }
 
-.tile:hover{
+.hex:hover{
+  background:#fff5a044;
   filter:brightness(1.15);
-  transform:scale(1.04);
 }
 
-.tile.forest{
-  background:#275b35;
+.hex.selected{
+  background:#f4d36b55;
+  box-shadow:inset 0 0 0 3px #f3d67b;
 }
 
-.tile.fields{
-  background:#9a8131;
-}
-
-.tile.pasture{
-  background:#5e873e;
-}
-
-.tile.mountains{
-  background:#57544c;
-}
-
-.tile.hills{
-  background:#9a5538;
-}
-
-.tile.desert{
-  background:#b69b62;
-}
-
-.tileInner{
-  width:100%;
-  height:100%;
-  padding-top:8px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-shadow:0 2px 5px #000;
-}
-
-.tileIcon{
-  font-size:25px;
-}
-
-.tileName{
-  font-size:9px;
-  font-weight:bold;
-  max-width:90px;
+.hexInfo{
   text-align:center;
+  font-weight:bold;
+  font-size:11px;
+  text-shadow:0 2px 5px #000;
+  pointer-events:none;
 }
 
 .number{
-  margin-top:4px;
-  width:31px;
-  height:31px;
+  display:inline-block;
+
+  width:28px;
+  height:28px;
+
+  margin-top:3px;
+
+  line-height:24px;
+
+  border:2px solid #725a35;
   border-radius:50%;
-  border:2px solid #624d2f;
-  background:#f3e7bf;
-  color:#2e2519;
+
+  background:#f2e6bd;
+  color:#30271b;
+
+  font-size:13px;
+}
+
+/* =========================
+   HEX POSITIONS
+========================= */
+
+.h1{left:24%;top:8%}
+.h2{left:38%;top:8%}
+.h3{left:52%;top:8%}
+
+.h4{left:17%;top:23%}
+.h5{left:31%;top:23%}
+.h6{left:45%;top:23%}
+.h7{left:59%;top:23%}
+
+.h8{left:24%;top:38%}
+.h9{left:38%;top:38%}
+.h10{left:52%;top:38%}
+.h11{left:66%;top:38%}
+
+.h12{left:31%;top:53%}
+.h13{left:45%;top:53%}
+.h14{left:59%;top:53%}
+
+.h15{left:38%;top:68%}
+.h16{left:52%;top:68%}
+
+/* =========================
+   BUILD MODE
+========================= */
+
+.buildMode{
+  position:absolute;
+  left:50%;
+  bottom:12px;
+
+  transform:translateX(-50%);
+
+  z-index:80;
+
+  background:#63382c;
+
+  border:2px solid #d1a65d;
+
+  border-radius:8px;
+
+  padding:8px 14px;
+
+  font-weight:bold;
+
+  text-align:center;
+
+  display:none;
+
+  box-shadow:0 3px 10px #000;
+}
+
+.buildMode.show{
+  display:block;
+}
+
+.cancelBuild{
+  margin-left:8px;
+
+  border:1px solid #b99562;
+  border-radius:5px;
+
+  background:#39251e;
+  color:white;
+
+  padding:4px 8px;
+}
+
+/* =========================
+   ROADS
+========================= */
+
+.road{
+  position:absolute;
+
+  height:7px;
+
+  background:#b57a3b;
+
+  border:1px solid #4b301d;
+
+  border-radius:10px;
+
+  transform-origin:left center;
+
+  z-index:28;
+
+  box-shadow:0 1px 4px #000;
+
+  display:none;
+}
+
+.road.show{
+  display:block;
+}
+
+.road.available{
+  display:block;
+
+  background:#d8c06c;
+
+  opacity:.65;
+
+  animation:roadPulse 1s infinite;
+}
+
+.road.owned{
+  display:block;
+
+  background:#b57a3b;
+}
+
+@keyframes roadPulse{
+
+  0%{
+    opacity:.35;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    opacity:.35;
+  }
+
+}
+
+/* =========================
+   ROAD POSITIONS
+========================= */
+
+.r1{
+  left:31%;
+  top:34%;
+  width:11%;
+}
+
+.r2{
+  left:45%;
+  top:34%;
+  width:11%;
+}
+
+.r3{
+  left:59%;
+  top:34%;
+  width:11%;
+}
+
+.r4{
+  left:38%;
+  top:49%;
+  width:11%;
+}
+
+.r5{
+  left:52%;
+  top:49%;
+  width:11%;
+}
+
+.r6{
+  left:66%;
+  top:49%;
+  width:9%;
+}
+
+.r7{
+  left:45%;
+  top:64%;
+  width:11%;
+}
+
+.r8{
+  left:59%;
+  top:64%;
+  width:11%;
+}
+
+.r9{
+  left:52%;
+  top:79%;
+  width:11%;
+}
+
+/* =========================
+   NODES
+========================= */
+
+.node{
+  position:absolute;
+
+  width:18px;
+  height:18px;
+
+  border-radius:50%;
+
+  background:#f5e6bd;
+
+  border:3px solid #493622;
+
+  z-index:35;
+
+  cursor:pointer;
+
+  box-shadow:0 1px 5px #000;
+}
+
+.node:hover{
+  transform:scale(1.3);
+  background:#fff0a6;
+}
+
+.node.available{
+  background:#8fd47f;
+
+  border-color:#efffc2;
+
+  box-shadow:
+    0 0 8px #b7ff91;
+
+  animation:nodePulse 1s infinite;
+}
+
+.node.built{
+  background:#d5a927;
+
+  border-color:#fff0a6;
+
+  box-shadow:0 0 12px #e5c875;
+}
+
+.node.town{
+  background:#8f6034;
+
+  border-color:#f2d98a;
+
+  box-shadow:0 0 15px #e5c875;
+}
+
+@keyframes nodePulse{
+
+  0%{
+    transform:scale(1);
+  }
+
+  50%{
+    transform:scale(1.25);
+  }
+
+  100%{
+    transform:scale(1);
+  }
+
+}
+
+/* =========================
+   NODE POSITIONS
+========================= */
+
+.n1{left:29%;top:33%}
+.n2{left:43%;top:33%}
+.n3{left:57%;top:33%}
+
+.n4{left:41%;top:48%}
+.n5{left:55%;top:48%}
+.n6{left:69%;top:48%}
+
+.n7{left:48%;top:63%}
+.n8{left:62%;top:63%}
+
+.n9{left:55%;top:78%}
+
+/* =========================
+   CITIES
+========================= */
+
+.city{
+  position:absolute;
+
+  z-index:45;
+
+  padding:4px 7px;
+
+  border:2px solid #62472b;
+
+  border-radius:6px;
+
+  background:#f0dfb5ee;
+
+  color:#292016;
+
+  font-size:10px;
+
+  font-weight:bold;
+
+  white-space:nowrap;
+
+  cursor:pointer;
+
+  box-shadow:0 2px 5px #0008;
+}
+
+.city:hover{
+  background:#fff0bc;
+  transform:scale(1.04);
+}
+
+.c-newcastle{left:61%;top:7%}
+.c-leeds{left:64%;top:18%}
+.c-manchester{left:29%;top:28%}
+.c-sheffield{left:46%;top:31%}
+.c-liverpool{left:10%;top:31%}
+.c-nottingham{left:35%;top:40%}
+.c-birmingham{left:39%;top:52%}
+.c-bristol{left:25%;top:63%}
+.c-bridgwater{left:28%;top:76%}
+.c-oxford{left:48%;top:60%}
+.c-london{left:65%;top:77%}
+.c-plymouth{left:17%;top:86%}
+
+/* =========================
+   PIRATE
+========================= */
+
+.pirate{
+  position:absolute;
+
+  z-index:70;
+
+  width:55px;
+  height:55px;
+
+  border-radius:50%;
+
+  border:3px solid #bd8a3d;
+
+  background:#071c23dd;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
-  font-size:14px;
-  font-weight:bold;
-  text-shadow:none;
+
+  font-size:29px;
+
+  cursor:pointer;
+
+  box-shadow:0 3px 12px #000;
+
+  transition:
+    left .45s ease,
+    top .45s ease,
+    transform .2s;
 }
 
-.number.redNumber{
-  color:#a52620;
+.pirate:hover{
+  transform:scale(1.1);
 }
 
-.tile.robber{
-  box-shadow:inset 0 0 0 5px #111;
+.pirate.moving{
+  animation:pulse .5s ease;
 }
 
-.robberMark{
-  position:absolute;
-  top:8px;
-  right:10px;
-  font-size:21px;
+@keyframes pulse{
+
+  0%{
+    transform:scale(1);
+  }
+
+  50%{
+    transform:scale(1.25);
+  }
+
+  100%{
+    transform:scale(1);
+  }
+
 }
-
-/*
-  19 tile layout:
-  row 1 = 3
-  row 2 = 4
-  row 3 = 5
-  row 4 = 4
-  row 5 = 3
-*/
-
-.tile:nth-child(1){grid-column:2}
-.tile:nth-child(2){grid-column:3}
-.tile:nth-child(3){grid-column:4}
-
-.tile:nth-child(4){grid-column:1}
-.tile:nth-child(5){grid-column:2}
-.tile:nth-child(6){grid-column:3}
-.tile:nth-child(7){grid-column:4}
-
-.tile:nth-child(8){grid-column:1}
-.tile:nth-child(9){grid-column:2}
-.tile:nth-child(10){grid-column:3}
-.tile:nth-child(11){grid-column:4}
-.tile:nth-child(12){grid-column:5}
-
-.tile:nth-child(13){grid-column:1}
-.tile:nth-child(14){grid-column:2}
-.tile:nth-child(15){grid-column:3}
-.tile:nth-child(16){grid-column:4}
-
-.tile:nth-child(17){grid-column:2}
-.tile:nth-child(18){grid-column:3}
-.tile:nth-child(19){grid-column:4}
 
 /* =========================
- SEA
+   SEA ZONES
 ========================= */
 
-.sea{
+.seaZone{
   position:absolute;
-  color:#c9e0df;
-  font-style:italic;
-  opacity:.75;
-  font-size:14px;
+
+  z-index:55;
+
+  border:2px dashed transparent;
+
+  border-radius:50%;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+  pointer-events:none;
 }
 
-.sea.north{
-  right:5%;
-  top:18%;
+.seaZone.available{
+  pointer-events:auto;
+
+  border-color:#d9e9a3;
+
+  background:#ffffff12;
+
+  box-shadow:
+    inset 0 0 20px #ffffff18,
+    0 0 12px #d9e9a366;
+
+  animation:seaPulse 1s infinite;
 }
 
-.sea.irish{
-  left:4%;
-  top:48%;
+.seaZone:hover{
+  background:#ffffff28;
 }
 
-.sea.channel{
-  left:44%;
+@keyframes seaPulse{
+
+  0%{
+    opacity:.55;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    opacity:.55;
+  }
+
+}
+
+/* 海域 */
+
+.sea-north{
+  right:2%;
+  top:20%;
+  width:23%;
+  height:25%;
+}
+
+.sea-irish{
+  left:0%;
+  top:34%;
+  width:23%;
+  height:32%;
+}
+
+.sea-celtic{
+  left:3%;
   bottom:4%;
+  width:30%;
+  height:23%;
+}
+
+.sea-channel{
+  right:24%;
+  bottom:1%;
+  width:40%;
+  height:19%;
+}
+
+/* Pirate initial position */
+
+.pirate.north{
+  right:8%;
+  top:25%;
+  left:auto;
+}
+
+.pirate.irish{
+  left:9%;
+  top:45%;
+  right:auto;
+}
+
+.pirate.celtic{
+  left:15%;
+  bottom:8%;
+  top:auto;
+  right:auto;
+}
+
+.pirate.channel{
+  left:59%;
+  bottom:5%;
+  top:auto;
+  right:auto;
 }
 
 /* =========================
- RESOURCES
+   SEA LABEL
 ========================= */
 
-.resources{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
+.seaLabel{
+  position:absolute;
+
+  z-index:4;
+
+  color:#d0e0dd;
+
+  opacity:.8;
+
+  font-size:13px;
+
+  font-style:italic;
+
+  pointer-events:none;
 }
 
-.resource{
-  background:#eee2c8;
-  color:#30291f;
-  border-radius:7px;
-  padding:7px;
-  text-align:center;
+.irishLabel{
+  left:5%;
+  top:47%;
 }
 
-.resourceIcon{
-  font-size:22px;
+.northLabel{
+  right:6%;
+  top:29%;
 }
 
-.resourceValue{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.resourceName{
-  font-size:11px;
-}
-
-/* =========================
- BUILD
-========================= */
-
-.build button,
-.devButton,
-.tradeButton{
-  width:100%;
-  margin:4px 0;
-  padding:10px 6px;
-  border-radius:7px;
-  border:1px solid #708b70;
-  background:#31553d;
-  color:#fff;
-  font-weight:bold;
-}
-
-.build button:hover,
-.devButton:hover,
-.tradeButton:hover{
-  background:#47704e;
+.channelLabel{
+  left:47%;
+  bottom:2%;
 }
 
 /* =========================
- DICE
+   RIGHT
 ========================= */
 
 .turn{
-  padding:12px;
+  padding:11px;
+
   margin-bottom:10px;
-  background:#703b2d;
-  border:1px solid #b37b50;
-  border-radius:8px;
+
+  border:1px solid #b57d45;
+
+  border-radius:7px;
+
+  background:#68352b;
+
   text-align:center;
+
   font-weight:bold;
-  font-size:18px;
+
+  font-size:17px;
 }
 
 .dice{
-  min-height:65px;
+  min-height:48px;
+
   display:flex;
+
   justify-content:center;
   align-items:center;
-  font-size:36px;
+
+  gap:9px;
+
+  padding:5px;
+
+  font-size:35px;
 }
 
 .roll{
   width:100%;
+
   padding:12px;
-  border:1px solid #9eb49e;
+
+  border:1px solid #9bb095;
+
   border-radius:7px;
+
   background:#486b52;
+
   color:white;
-  font-weight:bold;
+
   font-size:16px;
+
+  font-weight:bold;
+}
+
+.roll:hover{
+  background:#5b7f62;
 }
 
 /* =========================
- CARDS
+   RESOURCES
 ========================= */
 
-.cards{
+.resources{
   display:grid;
+
   grid-template-columns:1fr 1fr;
+
   gap:6px;
 }
 
-.card{
-  padding:8px;
+.resource{
+  padding:7px;
+
   border-radius:6px;
-  background:#e8dcc0;
-  color:#292219;
+
+  background:#eee3cc;
+
+  color:#332a20;
+
   text-align:center;
-  font-size:12px;
 }
 
-.card b{
+.resource span{
   display:block;
+
+  font-size:20px;
+}
+
+.resource b{
   font-size:18px;
 }
 
 /* =========================
- LOG / CHAT
+   BUILD
+========================= */
+
+.build button{
+  width:100%;
+
+  margin:4px 0;
+
+  padding:10px 6px;
+
+  border:1px solid #6e8e76;
+
+  border-radius:7px;
+
+  background:#31553d;
+
+  color:white;
+
+  font-weight:bold;
+
+  font-size:14px;
+}
+
+.build button:hover{
+  background:#406a4c;
+}
+
+.build button.active{
+  background:#8a6634;
+
+  border-color:#e8ce83;
+}
+
+/* =========================
+   TRADE
+========================= */
+
+.tradeBox{
+  display:none;
+
+  margin-top:8px;
+
+  padding:10px;
+
+  background:#0e1b18;
+
+  border:1px solid #75633d;
+
+  border-radius:7px;
+}
+
+.tradeBox.show{
+  display:block;
+}
+
+.tradeRow{
+  display:grid;
+
+  grid-template-columns:1fr 75px;
+
+  gap:6px;
+
+  margin-bottom:6px;
+}
+
+.tradeRow select,
+.tradeRow input{
+  width:100%;
+
+  padding:7px;
+
+  border-radius:5px;
+
+  border:1px solid #8d8065;
+
+  background:#eee3cc;
+
+  color:#222;
+}
+
+.tradeButton{
+  width:100%;
+
+  padding:9px;
+
+  border:1px solid #bca365;
+
+  border-radius:6px;
+
+  background:#725a32;
+
+  color:white;
+
+  font-weight:bold;
+}
+
+.tradeHint{
+  font-size:11px;
+
+  opacity:.8;
+
+  margin-bottom:7px;
+}
+
+/* =========================
+   LOG / CHAT
 ========================= */
 
 .log,
 .chat{
-  height:155px;
+  height:145px;
+
   overflow:auto;
+
   padding:8px;
+
   border-radius:7px;
+
   background:#eee3cf;
+
   color:#2e271e;
+
   font-family:Arial,sans-serif;
+
   font-size:12px;
+
   line-height:1.5;
 }
 
 .chatInput{
   display:flex;
+
   gap:5px;
+
   margin-top:6px;
 }
 
 .chatInput input{
   flex:1;
+
   min-width:0;
+
   padding:9px;
+
   border:1px solid #aaa;
+
   border-radius:6px;
+
   background:#f8f0dc;
+
   color:#222;
 }
 
 .chatInput button{
   width:45px;
+
   border:0;
+
   border-radius:6px;
+
   background:#b58b43;
+
   color:white;
-}
 
-/* =========================
- SELECT MODE
-========================= */
-
-.mode{
-  padding:9px;
-  border-radius:6px;
-  background:#24332e;
-  border:1px solid #675536;
-  font-size:12px;
-  line-height:1.5;
-  margin-bottom:7px;
-}
-
-.mode b{
-  color:#e4ca7d;
-}
-
-/* =========================
- MODAL
-========================= */
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:#000a;
-  z-index:100;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
-
-.modal.show{
-  display:flex;
-}
-
-.modalBox{
-  width:min(480px,100%);
-  max-height:90vh;
-  overflow:auto;
-  background:#15221f;
-  border:2px solid #a88445;
-  border-radius:12px;
-  padding:20px;
-  box-shadow:0 10px 40px #000;
-}
-
-.modalBox h2{
-  color:#e4ca7d;
-}
-
-.modalBox input{
-  width:100%;
-  padding:11px;
-  margin:7px 0;
-  border-radius:7px;
-  border:1px solid #a17f45;
-}
-
-.modalBox button{
-  width:100%;
-  padding:11px;
-  margin-top:7px;
-  border-radius:7px;
-  border:1px solid #9a7b48;
-  background:#31553d;
-  color:#fff;
   font-weight:bold;
 }
 
-.close{
-  background:#703b2d!important;
-}
-
 /* =========================
- MOBILE
+   MOBILE
 ========================= */
 
 @media(max-width:1100px){
 
   .layout{
-    grid-template-columns:190px 1fr;
+    grid-template-columns:180px 1fr;
   }
 
   .right{
     grid-column:1/-1;
+
     display:grid;
+
     grid-template-columns:1fr 1fr;
+
     gap:8px;
   }
 
@@ -655,24 +1072,31 @@ header p{
   }
 
   .map{
-    min-height:600px;
+    min-height:520px;
   }
+
 }
 
 @media(max-width:700px){
 
-  header h1{
-    font-size:23px;
+  header{
+    padding:13px 8px;
   }
 
-  .topbar{
-    padding:6px;
+  header h1{
+    font-size:22px;
+  }
+
+  header p{
+    font-size:13px;
   }
 
   .layout{
     display:flex;
+
     flex-direction:column;
-    padding:0 5px 15px;
+
+    padding:4px;
   }
 
   .left{
@@ -681,56 +1105,76 @@ header p{
 
   .map{
     order:1;
-    min-height:500px;
-    aspect-ratio:.95;
+
+    width:100%;
+
+    min-height:0;
+
+    aspect-ratio:1.05;
   }
 
   .right{
     order:3;
+
     display:block;
   }
 
-  .board{
-    width:100%;
-    gap:1px;
-    transform:translate(-50%,-48%) scale(.72);
+  .right .panel{
+    margin-bottom:8px;
   }
 
-  .tile{
-    width:108px;
-    height:94px;
-  }
-
-  .sea{
-    font-size:10px;
-  }
-
-  .tileName{
-    font-size:8px;
-  }
-
-  .tileIcon{
-    font-size:21px;
+  .hexInfo{
+    font-size:7px;
   }
 
   .number{
-    width:27px;
-    height:27px;
-    font-size:12px;
+    width:22px;
+
+    height:22px;
+
+    line-height:18px;
+
+    font-size:10px;
   }
 
-  .roomBox{
-    width:100%;
+  .city{
+    font-size:7px;
+
+    padding:2px 4px;
   }
 
-  .nameBox{
-    width:100%;
+  .node{
+    width:13px;
+
+    height:13px;
   }
 
-  .nameBox input{
-    flex:1;
+  .pirate{
+    width:43px;
+
+    height:43px;
+
+    font-size:23px;
   }
+
+  .mapTitle{
+    font-size:10px;
+
+    padding:6px 8px;
+  }
+
+  .seaLabel{
+    font-size:9px;
+  }
+
+  .buildMode{
+    font-size:11px;
+
+    width:90%;
+  }
+
 }
+
 </style>
 </head>
 
@@ -738,1281 +1182,1171 @@ header p{
 
 <header>
 
-  <h1>♜ Kingdoms of England</h1>
+<h1>♜ Kingdoms of England</h1>
 
-  <p>Build • Trade • Conquer</p>
-
-  <div id="connection"
-       class="connection failed">
-    🔴 Supabase connecting...
-  </div>
+<p>Build • Trade • Conquer</p>
 
 </header>
-
-
-<!-- =========================
- TOP BAR
-========================= -->
-
-<div class="topbar">
-
-  <div class="roomBox">
-    ROOM：
-    <b>ENGLAND-001</b>
-    ·
-    <span id="playerCount">0 / 4 Players</span>
-  </div>
-
-  <div class="nameBox">
-    <input
-      id="nameInput"
-      maxlength="16"
-      placeholder="你的玩家名稱"
-    >
-
-    <button onclick="joinGame()">
-      👤 加入遊戲
-    </button>
-  </div>
-
-</div>
 
 
 <div class="layout">
 
 
-<!-- =========================
- LEFT
-========================= -->
+<!-- =====================================
+     LEFT
+===================================== -->
 
 <aside class="left">
 
-  <div class="panel">
 
-    <h2>👑 PLAYERS</h2>
+<div class="panel">
 
-    <div id="players">
-      載入玩家中...
-    </div>
+<h2>ROOM • ENGLAND-001</h2>
 
-  </div>
+<div class="status">
 
+Players:
+<b>4 / 4</b>
 
-  <div class="panel">
-
-    <h2>📜 GAME RULES</h2>
-
-    <div style="font-size:13px;line-height:1.65">
-
-      <b>勝利：</b>10 VP
-
-      <br><br>
-
-      🎲 每回合先擲兩顆骰子。
-
-      <br>
-
-      🏠 聚落產生 1 張資源。
-
-      <br>
-
-      🏰 城市產生 2 張資源。
-
-      <br>
-
-      🏴‍☠️ 7 = 強盜。
-
-      <br>
-
-      🃏 發展卡可以提供特殊能力。
-
-      <br>
-
-      🛣️ 最長道路 +2 VP。
-
-      <br>
-
-      ⚔️ 最大騎士軍隊 +2 VP。
-
-    </div>
-
-  </div>
+</div>
 
 
-  <div class="panel">
+<div class="player">
 
-    <h2>🏴‍☠️ ROBBER</h2>
+<span>
+<i class="dot red"></i>
+Raven
+</span>
 
-    <div style="
-      font-size:40px;
-      text-align:center;
-      padding:10px;
-    ">
-      🏴‍☠️
-    </div>
+<b id="ravenVP">
+5 VP
+</b>
 
-    <div id="robberInfo">
-      Robber 在 Desert
-    </div>
+</div>
 
-    <button
-      class="actionButton"
-      style="width:100%;margin-top:8px"
-      onclick="enableRobberMode()"
-    >
-      移動強盜
-    </button>
 
-  </div>
+<div class="player">
+
+<span>
+<i class="dot blue"></i>
+Lion
+</span>
+
+<b>
+4 VP
+</b>
+
+</div>
+
+
+<div class="player">
+
+<span>
+<i class="dot green"></i>
+Stag
+</span>
+
+<b>
+4 VP
+</b>
+
+</div>
+
+
+<div class="player">
+
+<span>
+<i class="dot yellow"></i>
+Falcon
+</span>
+
+<b>
+4 VP
+</b>
+
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>RESOURCE GUIDE</h2>
+
+<div>🌲 Timber</div>
+<div>🌾 Grain</div>
+<div>🐑 Wool</div>
+<div>⛏️ Iron</div>
+<div>🪨 Stone</div>
+<div>🪙 Gold</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>🏴‍☠️ PIRATE</h2>
+
+<div style="font-size:35px;text-align:center">
+
+🏴‍☠️
+
+</div>
+
+<div class="status">
+
+Current sea:
+
+<b id="pirateLocation">
+North Sea
+</b>
+
+</div>
+
+<br>
+
+<div class="status">
+
+🎲 Roll <b>7</b> to move the Pirate.
+
+</div>
+
+</div>
+
 
 </aside>
 
 
-<!-- =========================
- BOARD
-========================= -->
+<!-- =====================================
+     MAP
+===================================== -->
 
 <main class="map">
 
-  <div class="mapTitle">
-    🗺️ ENGLAND • CATAN STYLE
-  </div>
 
-  <div class="sea north">
-    North Sea
-  </div>
+<img
+class="mapImage"
+src="9EE7C46A-D813-43D1-BD12-E5A638559595.png"
+alt="Kingdoms of England Game Board"
+>
 
-  <div class="sea irish">
-    Irish Sea
-  </div>
 
-  <div class="sea channel">
-    English Channel
-  </div>
+<div class="mapShade"></div>
 
-  <div
-    class="board"
-    id="board">
-  </div>
 
-</main>
+<div class="mapTitle">
+
+🗺️ ENGLAND • STRATEGIC MAP
+
+</div>
+
+
+<div class="seaLabel irishLabel">
+Irish Sea
+</div>
+
+
+<div class="seaLabel northLabel">
+North Sea
+</div>
+
+
+<div class="seaLabel channelLabel">
+English Channel
+</div>
 
 
 <!-- =========================
- RIGHT
+     HEXES
 ========================= -->
 
-<aside class="right">
+<div class="hexGrid">
 
 
-  <!-- TURN -->
+<button
+class="hex h1"
+onclick="selectHex(this,'Northumberland','Timber',8)"
+>
 
-  <div class="panel">
+<div class="hexInfo">
 
-    <div
-      class="turn"
-      id="turn">
-      等待玩家...
-    </div>
+🌲 Northumberland
 
-    <h2>🎲 DICE</h2>
+<span class="number">
+8
+</span>
 
-    <div
-      class="dice"
-      id="dice">
-      ⚀ ⚀
-    </div>
+</div>
 
-    <button
-      class="roll"
-      id="rollButton"
-      onclick="rollDice()"
-      disabled>
-      🎲 Roll Dice
-    </button>
+</button>
 
-  </div>
 
+<button
+class="hex h2"
+onclick="selectHex(this,'Durham','Grain',6)"
+>
 
-  <!-- RESOURCES -->
+<div class="hexInfo">
 
-  <div class="panel">
+🌾 Durham
 
-    <h2>📦 RESOURCES</h2>
+<span class="number">
+6
+</span>
 
-    <div class="resources">
+</div>
 
-      <div class="resource">
-        <div class="resourceIcon">🌲</div>
-        <div class="resourceValue" id="wood">0</div>
-        <div class="resourceName">Timber</div>
-      </div>
+</button>
 
-      <div class="resource">
-        <div class="resourceIcon">🌾</div>
-        <div class="resourceValue" id="grain">0</div>
-        <div class="resourceName">Grain</div>
-      </div>
 
-      <div class="resource">
-        <div class="resourceIcon">🐑</div>
-        <div class="resourceValue" id="wool">0</div>
-        <div class="resourceName">Wool</div>
-      </div>
+<button
+class="hex h3"
+onclick="selectHex(this,'Yorkshire','Wool',9)"
+>
 
-      <div class="resource">
-        <div class="resourceIcon">🧱</div>
-        <div class="resourceValue" id="brick">0</div>
-        <div class="resourceName">Brick</div>
-      </div>
+<div class="hexInfo">
 
-      <div class="resource">
-        <div class="resourceIcon">⛏️</div>
-        <div class="resourceValue" id="iron">0</div>
-        <div class="resourceName">Iron</div>
-      </div>
+🐑 Yorkshire
 
-      <div class="resource">
-        <div class="resourceIcon">🪙</div>
-        <div class="resourceValue" id="gold">0</div>
-        <div class="resourceName">Gold</div>
-      </div>
+<span class="number">
+9
+</span>
 
-    </div>
+</div>
 
-  </div>
+</button>
 
 
-  <!-- BUILD -->
+<button
+class="hex h4"
+onclick="selectHex(this,'Cumbria','Stone',5)"
+>
 
-  <div class="panel build">
+<div class="hexInfo">
 
-    <h2>🏗️ BUILD</h2>
+🪨 Cumbria
 
-    <div
-      id="modeText"
-      class="mode">
-      <b>目前：</b>一般模式
-      <br>
-      點擊地圖領地可以查看資訊。
-    </div>
+<span class="number">
+5
+</span>
 
-    <button onclick="setBuildMode('road')">
-      🛣️ Road
-      <br>
-      🌲1 + 🧱1
-    </button>
+</div>
 
-    <button onclick="setBuildMode('settlement')">
-      🏠 Settlement
-      <br>
-      🌲1 + 🧱1 + 🌾1 + 🐑1
-    </button>
+</button>
 
-    <button onclick="setBuildMode('city')">
-      🏰 City
-      <br>
-      🌾2 + ⛏️3
-    </button>
 
-    <button onclick="buyDevelopmentCard()">
-      🃏 Development Card
-      <br>
-      🌾1 + 🐑1 + 🪙1
-    </button>
+<button
+class="hex h5"
+onclick="selectHex(this,'Lancashire','Timber',8)"
+>
 
-  </div>
+<div class="hexInfo">
 
+🌲 Lancashire
 
-  <!-- DEVELOPMENT -->
+<span class="number">
+8
+</span>
 
-  <div class="panel">
+</div>
 
-    <h2>🃏 DEVELOPMENT CARDS</h2>
+</button>
 
-    <div class="cards">
 
-      <div class="card">
-        <b id="knight">0</b>
-        ⚔️ Knight
-      </div>
+<button
+class="hex h6"
+onclick="selectHex(this,'Pennines','Iron',10)"
+>
 
-      <div class="card">
-        <b id="roadBuilding">0</b>
-        🛣️ Road Building
-      </div>
+<div class="hexInfo">
 
-      <div class="card">
-        <b id="yearPlenty">0</b>
-        🎁 Year of Plenty
-      </div>
+⛏️ Pennines
 
-      <div class="card">
-        <b id="monopoly">0</b>
-        👑 Monopoly
-      </div>
+<span class="number">
+10
+</span>
 
-      <div class="card">
-        <b id="victoryCard">0</b>
-        🏆 Victory Point
-      </div>
+</div>
 
-    </div>
+</button>
 
-    <button
-      class="devButton"
-      onclick="playDevelopmentCard()">
-      ▶️ Play Development Card
-    </button>
 
-  </div>
+<button
+class="hex h7"
+onclick="selectHex(this,'Yorkshire Wolds','Wool',9)"
+>
 
+<div class="hexInfo">
 
-  <!-- TRADE -->
+🐑 Yorkshire Wolds
 
-  <div class="panel">
+<span class="number">
+9
+</span>
 
-    <h2>🤝 TRADE</h2>
+</div>
 
-    <button
-      class="tradeButton"
-      onclick="trade('wood','grain')">
-      🌲 4 Timber → 🌾 1 Grain
-    </button>
+</button>
 
-    <button
-      class="tradeButton"
-      onclick="trade('grain','wood')">
-      🌾 4 Grain → 🌲 1 Timber
-    </button>
 
-    <button
-      class="tradeButton"
-      onclick="trade('wool','gold')">
-      🐑 4 Wool → 🪙 1 Gold
-    </button>
+<button
+class="hex h8"
+onclick="selectHex(this,'Shropshire','Wool',9)"
+>
 
-  </div>
+<div class="hexInfo">
 
+🐑 Shropshire
 
-  <!-- LOG -->
+<span class="number">
+9
+</span>
 
-  <div class="panel">
+</div>
 
-    <h2>📜 GAME LOG</h2>
+</button>
 
-    <div
-      class="log"
-      id="log">
-      歡迎來到 Kingdoms of England。
-    </div>
 
-  </div>
+<button
+class="hex h9"
+onclick="selectHex(this,'Staffordshire','Iron',3)"
+>
 
+<div class="hexInfo">
 
-  <!-- CHAT -->
+⛏️ Staffordshire
 
-  <div class="panel">
+<span class="number">
+3
+</span>
 
-    <h2>💬 CHAT</h2>
+</div>
 
-    <div
-      class="chat"
-      id="chat">
-    </div>
+</button>
 
-    <div class="chatInput">
 
-      <input
-        id="message"
-        placeholder="輸入訊息..."
-        onkeydown="
-          if(event.key==='Enter'){
-            sendChat()
-          }
-        "
-      >
+<button
+class="hex h10"
+onclick="selectHex(this,'Nottinghamshire','Timber',4)"
+>
 
-      <button onclick="sendChat()">
-        ➤
-      </button>
+<div class="hexInfo">
 
-    </div>
+🌲 Nottinghamshire
 
-  </div>
+<span class="number">
+4
+</span>
 
-</aside>
+</div>
+
+</button>
+
+
+<button
+class="hex h11"
+onclick="selectHex(this,'Norfolk','Grain',9)"
+>
+
+<div class="hexInfo">
+
+🌾 Norfolk
+
+<span class="number">
+9
+</span>
+
+</div>
+
+</button>
+
+
+<button
+class="hex h12"
+onclick="selectHex(this,'Somerset','Grain',6)"
+>
+
+<div class="hexInfo">
+
+🌾 Somerset
+
+<span class="number">
+6
+</span>
+
+</div>
+
+</button>
+
+
+<button
+class="hex h13"
+onclick="selectHex(this,'Gloucestershire','Timber',4)"
+>
+
+<div class="hexInfo">
+
+🌲 Gloucestershire
+
+<span class="number">
+4
+</span>
+
+</div>
+
+</button>
+
+
+<button
+class="hex h14"
+onclick="selectHex(this,'Cambridgeshire','Grain',5)"
+>
+
+<div class="hexInfo">
+
+🌾 Cambridgeshire
+
+<span class="number">
+5
+</span>
+
+</div>
+
+</button>
+
+
+<button
+class="hex h15"
+onclick="selectHex(this,'Devon','Grain',8)"
+>
+
+<div class="hexInfo">
+
+🌾 Devon
+
+<span class="number">
+8
+</span>
+
+</div>
+
+</button>
+
+
+<button
+class="hex h16"
+onclick="selectHex(this,'Kent','Grain',10)"
+>
+
+<div class="hexInfo">
+
+🌾 Kent
+
+<span class="number">
+10
+</span>
+
+</div>
+
+</button>
+
 
 </div>
 
 
 <!-- =========================
- MODAL
+     ROADS
 ========================= -->
 
 <div
-  class="modal"
-  id="modal">
+class="road r1"
+id="road1"
+onclick="selectRoad(1)"
+></div>
 
-  <div class="modalBox">
+<div
+class="road r2"
+id="road2"
+onclick="selectRoad(2)"
+></div>
 
-    <h2 id="modalTitle">
-      遊戲訊息
-    </h2>
+<div
+class="road r3"
+id="road3"
+onclick="selectRoad(3)"
+></div>
 
-    <div id="modalContent">
-    </div>
+<div
+class="road r4"
+id="road4"
+onclick="selectRoad(4)"
+></div>
 
-    <button
-      class="close"
-      onclick="closeModal()">
-      關閉
-    </button>
+<div
+class="road r5"
+id="road5"
+onclick="selectRoad(5)"
+></div>
 
-  </div>
+<div
+class="road r6"
+id="road6"
+onclick="selectRoad(6)"
+></div>
+
+<div
+class="road r7"
+id="road7"
+onclick="selectRoad(7)"
+></div>
+
+<div
+class="road r8"
+id="road8"
+onclick="selectRoad(8)"
+></div>
+
+<div
+class="road r9"
+id="road9"
+onclick="selectRoad(9)"
+></div>
+
+
+<!-- =========================
+     NODES
+========================= -->
+
+<div
+class="node n1"
+id="node1"
+onclick="buildNode(1)"
+></div>
+
+<div
+class="node n2"
+id="node2"
+onclick="buildNode(2)"
+></div>
+
+<div
+class="node n3"
+id="node3"
+onclick="buildNode(3)"
+></div>
+
+<div
+class="node n4"
+id="node4"
+onclick="buildNode(4)"
+></div>
+
+<div
+class="node n5"
+id="node5"
+onclick="buildNode(5)"
+></div>
+
+<div
+class="node n6"
+id="node6"
+onclick="buildNode(6)"
+></div>
+
+<div
+class="node n7"
+id="node7"
+onclick="buildNode(7)"
+></div>
+
+<div
+class="node n8"
+id="node8"
+onclick="buildNode(8)"
+></div>
+
+<div
+class="node n9"
+id="node9"
+onclick="buildNode(9)"
+></div>
+
+
+<!-- =========================
+     SEA ZONES
+========================= -->
+
+<div
+class="seaZone sea-north"
+data-sea="North Sea"
+onclick="selectSea('North Sea')"
+></div>
+
+<div
+class="seaZone sea-irish"
+data-sea="Irish Sea"
+onclick="selectSea('Irish Sea')"
+></div>
+
+<div
+class="seaZone sea-celtic"
+data-sea="Celtic Sea"
+onclick="selectSea('Celtic Sea')"
+></div>
+
+<div
+class="seaZone sea-channel"
+data-sea="English Channel"
+onclick="selectSea('English Channel')"
+></div>
+
+
+<!-- =========================
+     CITIES
+========================= -->
+
+<div
+class="city c-newcastle"
+onclick="cityInfo('Newcastle')"
+>
+Newcastle
+</div>
+
+<div
+class="city c-leeds"
+onclick="cityInfo('Leeds')"
+>
+Leeds
+</div>
+
+<div
+class="city c-manchester"
+onclick="cityInfo('Manchester')"
+>
+Manchester
+</div>
+
+<div
+class="city c-sheffield"
+onclick="cityInfo('Sheffield')"
+>
+Sheffield
+</div>
+
+<div
+class="city c-liverpool"
+onclick="cityInfo('Liverpool')"
+>
+Liverpool
+</div>
+
+<div
+class="city c-nottingham"
+onclick="cityInfo('Nottingham')"
+>
+Nottingham
+</div>
+
+<div
+class="city c-birmingham"
+onclick="cityInfo('Birmingham')"
+>
+Birmingham
+</div>
+
+<div
+class="city c-bristol"
+onclick="cityInfo('Bristol')"
+>
+Bristol
+</div>
+
+<div
+class="city c-bridgwater"
+onclick="cityInfo('Bridgwater')"
+>
+Bridgwater
+</div>
+
+<div
+class="city c-oxford"
+onclick="cityInfo('Oxford')"
+>
+Oxford
+</div>
+
+<div
+class="city c-london"
+onclick="cityInfo('London')"
+>
+👑 London
+</div>
+
+<div
+class="city c-plymouth"
+onclick="cityInfo('Plymouth')"
+>
+Plymouth
+</div>
+
+
+<!-- =========================
+     PIRATE
+========================= -->
+
+<div
+class="pirate north"
+id="pirate"
+onclick="pirateClicked()"
+title="Pirate"
+>
+🏴‍☠️
+</div>
+
+
+<!-- BUILD MODE -->
+<div
+class="buildMode"
+id="buildMode"
+>
+
+<span id="buildModeText">
+Choose a location
+</span>
+
+<button
+class="cancelBuild"
+onclick="cancelBuildMode()"
+>
+Cancel
+</button>
+
+</div>
+
+
+</main>
+
+
+<!-- =====================================
+     RIGHT
+===================================== -->
+
+<aside class="right">
+
+
+<!-- DICE -->
+
+<div class="panel">
+
+<div class="turn">
+👑 Raven's Turn
+</div>
+
+<h2>🎲 DICE</h2>
+
+<div
+class="dice"
+id="dice"
+>
+⚀ ⚀
+</div>
+
+<button
+class="roll"
+onclick="rollDice()"
+>
+🎲 Roll Dice
+</button>
+
+</div>
+
+
+<!-- RESOURCES -->
+
+<div class="panel">
+
+<h2>📦 RESOURCES</h2>
+
+<div class="resources">
+
+
+<div class="resource">
+<span>🌲</span>
+<b id="wood">3</b>
+<br>
+Timber
+</div>
+
+
+<div class="resource">
+<span>🌾</span>
+<b id="grain">2</b>
+<br>
+Grain
+</div>
+
+
+<div class="resource">
+<span>🐑</span>
+<b id="wool">1</b>
+<br>
+Wool
+</div>
+
+
+<div class="resource">
+<span>🪨</span>
+<b id="stone">2</b>
+<br>
+Stone
+</div>
+
+
+<div class="resource">
+<span>⛏️</span>
+<b id="iron">2</b>
+<br>
+Iron
+</div>
+
+
+<div class="resource">
+<span>🪙</span>
+<b id="gold">0</b>
+<br>
+Gold
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- BUILD -->
+
+<div class="panel build">
+
+<h2>🏗️ BUILD</h2>
+
+
+<button
+id="roadButton"
+onclick="startRoadBuild()"
+>
+🛣️ Build Road
+<br>
+1 Timber + 1 Stone
+</button>
+
+
+<button
+id="villageButton"
+onclick="startVillageBuild()"
+>
+🏘️ Build Village
+<br>
+1 Timber + 1 Stone + 1 Grain + 1 Wool
+</button>
+
+
+<button
+onclick="startTownUpgrade()"
+>
+🏰 Upgrade Town
+<br>
+2 Grain + 3 Iron
+</button>
+
+
+<button
+onclick="toggleTrade()"
+>
+🤝 Free Trade
+</button>
+
+
+<div
+class="tradeBox"
+id="tradeBox"
+>
+
+<div class="tradeHint">
+
+自由交換資源。  
+選擇你要付出的資源與要得到的資源。
+
+</div>
+
+
+<div class="tradeRow">
+
+<select id="giveResource">
+
+<option value="wood">
+🌲 Timber
+</option>
+
+<option value="grain">
+🌾 Grain
+</option>
+
+<option value="wool">
+🐑 Wool
+</option>
+
+<option value="iron">
+⛏️ Iron
+</option>
+
+<option value="stone">
+🪨 Stone
+</option>
+
+<option value="gold">
+🪙 Gold
+</option>
+
+</select>
+
+
+<input
+id="giveAmount"
+type="number"
+min="1"
+value="1"
+>
+
+</div>
+
+
+<div style="text-align:center;margin:4px">
+⬇️
+</div>
+
+
+<div class="tradeRow">
+
+<select id="getResource">
+
+<option value="grain">
+🌾 Grain
+</option>
+
+<option value="wood">
+🌲 Timber
+</option>
+
+<option value="wool">
+🐑 Wool
+</option>
+
+<option value="iron">
+⛏️ Iron
+</option>
+
+<option value="stone">
+🪨 Stone
+</option>
+
+<option value="gold">
+🪙 Gold
+</option>
+
+</select>
+
+
+<input
+id="getAmount"
+type="number"
+min="1"
+value="1"
+>
+
+</div>
+
+
+<button
+class="tradeButton"
+onclick="executeTrade()"
+>
+🤝 Execute Trade
+</button>
+
+
+</div>
+
+</div>
+
+
+<!-- LOG -->
+
+<div class="panel">
+
+<h2>GAME LOG</h2>
+
+<div
+class="log"
+id="log"
+>
+
+🇬🇧 Welcome to Kingdoms of England!<br>
+🗺️ Click a Hex to inspect its resources.<br>
+🏗️ Build Road / Village to select a location.<br>
+
+</div>
+
+</div>
+
+
+<!-- CHAT -->
+
+<div class="panel">
+
+<h2>💬 CHAT</h2>
+
+
+<div
+class="chat"
+id="chat"
+>
+
+🔴 Raven: Good luck everyone!<br>
+
+🔵 Lion: Let's build a strong kingdom!<br>
+
+🟢 Stag: I need Iron.<br>
+
+🟡 Falcon: Watch out for the pirate!<br>
+
+</div>
+
+
+<div class="chatInput">
+
+<input
+id="message"
+placeholder="Type a message..."
+onkeydown="if(event.key==='Enter')sendChat()"
+>
+
+<button
+onclick="sendChat()"
+>
+➤
+</button>
+
+</div>
+
+</div>
+
+
+</aside>
+
 
 </div>
 
 
 <script>
 
-/* =========================================================
- SUPABASE
-========================================================= */
+/* =====================================================
+   SUPABASE
+===================================================== */
 
 const SUPABASE_URL =
-  "https://aeqhrcdlmpqncddridaj.supabase.co";
+"https://aeqhrcdlmpqncddridaj.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+"YOUR_SUPABASE_PUBLISHABLE_KEY";
 
 
-/* =========================================================
- GAME CONSTANTS
-========================================================= */
+/*
+   如果你 GitHub 原本已經有正確的 Supabase key，
+   請把上面的 YOUR_SUPABASE_PUBLISHABLE_KEY
+   換成你自己的 publishable key。
+*/
 
-const ROOM_ID =
-  "ENGLAND-001";
 
-const COLORS = [
-  "red",
-  "blue",
-  "green",
-  "yellow"
-];
+/* =====================================================
+   GAME STATE
+===================================================== */
 
-const COLOR_NAMES = {
-  red:"🔴",
-  blue:"🔵",
-  green:"🟢",
-  yellow:"🟡"
-};
+let resources = {
 
-const RESOURCE_ICONS = {
-  wood:"🌲",
-  grain:"🌾",
-  wool:"🐑",
-  brick:"🧱",
-  iron:"⛏️",
-  gold:"🪙"
-};
+  wood:3,
+  grain:2,
+  wool:1,
+  stone:2,
+  iron:2,
+  gold:0
 
-const RESOURCE_NAMES = {
-  wood:"Timber",
-  grain:"Grain",
-  wool:"Wool",
-  brick:"Brick",
-  iron:"Iron",
-  gold:"Gold"
 };
 
 
-/* =========================================================
- LOCAL PLAYER
-========================================================= */
+let vp = 5;
 
-let playerId =
-  localStorage.getItem("england_player_id");
+let selectedHex = null;
 
-if(!playerId){
+let buildMode = null;
 
-  playerId =
-    crypto.randomUUID();
+let pirateRegion = "North Sea";
 
-  localStorage.setItem(
-    "england_player_id",
-    playerId
-  );
+let roads = {};
 
-}
+let nodes = {};
 
-let playerName =
-  localStorage.getItem("england_player_name") ||
-  "";
+let towns = {};
 
 
-/* =========================================================
- STATE
-========================================================= */
+/* =====================================================
+   UPDATE UI
+===================================================== */
 
-let gameState = null;
+function updateResources(){
 
-let players = [];
+  Object.keys(resources).forEach(key=>{
 
-let me = null;
+    const el =
+      document.getElementById(key);
 
-let currentMode = "normal";
-
-let lastLoadedAt = 0;
-
-
-/* =========================================================
- 19 TILES
-========================================================= */
-
-const initialTiles = [
-
-  {
-    id:0,
-    type:"forest",
-    resource:"wood",
-    icon:"🌲",
-    name:"Northumberland",
-    number:11
-  },
-
-  {
-    id:1,
-    type:"fields",
-    resource:"grain",
-    icon:"🌾",
-    name:"Durham",
-    number:6
-  },
-
-  {
-    id:2,
-    type:"pasture",
-    resource:"wool",
-    icon:"🐑",
-    name:"Yorkshire",
-    number:9
-  },
-
-  {
-    id:3,
-    type:"hills",
-    resource:"brick",
-    icon:"🧱",
-    name:"Lancashire",
-    number:5
-  },
-
-  {
-    id:4,
-    type:"forest",
-    resource:"wood",
-    icon:"🌲",
-    name:"Cumbria",
-    number:10
-  },
-
-  {
-    id:5,
-    type:"mountains",
-    resource:"iron",
-    icon:"⛏️",
-    name:"Pennines",
-    number:8
-  },
-
-  {
-    id:6,
-    type:"pasture",
-    resource:"wool",
-    icon:"🐑",
-    name:"Yorkshire Wolds",
-    number:4
-  },
-
-  {
-    id:7,
-    type:"forest",
-    resource:"wood",
-    icon:"🌲",
-    name:"Shropshire",
-    number:3
-  },
-
-  {
-    id:8,
-    type:"fields",
-    resource:"grain",
-    icon:"🌾",
-    name:"Staffordshire",
-    number:4
-  },
-
-  {
-    id:9,
-    type:"desert",
-    resource:null,
-    icon:"🏜️",
-    name:"Midlands Desert",
-    number:null
-  },
-
-  {
-    id:10,
-    type:"fields",
-    resource:"grain",
-    icon:"🌾",
-    name:"Norfolk",
-    number:8
-  },
-
-  {
-    id:11,
-    type:"pasture",
-    resource:"wool",
-    icon:"🐑",
-    name:"Somerset",
-    number:5
-  },
-
-  {
-    id:12,
-    type:"forest",
-    resource:"wood",
-    icon:"🌲",
-    name:"Gloucestershire",
-    number:6
-  },
-
-  {
-    id:13,
-    type:"fields",
-    resource:"grain",
-    icon:"🌾",
-    name:"Cambridgeshire",
-    number:10
-  },
-
-  {
-    id:14,
-    type:"hills",
-    resource:"brick",
-    icon:"🧱",
-    name:"Birmingham",
-    number:9
-  },
-
-  {
-    id:15,
-    type:"mountains",
-    resource:"iron",
-    icon:"⛏️",
-    name:"Oxford Iron",
-    number:3
-  },
-
-  {
-    id:16,
-    type:"fields",
-    resource:"grain",
-    icon:"🌾",
-    name:"Devon",
-    number:12
-  },
-
-  {
-    id:17,
-    type:"pasture",
-    resource:"wool",
-    icon:"🐑",
-    name:"Kent",
-    number:11
-  },
-
-  {
-    id:18,
-    type:"mountains",
-    resource:"iron",
-    icon:"⛏️",
-    name:"London Basin",
-    number:2
-  }
-
-];
-
-
-/* =========================================================
- INITIAL GAME
-========================================================= */
-
-function createInitialGame(){
-
-  return {
-
-    version:2,
-
-    tiles:
-      JSON.parse(
-        JSON.stringify(initialTiles)
-      ),
-
-    robberTile:9,
-
-    currentTurn:0,
-
-    started:false,
-
-    winner:null,
-
-    lastRoll:null,
-
-    logs:[
-      "🇬🇧 Kingdoms of England 開始！"
-    ],
-
-    roads:[],
-
-    settlements:[],
-
-    cities:[],
-
-    longestRoadPlayer:null,
-
-    largestArmyPlayer:null,
-
-    developmentDeck:createDevelopmentDeck(),
-
-    developmentDiscard:[],
-
-    chat:[]
-
-  };
-
-}
-
-
-/* =========================================================
- DEVELOPMENT DECK
-========================================================= */
-
-function createDevelopmentDeck(){
-
-  return [
-
-    ...Array(14).fill("knight"),
-
-    ...Array(2).fill("roadBuilding"),
-
-    ...Array(2).fill("yearPlenty"),
-
-    ...Array(2).fill("monopoly"),
-
-    ...Array(5).fill("victory")
-
-  ];
-
-}
-
-
-/* =========================================================
- CONNECTION
-========================================================= */
-
-function setConnection(ok,text){
-
-  const el =
-    document.getElementById("connection");
-
-  if(ok){
-
-    el.className =
-      "connection connected";
-
-    el.textContent =
-      "🟢 "+text;
-
-  }else{
-
-    el.className =
-      "connection failed";
-
-    el.textContent =
-      "🔴 "+text;
-
-  }
-
-}
-
-
-/* =========================================================
- INITIALIZE
-========================================================= */
-
-async function init(){
-
-  try{
-
-    const {data,error} =
-      await supabaseClient
-      .from("games")
-      .select("*")
-      .eq("id",ROOM_ID)
-      .maybeSingle();
-
-    if(error){
-      throw error;
+    if(el){
+      el.textContent =
+        resources[key];
     }
 
-    if(!data){
+  });
 
-      const newGame =
-        createInitialGame();
 
-      const result =
-        await supabaseClient
-        .from("games")
-        .insert({
-          id:ROOM_ID,
-          state:newGame
-        })
-        .select()
-        .single();
-
-      if(result.error){
-        throw result.error;
-      }
-
-      gameState =
-        result.data.state;
-
-    }else{
-
-      gameState =
-        data.state;
-
-    }
-
-    setConnection(
-      true,
-      "Supabase connected"
-    );
-
-    await loadPlayers();
-
-    await ensurePlayer();
-
-    await loadPlayers();
-
-    render();
-
-    subscribeRealtime();
-
-    setInterval(
-      syncGame,
-      2500
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    setConnection(
-      false,
-      "Supabase connection failed"
-    );
-
-    document.getElementById("log").innerHTML =
-      "❌ Supabase 連線失敗。<br>"+
-      escapeHTML(error.message);
-
-  }
+  document.getElementById(
+    "ravenVP"
+  ).textContent =
+    vp+" VP";
 
 }
 
 
-/* =========================================================
- PLAYERS
-========================================================= */
+/* =====================================================
+   LOG
+===================================================== */
 
-async function loadPlayers(){
+function log(message){
 
-  const {data,error} =
-    await supabaseClient
-    .from("players")
-    .select("*")
-    .eq("game_id",ROOM_ID)
-    .order("joined_at",{ascending:true});
+  const box =
+    document.getElementById("log");
 
-  if(error){
-
-    console.error(error);
-
-    return;
-
-  }
-
-  players =
-    data || [];
-
-  me =
-    players.find(
-      p => p.player_id === playerId
-    ) || null;
+  box.innerHTML =
+    message+
+    "<br>"+
+    box.innerHTML;
 
 }
 
 
-/* =========================================================
- JOIN
-========================================================= */
-
-async function joinGame(){
-
-  const input =
-    document.getElementById("nameInput");
-
-  const name =
-    input.value.trim();
-
-  if(!name){
-
-    alert("請先輸入玩家名稱。");
-
-    return;
-
-  }
-
-  playerName =
-    name;
-
-  localStorage.setItem(
-    "england_player_name",
-    name
-  );
-
-  await loadPlayers();
-
-  const existing =
-    players.find(
-      p => p.player_id === playerId
-    );
-
-  if(existing){
-
-    await supabaseClient
-      .from("players")
-      .update({
-        name:name
-      })
-      .eq("id",existing.id);
-
-    await loadPlayers();
-
-    render();
-
-    logGame(
-      "👤 "+name+" 已重新加入。"
-    );
-
-    return;
-
-  }
-
-  if(players.length >= 4){
-
-    alert(
-      "房間已滿，最多 4 名玩家。"
-    );
-
-    return;
-
-  }
-
-  const color =
-    COLORS[players.length];
-
-  const startingResources = {
-
-    wood:0,
-    grain:0,
-    wool:0,
-    brick:0,
-    iron:0,
-    gold:0
-
-  };
-
-  const {error} =
-    await supabaseClient
-    .from("players")
-    .insert({
-
-      game_id:ROOM_ID,
-
-      player_id:playerId,
-
-      name:name,
-
-      color:color,
-
-      resources:startingResources,
-
-      vp:0,
-
-      roads:0,
-
-      settlements:0,
-
-      cities:0,
-
-      knights:0
-
-    });
-
-  if(error){
-
-    alert(
-      "加入失敗："+error.message
-    );
-
-    return;
-
-  }
-
-  await loadPlayers();
-
-  if(players.length >= 2){
-
-    gameState.started = true;
-
-    await saveGame();
-
-  }
-
-  logGame(
-    "👤 "+name+" 加入 ENGLAND-001。"
-  );
-
-  render();
-
-}
-
-
-/* =========================================================
- ENSURE PLAYER
-========================================================= */
-
-async function ensurePlayer(){
-
-  await loadPlayers();
-
-  if(me){
-
-    document.getElementById(
-      "nameInput"
-    ).value = me.name;
-
-    return;
-
-  }
-
-  if(playerName){
-
-    document.getElementById(
-      "nameInput"
-    ).value = playerName;
-
-  }
-
-}
-
-
-/* =========================================================
- SYNC
-========================================================= */
-
-async function syncGame(){
-
-  try{
-
-    const {data,error} =
-      await supabaseClient
-      .from("games")
-      .select("*")
-      .eq("id",ROOM_ID)
-      .single();
-
-    if(!error && data){
-
-      if(
-        JSON.stringify(data.state) !==
-        JSON.stringify(gameState)
-      ){
-
-        gameState =
-          data.state;
-
-        render();
-
-      }
-
-    }
-
-    await loadPlayers();
-
-    renderPlayers();
-
-    updateResources();
-
-  }catch(e){
-
-    console.error(e);
-
-  }
-
-}
-
-
-/* =========================================================
- SAVE
-========================================================= */
-
-async function saveGame(){
-
-  const {error} =
-    await supabaseClient
-    .from("games")
-    .update({
-      state:gameState,
-      updated_at:new Date().toISOString()
-    })
-    .eq("id",ROOM_ID);
-
-  if(error){
-
-    console.error(error);
-
-  }
-
-}
-
-
-/* =========================================================
- REALTIME
-========================================================= */
-
-function subscribeRealtime(){
-
-  supabaseClient
-    .channel("england-game")
-    .on(
-      "postgres_changes",
-      {
-        event:"*",
-        schema:"public",
-        table:"games",
-        filter:"id=eq."+ROOM_ID
-      },
-      payload => {
-
-        if(payload.new &&
-           payload.new.state){
-
-          gameState =
-            payload.new.state;
-
-          render();
-
-        }
-
-      }
-    )
-    .on(
-      "postgres_changes",
-      {
-        event:"*",
-        schema:"public",
-        table:"players",
-        filter:"game_id=eq."+ROOM_ID
-      },
-      async () => {
-
-        await loadPlayers();
-
-        render();
-
-      }
-    )
-    .subscribe();
-
-}
-
-
-/* =========================================================
- TURN CHECK
-========================================================= */
-
-function isMyTurn(){
-
-  if(!me){
-    return false;
-  }
-
-  const index =
-    players.findIndex(
-      p => p.player_id === playerId
-    );
-
-  return index ===
-    gameState.currentTurn;
-
-}
-
-
-/* =========================================================
- DICE
-========================================================= */
-
-async function rollDice(){
-
-  if(!me){
-
-    alert("請先加入遊戲。");
-
-    return;
-
-  }
-
-  if(!isMyTurn()){
-
-    alert("現在不是你的回合。");
-
-    return;
-
-  }
-
-  if(gameState.lastRoll &&
-     gameState.lastRoll.turn ===
-     gameState.currentTurn){
-
-    alert(
-      "這回合已經擲過骰子。"
-    );
-
-    return;
-
-  }
+/* =====================================================
+   DICE
+===================================================== */
+
+function rollDice(){
 
   const a =
     Math.floor(Math.random()*6)+1;
@@ -2023,480 +2357,109 @@ async function rollDice(){
   const total =
     a+b;
 
-  gameState.lastRoll = {
 
-    a:a,
-    b:b,
-    total:total,
-    turn:gameState.currentTurn
+  const faces=[
 
-  };
-
-  renderDice(a,b,total);
-
-  if(total === 7){
-
-    await handleSeven();
-
-  }else{
-
-    await produceResources(total);
-
-  }
-
-  await saveGame();
-
-  render();
-
-}
-
-
-/* =========================================================
- DICE DISPLAY
-========================================================= */
-
-function renderDice(a,b,total){
-
-  const faces = [
     "⚀",
     "⚁",
     "⚂",
     "⚃",
     "⚄",
     "⚅"
+
   ];
 
-  document.getElementById("dice")
-    .textContent =
-      faces[a-1]+" "+
-      faces[b-1]+" = "+
-      total;
 
-}
+  document.getElementById(
+    "dice"
+  ).textContent =
 
-
-/* =========================================================
- PRODUCTION
-========================================================= */
-
-async function produceResources(number){
-
-  const produced = [];
-
-  for(const tile of gameState.tiles){
-
-    if(
-      tile.number !== number ||
-      tile.id === gameState.robberTile ||
-      !tile.resource
-    ){
-      continue;
-    }
-
-    const settlements =
-      gameState.settlements
-      .filter(
-        x => x.tileId === tile.id
-      );
-
-    const cities =
-      gameState.cities
-      .filter(
-        x => x.tileId === tile.id
-      );
-
-    for(const building of settlements){
-
-      await giveResource(
-        building.playerId,
-        tile.resource,
-        1
-      );
-
-      produced.push(
-        `${tile.icon} ${tile.name}`
-      );
-
-    }
-
-    for(const building of cities){
-
-      await giveResource(
-        building.playerId,
-        tile.resource,
-        2
-      );
-
-      produced.push(
-        `${tile.icon} ${tile.name} ×2`
-      );
-
-    }
-
-  }
-
-  if(produced.length){
-
-    logGame(
-      "📦 骰子 "+number+
-      " 生產資源："+produced.join("、")
-    );
-
-  }else{
-
-    logGame(
-      "🎲 骰子 "+number+
-      " 沒有玩家在對應領地上建築。"
-    );
-
-  }
-
-}
+    faces[a-1]+
+    " "+
+    faces[b-1]+
+    " = "+
+    total;
 
 
-/* =========================================================
- GIVE RESOURCE
-========================================================= */
-
-async function giveResource(
-  targetPlayerId,
-  resource,
-  amount
-){
-
-  const player =
-    players.find(
-      p => p.player_id === targetPlayerId
-    );
-
-  if(!player){
-    return;
-  }
-
-  const resources =
-    Object.assign(
-      {
-        wood:0,
-        grain:0,
-        wool:0,
-        brick:0,
-        iron:0,
-        gold:0
-      },
-      player.resources || {}
-    );
-
-  resources[resource] =
-    (resources[resource] || 0)+amount;
-
-  await supabaseClient
-    .from("players")
-    .update({
-      resources:resources
-    })
-    .eq("id",player.id);
-
-}
-
-
-/* =========================================================
- SEVEN / ROBBER
-========================================================= */
-
-async function handleSeven(){
-
-  logGame(
-    "🏴‍☠️ 7！強盜出現。"
+  log(
+    "🎲 Raven rolled "+
+    total+
+    "."
   );
 
-  for(const player of players){
 
-    const resources =
-      player.resources || {};
+  /* =====================================
+     7 = PIRATE
+  ===================================== */
 
-    const total =
-      Object.values(resources)
-      .reduce(
-        (a,b)=>a+(Number(b)||0),
-        0
-      );
+  if(total===7){
 
-    if(total > 7){
-
-      const lose =
-        Math.floor(total/2);
-
-      const updated =
-        {...resources};
-
-      let remaining = lose;
-
-      const keys =
-        Object.keys(updated);
-
-      while(remaining > 0){
-
-        const available =
-          keys.filter(
-            k => updated[k] > 0
-          );
-
-        if(!available.length){
-          break;
-        }
-
-        const key =
-          available[
-            Math.floor(
-              Math.random()*
-              available.length
-            )
-          ];
-
-        updated[key]--;
-
-        remaining--;
-
-      }
-
-      await supabaseClient
-        .from("players")
-        .update({
-          resources:updated
-        })
-        .eq("id",player.id);
-
-      logGame(
-        "📦 "+player.name+
-        " 因資源超過 7 張，丟棄 "+
-        lose+" 張。"
-      );
-
-    }
-
-  }
-
-  currentMode = "robber";
-
-  updateModeText(
-    "強盜模式",
-    "請點擊一個領地移動 🏴‍☠️"
-  );
-
-}
-
-
-/* =========================================================
- ROBBER MODE
-========================================================= */
-
-function enableRobberMode(){
-
-  if(!isMyTurn()){
-
-    alert("現在不是你的回合。");
-
-    return;
-
-  }
-
-  currentMode =
-    "robber";
-
-  updateModeText(
-    "強盜模式",
-    "請點擊地圖上的領地。"
-  );
-
-}
-
-
-/* =========================================================
- TILE CLICK
-========================================================= */
-
-async function tileClick(tileId){
-
-  const tile =
-    gameState.tiles[tileId];
-
-  if(!tile){
-    return;
-  }
-
-  if(currentMode === "robber"){
-
-    if(!isMyTurn()){
-      return;
-    }
-
-    gameState.robberTile =
-      tileId;
-
-    currentMode =
-      "normal";
-
-    updateModeText(
-      "一般模式",
-      "強盜已移動。"
+    log(
+      "🏴‍☠️ 7！Pirate activated."
     );
 
-    document.getElementById(
-      "robberInfo"
-    ).textContent =
-      "Robber 在 "+tile.name;
 
-    logGame(
-      "🏴‍☠️ 強盜移動到 "+
-      tile.name
-    );
-
-    await saveGame();
-
-    render();
+    startPirateMove();
 
     return;
 
   }
 
-  if(currentMode === "settlement"){
 
-    await buildSettlement(tileId);
+  /* =====================================
+     PRODUCTION
+  ===================================== */
 
-    return;
+  const production = {
 
-  }
-
-  if(currentMode === "city"){
-
-    await buildCity(tileId);
-
-    return;
-
-  }
-
-  if(currentMode === "road"){
-
-    await buildRoad(tileId);
-
-    return;
-
-  }
-
-  showTileInfo(tile);
-
-}
-
-
-/* =========================================================
- BUILD MODE
-========================================================= */
-
-function setBuildMode(mode){
-
-  if(!me){
-
-    alert("請先加入遊戲。");
-
-    return;
-
-  }
-
-  if(!isMyTurn()){
-
-    alert("現在不是你的回合。");
-
-    return;
-
-  }
-
-  currentMode =
-    mode;
-
-  const labels = {
-
-    road:[
-      "道路模式",
-      "請點擊一個領地建造道路。"
-    ],
-
-    settlement:[
-      "聚落模式",
-      "請點擊一個尚未建造的領地。"
-    ],
-
-    city:[
-      "城市模式",
-      "請點擊你自己的聚落升級。"
-    ]
+    3:"iron",
+    4:"wood",
+    5:"iron",
+    6:"grain",
+    8:"wood",
+    9:"wool",
+    10:"stone",
+    11:"grain",
+    12:"gold"
 
   };
 
-  updateModeText(
-    labels[mode][0],
-    labels[mode][1]
-  );
 
-}
+  const resource =
+    production[total];
 
 
-/* =========================================================
- MODE TEXT
-========================================================= */
+  if(resource){
 
-function updateModeText(title,text){
+    resources[resource]++;
 
-  document.getElementById(
-    "modeText"
-  ).innerHTML =
-    "<b>"+title+"</b><br>"+
-    escapeHTML(text);
-
-}
+    updateResources();
 
 
-/* =========================================================
- COST
-========================================================= */
+    log(
+      "📦 +1 "+
+      resource+
+      " from dice "+
+      total
+    );
 
-const COST = {
-
-  road:{
-    wood:1,
-    brick:1
-  },
-
-  settlement:{
-    wood:1,
-    brick:1,
-    grain:1,
-    wool:1
-  },
-
-  city:{
-    grain:2,
-    iron:3
-  },
-
-  development:{
-    grain:1,
-    wool:1,
-    gold:1
   }
 
-};
+}
 
 
-/* =========================================================
- CHECK / SPEND
-========================================================= */
+/* =====================================================
+   SPEND
+===================================================== */
 
-function canAfford(resources,cost){
+function spend(cost){
 
-  for(const key in cost){
+  for(
+    const key in cost
+  ){
 
     if(
-      Number(resources[key] || 0) <
+      resources[key] <
       cost[key]
     ){
 
@@ -2506,1682 +2469,1014 @@ function canAfford(resources,cost){
 
   }
 
-  return true;
 
-}
+  for(
+    const key in cost
+  ){
 
-
-async function spendResources(cost){
-
-  if(!me){
-    return false;
-  }
-
-  const resources =
-    Object.assign(
-      {
-        wood:0,
-        grain:0,
-        wool:0,
-        brick:0,
-        iron:0,
-        gold:0
-      },
-      me.resources || {}
-    );
-
-  if(!canAfford(resources,cost)){
-
-    alert("資源不足。");
-
-    return false;
-
-  }
-
-  for(const key in cost){
-
-    resources[key]-=
+    resources[key] -=
       cost[key];
 
   }
 
-  const {error} =
-    await supabaseClient
-    .from("players")
-    .update({
-      resources:resources
-    })
-    .eq("id",me.id);
 
-  if(error){
-
-    alert(error.message);
-
-    return false;
-
-  }
-
-  me.resources =
-    resources;
+  updateResources();
 
   return true;
 
 }
 
 
-/* =========================================================
- ROAD
-========================================================= */
+/* =====================================================
+   BUILD MODE
+===================================================== */
 
-async function buildRoad(tileId){
+function setBuildMode(mode){
 
-  if(
-    gameState.roads.some(
-      r =>
-        r.tileId === tileId &&
-        r.playerId === playerId
-    )
-  ){
+  buildMode = mode;
 
-    alert(
-      "你已經在這個位置建造道路。"
+
+  const box =
+    document.getElementById(
+      "buildMode"
     );
 
-    return;
 
-  }
-
-  if(
-    !(await spendResources(
-      COST.road
-    ))
-  ){
-    return;
-  }
-
-  gameState.roads.push({
-
-    id:crypto.randomUUID(),
-
-    tileId:tileId,
-
-    playerId:playerId
-
-  });
-
-  await updatePlayerStats(
-    p => {
-
-      p.roads =
-        (p.roads || 0)+1;
-
-      p.vp =
-        p.vp || 0;
-
-    }
-  );
-
-  await updateAchievements();
-
-  logGame(
-    "🛣️ "+me.name+
-    " 建造道路。"
-  );
-
-  currentMode =
-    "normal";
-
-  await saveGame();
-
-  await checkWinner();
-
-  render();
-
-}
-
-
-/* =========================================================
- SETTLEMENT
-========================================================= */
-
-async function buildSettlement(tileId){
-
-  if(
-    gameState.settlements.some(
-      s => s.tileId === tileId
-    ) ||
-    gameState.cities.some(
-      c => c.tileId === tileId
-    )
-  ){
-
-    alert(
-      "這個領地已經有建築。"
+  const text =
+    document.getElementById(
+      "buildModeText"
     );
 
-    return;
+
+  box.classList.add("show");
+
+
+  if(mode==="road"){
+
+    text.textContent =
+      "🛣️ Choose a highlighted road location";
+
+    document
+      .querySelectorAll(".road")
+      .forEach(r=>{
+        if(!roads[r.id]){
+          r.classList.add("available");
+        }
+      });
 
   }
 
-  if(
-    !(await spendResources(
-      COST.settlement
-    ))
-  ){
-    return;
-  }
 
-  gameState.settlements.push({
+  if(mode==="village"){
 
-    id:crypto.randomUUID(),
+    text.textContent =
+      "🏘️ Choose a highlighted building node";
 
-    tileId:tileId,
-
-    playerId:playerId
-
-  });
-
-  await updatePlayerStats(
-    p => {
-
-      p.settlements =
-        (p.settlements || 0)+1;
-
-      p.vp =
-        (p.vp || 0)+1;
-
-    }
-  );
-
-  logGame(
-    "🏠 "+me.name+
-    " 建造聚落。+1 VP"
-  );
-
-  currentMode =
-    "normal";
-
-  await saveGame();
-
-  await checkWinner();
-
-  render();
-
-}
-
-
-/* =========================================================
- CITY
-========================================================= */
-
-async function buildCity(tileId){
-
-  const settlement =
-    gameState.settlements.find(
-      s =>
-        s.tileId === tileId &&
-        s.playerId === playerId
-    );
-
-  if(!settlement){
-
-    alert(
-      "只能把自己的聚落升級成城市。"
-    );
-
-    return;
-
-  }
-
-  if(
-    !(await spendResources(
-      COST.city
-    ))
-  ){
-    return;
-  }
-
-  gameState.settlements =
-    gameState.settlements.filter(
-      s => s.id !== settlement.id
-    );
-
-  gameState.cities.push({
-
-    id:crypto.randomUUID(),
-
-    tileId:tileId,
-
-    playerId:playerId
-
-  });
-
-  await updatePlayerStats(
-    p => {
-
-      p.settlements =
-        Math.max(
-          0,
-          (p.settlements || 0)-1
-        );
-
-      p.cities =
-        (p.cities || 0)+1;
-
-      p.vp =
-        (p.vp || 0)+1;
-
-    }
-  );
-
-  logGame(
-    "🏰 "+me.name+
-    " 將聚落升級為城市。+1 VP"
-  );
-
-  currentMode =
-    "normal";
-
-  await saveGame();
-
-  await checkWinner();
-
-  render();
-
-}
-
-
-/* =========================================================
- UPDATE PLAYER STATS
-========================================================= */
-
-async function updatePlayerStats(fn){
-
-  await loadPlayers();
-
-  const player =
-    players.find(
-      p => p.player_id === playerId
-    );
-
-  if(!player){
-    return;
-  }
-
-  fn(player);
-
-  await supabaseClient
-    .from("players")
-    .update({
-
-      resources:
-        player.resources,
-
-      vp:
-        player.vp,
-
-      roads:
-        player.roads,
-
-      settlements:
-        player.settlements,
-
-      cities:
-        player.cities,
-
-      knights:
-        player.knights
-
-    })
-    .eq("id",player.id);
-
-  await loadPlayers();
-
-}
-
-
-/* =========================================================
- ACHIEVEMENTS
-========================================================= */
-
-async function updateAchievements(){
-
-  await loadPlayers();
-
-  if(!players.length){
-    return;
-  }
-
-  /*
-    Catan-style prototype:
-    5+ roads can claim Longest Road.
-    3+ knights can claim Largest Army.
-  */
-
-  const roadCandidates =
-    players.filter(
-      p => (p.roads || 0) >= 5
-    )
-    .sort(
-      (a,b)=>
-        (b.roads||0)-
-        (a.roads||0)
-    );
-
-  if(roadCandidates.length){
-
-    const leader =
-      roadCandidates[0];
-
-    if(
-      gameState.longestRoadPlayer !==
-      leader.player_id
-    ){
-
-      gameState.longestRoadPlayer =
-        leader.player_id;
-
-      await addVP(
-        leader.player_id,
-        2
-      );
-
-      logGame(
-        "🛣️ "+leader.name+
-        " 取得最長道路！+2 VP"
-      );
-
-    }
-
-  }
-
-
-  const armyCandidates =
-    players.filter(
-      p => (p.knights || 0) >= 3
-    )
-    .sort(
-      (a,b)=>
-        (b.knights||0)-
-        (a.knights||0)
-    );
-
-  if(armyCandidates.length){
-
-    const leader =
-      armyCandidates[0];
-
-    if(
-      gameState.largestArmyPlayer !==
-      leader.player_id
-    ){
-
-      gameState.largestArmyPlayer =
-        leader.player_id;
-
-      await addVP(
-        leader.player_id,
-        2
-      );
-
-      logGame(
-        "⚔️ "+leader.name+
-        " 取得最大騎士軍隊！+2 VP"
-      );
-
-    }
-
-  }
-
-}
-
-
-/* =========================================================
- ADD VP
-========================================================= */
-
-async function addVP(
-  targetId,
-  amount
-){
-
-  const player =
-    players.find(
-      p => p.player_id === targetId
-    );
-
-  if(!player){
-    return;
-  }
-
-  await supabaseClient
-    .from("players")
-    .update({
-      vp:
-        (player.vp || 0)+amount
-    })
-    .eq("id",player.id);
-
-}
-
-
-/* =========================================================
- DEVELOPMENT CARD
-========================================================= */
-
-async function buyDevelopmentCard(){
-
-  if(!isMyTurn()){
-
-    alert("現在不是你的回合。");
-
-    return;
-
-  }
-
-  if(
-    !gameState.developmentDeck ||
-    !gameState.developmentDeck.length
-  ){
-
-    alert(
-      "發展卡已經抽完。"
-    );
-
-    return;
-
-  }
-
-  if(
-    !(await spendResources(
-      COST.development
-    ))
-  ){
-    return;
-  }
-
-  const random =
-    Math.floor(
-      Math.random()*
-      gameState.developmentDeck.length
-    );
-
-  const card =
-    gameState.developmentDeck
-      .splice(random,1)[0];
-
-  const player =
-    players.find(
-      p => p.player_id === playerId
-    );
-
-  const cards =
-    Object.assign(
-      {
-        knight:0,
-        roadBuilding:0,
-        yearPlenty:0,
-        monopoly:0,
-        victory:0
-      },
-      player.development || {}
-    );
-
-  cards[card] =
-    (cards[card] || 0)+1;
-
-  await supabaseClient
-    .from("players")
-    .update({
-      development:cards
-    })
-    .eq("id",player.id);
-
-  if(card === "victory"){
-
-    await addVP(
-      playerId,
-      1
-    );
-
-  }
-
-  const names = {
-
-    knight:"⚔️ Knight",
-
-    roadBuilding:
-      "🛣️ Road Building",
-
-    yearPlenty:
-      "🎁 Year of Plenty",
-
-    monopoly:
-      "👑 Monopoly",
-
-    victory:
-      "🏆 Victory Point"
-
-  };
-
-  logGame(
-    "🃏 "+me.name+
-    " 抽到 "+names[card]
-  );
-
-  await saveGame();
-
-  await checkWinner();
-
-  render();
-
-}
-
-
-/* =========================================================
- PLAY DEVELOPMENT
-========================================================= */
-
-async function playDevelopmentCard(){
-
-  if(!me){
-
-    alert("請先加入遊戲。");
-
-    return;
-
-  }
-
-  const player =
-    players.find(
-      p => p.player_id === playerId
-    );
-
-  if(!player){
-    return;
-  }
-
-  const cards =
-    Object.assign(
-      {
-        knight:0,
-        roadBuilding:0,
-        yearPlenty:0,
-        monopoly:0,
-        victory:0
-      },
-      player.development || {}
-    );
-
-  let options = [];
-
-  if(cards.knight > 0)
-    options.push("knight");
-
-  if(cards.roadBuilding > 0)
-    options.push("roadBuilding");
-
-  if(cards.yearPlenty > 0)
-    options.push("yearPlenty");
-
-  if(cards.monopoly > 0)
-    options.push("monopoly");
-
-  if(!options.length){
-
-    alert(
-      "你沒有可使用的發展卡。"
-    );
-
-    return;
-
-  }
-
-  const choice =
-    prompt(
-      "輸入要使用的卡：\n"+
-      "knight\n"+
-      "roadBuilding\n"+
-      "yearPlenty\n"+
-      "monopoly"
-    );
-
-  if(!choice ||
-     !options.includes(choice)){
-
-    return;
-
-  }
-
-  cards[choice]--;
-
-  await supabaseClient
-    .from("players")
-    .update({
-      development:cards
-    })
-    .eq("id",player.id);
-
-
-  if(choice === "knight"){
-
-    player.knights =
-      (player.knights || 0)+1;
-
-    await supabaseClient
-      .from("players")
-      .update({
-        knights:player.knights
-      })
-      .eq("id",player.id);
-
-    currentMode =
-      "robber";
-
-    logGame(
-      "⚔️ "+me.name+
-      " 使用騎士卡。"
-    );
-
-    enableRobberMode();
-
-  }
-
-
-  if(choice === "roadBuilding"){
-
-    currentMode =
-      "road";
-
-    logGame(
-      "🛣️ Road Building："+
-      "請建造道路。"
-    );
-
-  }
-
-
-  if(choice === "yearPlenty"){
-
-    const resource =
-      prompt(
-        "選擇資源：wood / grain / wool / brick / iron / gold"
-      );
-
-    if(
-      RESOURCE_NAMES[resource]
-    ){
-
-      await giveResource(
-        playerId,
-        resource,
-        2
-      );
-
-      logGame(
-        "🎁 Year of Plenty："+
-        resource+" +2"
-      );
-
-    }
-
-  }
-
-
-  if(choice === "monopoly"){
-
-    const resource =
-      prompt(
-        "選擇要壟斷的資源：wood / grain / wool / brick / iron / gold"
-      );
-
-    if(
-      RESOURCE_NAMES[resource]
-    ){
-
-      let total = 0;
-
-      for(const other of players){
+    document
+      .querySelectorAll(".node")
+      .forEach(n=>{
 
         if(
-          other.player_id ===
-          playerId
+          !nodes[n.id] &&
+          !towns[n.id]
         ){
-          continue;
+
+          n.classList.add(
+            "available"
+          );
+
         }
 
-        const r =
-          {...(other.resources||{})};
+      });
 
-        const amount =
-          Number(r[resource] || 0);
+  }
 
-        total += amount;
 
-        r[resource] = 0;
+  if(mode==="town"){
 
-        await supabaseClient
-          .from("players")
-          .update({
-            resources:r
-          })
-          .eq("id",other.id);
+    text.textContent =
+      "🏰 Choose one of your Villages to upgrade";
 
-      }
+    document
+      .querySelectorAll(".node.built")
+      .forEach(n=>{
 
-      await giveResource(
-        playerId,
-        resource,
-        total
+        if(
+          !towns[n.id]
+        ){
+
+          n.classList.add(
+            "available"
+          );
+
+        }
+
+      });
+
+  }
+
+}
+
+
+/* =====================================================
+   CANCEL BUILD
+===================================================== */
+
+function cancelBuildMode(){
+
+  buildMode=null;
+
+
+  document
+    .querySelectorAll(
+      ".available"
+    )
+    .forEach(el=>{
+
+      el.classList.remove(
+        "available"
       );
 
-      logGame(
-        "👑 Monopoly："+
-        resource+
-        " ×"+total
+    });
+
+
+  document
+    .getElementById(
+      "buildMode"
+    )
+    .classList.remove(
+      "show"
+    );
+
+}
+
+
+/* =====================================================
+   BUILD ROAD
+===================================================== */
+
+function startRoadBuild(){
+
+  if(buildMode==="road"){
+
+    cancelBuildMode();
+
+    return;
+
+  }
+
+
+  if(
+    resources.wood<1 ||
+    resources.stone<1
+  ){
+
+    log(
+      "❌ Need 1 Timber + 1 Stone."
+    );
+
+    return;
+
+  }
+
+
+  setBuildMode("road");
+
+  log(
+    "🛣️ Choose where to build the Road."
+  );
+
+}
+
+
+/* =====================================================
+   SELECT ROAD
+===================================================== */
+
+function selectRoad(number){
+
+  if(
+    buildMode!=="road"
+  ){
+
+    log(
+      "ℹ️ Press Build Road first."
+    );
+
+    return;
+
+  }
+
+
+  const id =
+    "road"+number;
+
+
+  if(roads[id]){
+
+    log(
+      "❌ This road position is already occupied."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !spend({
+      wood:1,
+      stone:1
+    })
+  ){
+
+    log(
+      "❌ Not enough resources."
+    );
+
+    return;
+
+  }
+
+
+  roads[id]=true;
+
+
+  document
+    .getElementById(id)
+    .classList
+    .remove("available");
+
+
+  document
+    .getElementById(id)
+    .classList
+    .add("owned");
+
+
+  vp++;
+
+
+  updateResources();
+
+
+  log(
+    "🛣️ Raven built Road "+
+    number+
+    "! +1 VP"
+  );
+
+
+  cancelBuildMode();
+
+}
+
+
+/* =====================================================
+   BUILD VILLAGE
+===================================================== */
+
+function startVillageBuild(){
+
+  if(buildMode==="village"){
+
+    cancelBuildMode();
+
+    return;
+
+  }
+
+
+  if(
+
+    resources.wood<1 ||
+
+    resources.stone<1 ||
+
+    resources.grain<1 ||
+
+    resources.wool<1
+
+  ){
+
+    log(
+      "❌ Need 1 Timber + 1 Stone + 1 Grain + 1 Wool."
+    );
+
+    return;
+
+  }
+
+
+  setBuildMode(
+    "village"
+  );
+
+
+  log(
+    "🏘️ Choose a building node."
+  );
+
+}
+
+
+/* =====================================================
+   NODE CLICK
+===================================================== */
+
+function buildNode(number){
+
+  const id =
+    "node"+number;
+
+
+  /* =====================================
+     TOWN MODE
+  ===================================== */
+
+  if(
+    buildMode==="town"
+  ){
+
+    if(!nodes[id]){
+
+      log(
+        "❌ You can only upgrade your own Village."
       );
+
+      return;
 
     }
 
-  }
 
-  await updateAchievements();
+    if(towns[id]){
 
-  await saveGame();
+      log(
+        "❌ This Village is already a Town."
+      );
 
-  await checkWinner();
+      return;
 
-  render();
-
-}
+    }
 
 
-/* =========================================================
- TRADE
-========================================================= */
+    if(
+      !spend({
+        grain:2,
+        iron:3
+      })
+    ){
 
-async function trade(from,to){
+      log(
+        "❌ Need 2 Grain + 3 Iron."
+      );
 
-  if(!isMyTurn()){
+      return;
 
-    alert("現在不是你的回合。");
+    }
+
+
+    towns[id]=true;
+
+
+    const node =
+      document.getElementById(id);
+
+
+    node.classList.remove(
+      "available"
+    );
+
+    node.classList.add(
+      "town"
+    );
+
+
+    vp++;
+
+
+    log(
+      "🏰 Village upgraded to Town! +1 VP"
+    );
+
+
+    cancelBuildMode();
 
     return;
 
   }
 
-  const cost = {
 
-    wood:0,
-    grain:0,
-    wool:0,
-    brick:0,
-    iron:0,
-    gold:0
+  /* =====================================
+     VILLAGE MODE
+  ===================================== */
+
+  if(
+    buildMode!=="village"
+  ){
+
+    log(
+      "ℹ️ Press Build Village first."
+    );
+
+    return;
+
+  }
+
+
+  if(nodes[id]){
+
+    log(
+      "❌ This location already has a Village."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !spend({
+
+      wood:1,
+      stone:1,
+      grain:1,
+      wool:1
+
+    })
+  ){
+
+    log(
+      "❌ Not enough resources."
+    );
+
+    return;
+
+  }
+
+
+  nodes[id]=true;
+
+
+  const node =
+    document.getElementById(id);
+
+
+  node.classList.remove(
+    "available"
+  );
+
+  node.classList.add(
+    "built"
+  );
+
+
+  vp++;
+
+
+  log(
+    "🏘️ Raven built a Village at Node "+
+    number+
+    "! +1 VP"
+  );
+
+
+  cancelBuildMode();
+
+}
+
+
+/* =====================================================
+   TOWN MODE
+===================================================== */
+
+function startTownUpgrade(){
+
+  const hasVillage =
+    Object.keys(nodes)
+      .some(id=>nodes[id]);
+
+
+  if(!hasVillage){
+
+    log(
+      "❌ You need a Village first."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    resources.grain<2 ||
+    resources.iron<3
+  ){
+
+    log(
+      "❌ Need 2 Grain + 3 Iron."
+    );
+
+    return;
+
+  }
+
+
+  setBuildMode("town");
+
+
+  log(
+    "🏰 Select one of your Villages."
+  );
+
+}
+
+
+/* =====================================================
+   HEX
+===================================================== */
+
+function selectHex(
+  element,
+  name,
+  resource,
+  number
+){
+
+  document
+    .querySelectorAll(".hex")
+    .forEach(hex=>{
+
+      hex.classList.remove(
+        "selected"
+      );
+
+    });
+
+
+  element.classList.add(
+    "selected"
+  );
+
+
+  selectedHex={
+
+    name:name,
+
+    resource:resource,
+
+    number:number
 
   };
 
-  cost[from] = 4;
+
+  log(
+
+    "🗺️ Selected "+
+    name+
+    " • "+
+    resource+
+    " • Dice "+
+    number
+
+  );
+
+}
+
+
+/* =====================================================
+   CITY
+===================================================== */
+
+function cityInfo(city){
+
+  const cityData={
+
+    Newcastle:
+      "Northern port • Timber",
+
+    Leeds:
+      "Yorkshire trade city • Wool",
+
+    Manchester:
+      "Industrial region • Iron",
+
+    Sheffield:
+      "Steel region • Iron",
+
+    Liverpool:
+      "Western port • Grain",
+
+    Nottingham:
+      "Central England • Timber",
+
+    Birmingham:
+      "Central trade hub • Iron",
+
+    Bristol:
+      "Western port • Grain",
+
+    Bridgwater:
+      "Southern settlement • Grain",
+
+    Oxford:
+      "University city • Gold",
+
+    London:
+      "Capital • Gold",
+
+    Plymouth:
+      "Southern port • Grain"
+
+  };
+
+
+  log(
+
+    "🏙️ "+
+    city+
+    " — "+
+    (
+      cityData[city]
+      ||
+      "City"
+    )
+
+  );
+
+}
+
+
+/* =====================================================
+   PIRATE
+===================================================== */
+
+function startPirateMove(){
+
+  cancelBuildMode();
+
+
+  document
+    .querySelectorAll(
+      ".seaZone"
+    )
+    .forEach(zone=>{
+
+      zone.classList.add(
+        "available"
+      );
+
+    });
+
+
+  log(
+    "🏴‍☠️ Choose a sea zone for the Pirate."
+  );
+
+
+  alert(
+    "🏴‍☠️ 你擲出了 7！\n\n請點擊地圖上的海域移動海盜。"
+  );
+
+}
+
+
+/* =====================================================
+   PIRATE CLICK
+===================================================== */
+
+function pirateClicked(){
+
+  if(buildMode==="pirate"){
+
+    log(
+      "🏴‍☠️ Choose a sea zone."
+    );
+
+    return;
+
+  }
+
+
+  log(
+    "🏴‍☠️ Pirate currently in "+
+    pirateRegion
+  );
+
+}
+
+
+/* =====================================================
+   SELECT SEA
+===================================================== */
+
+function selectSea(sea){
+
+  const zones =
+    document.querySelectorAll(
+      ".seaZone"
+    );
+
+
+  const available =
+    Array.from(zones)
+      .some(z=>
+        z.classList.contains(
+          "available"
+        )
+      );
+
+
+  if(!available){
+
+    log(
+      "ℹ️ The Pirate can only move after rolling 7."
+    );
+
+    return;
+
+  }
+
+
+  pirateRegion=sea;
+
+
+  document.getElementById(
+    "pirateLocation"
+  ).textContent =
+    sea;
+
+
+  const pirate =
+    document.getElementById(
+      "pirate"
+    );
+
+
+  pirate.className =
+    "pirate";
+
+
+  if(sea==="North Sea"){
+
+    pirate.classList.add(
+      "north"
+    );
+
+  }
+
+  else if(
+    sea==="Irish Sea"
+  ){
+
+    pirate.classList.add(
+      "irish"
+    );
+
+  }
+
+  else if(
+    sea==="Celtic Sea"
+  ){
+
+    pirate.classList.add(
+      "celtic"
+    );
+
+  }
+
+  else if(
+    sea==="English Channel"
+  ){
+
+    pirate.classList.add(
+      "channel"
+    );
+
+  }
+
+
+  pirate.classList.add(
+    "moving"
+  );
+
+
+  setTimeout(()=>{
+
+    pirate.classList.remove(
+      "moving"
+    );
+
+  },600);
+
+
+  document
+    .querySelectorAll(
+      ".seaZone"
+    )
+    .forEach(zone=>{
+
+      zone.classList.remove(
+        "available"
+      );
+
+    });
+
+
+  log(
+    "🏴‍☠️ Pirate moved to "+
+    sea+
+    "!"
+  );
+
+}
+
+
+/* =====================================================
+   FREE TRADE
+===================================================== */
+
+function toggleTrade(){
+
+  const box =
+    document.getElementById(
+      "tradeBox"
+    );
+
+
+  box.classList.toggle(
+    "show"
+  );
+
+}
+
+
+/* =====================================================
+   EXECUTE FREE TRADE
+===================================================== */
+
+function executeTrade(){
+
+  const give =
+    document.getElementById(
+      "giveResource"
+    ).value;
+
+
+  const get =
+    document.getElementById(
+      "getResource"
+    ).value;
+
+
+  const giveAmount =
+    parseInt(
+      document.getElementById(
+        "giveAmount"
+      ).value
+    );
+
+
+  const getAmount =
+    parseInt(
+      document.getElementById(
+        "getAmount"
+      ).value
+    );
+
 
   if(
-    !(await spendResources(cost))
+    give===get
   ){
-    return;
-  }
 
-  await giveResource(
-    playerId,
-    to,
-    1
-  );
-
-  logGame(
-    "🤝 "+me.name+
-    " 交易 4 "+
-    RESOURCE_NAMES[from]+
-    " → 1 "+
-    RESOURCE_NAMES[to]
-  );
-
-  await saveGame();
-
-  render();
-
-}
-
-
-/* =========================================================
- END TURN
-========================================================= */
-
-async function endTurn(){
-
-  if(!isMyTurn()){
-
-    alert(
-      "現在不是你的回合。"
+    log(
+      "❌ 不能用相同資源交換自己。"
     );
 
     return;
 
   }
 
-  if(!gameState.lastRoll ||
-     gameState.lastRoll.turn !==
-     gameState.currentTurn){
 
-    alert(
-      "請先擲骰子。"
+  if(
+    !Number.isInteger(
+      giveAmount
+    ) ||
+    giveAmount<=0
+  ){
+
+    log(
+      "❌ 請輸入有效的付出數量。"
     );
 
     return;
 
   }
 
-  currentMode =
-    "normal";
 
-  const count =
-    players.length;
+  if(
+    !Number.isInteger(
+      getAmount
+    ) ||
+    getAmount<=0
+  ){
 
-  if(count <= 0){
+    log(
+      "❌ 請輸入有效的交換數量。"
+    );
+
     return;
-  }
-
-  gameState.currentTurn =
-    (gameState.currentTurn+1)%count;
-
-  gameState.lastRoll =
-    null;
-
-  logGame(
-    "➡️ 回合交給 "+
-    players[
-      gameState.currentTurn
-    ].name
-  );
-
-  await saveGame();
-
-  render();
-
-}
-
-
-/* =========================================================
- WINNER
-========================================================= */
-
-async function checkWinner(){
-
-  await loadPlayers();
-
-  const winner =
-    players.find(
-      p => (p.vp || 0) >= 10
-    );
-
-  if(winner){
-
-    gameState.winner =
-      winner.player_id;
-
-    await saveGame();
-
-    showModal(
-      "🏆 GAME OVER",
-      "<h2>"+
-      COLOR_NAMES[winner.color]+
-      " "+escapeHTML(winner.name)+
-      " 勝利！</h2>"+
-      "<p>達到 10 VP。</p>"
-    );
-
-    logGame(
-      "🏆 "+winner.name+
-      " 達到 10 VP，成為英格蘭霸主！"
-    );
 
   }
 
-}
 
+  if(
+    resources[give] <
+    giveAmount
+  ){
 
-/* =========================================================
- NEXT TURN BUTTON
-========================================================= */
-
-function addEndTurnButton(){
-
-  const old =
-    document.getElementById(
-      "endTurnButton"
+    log(
+      "❌ 你沒有足夠的資源。"
     );
 
-  if(old){
     return;
-  }
-
-  const panel =
-    document.querySelector(
-      ".right .panel"
-    );
-
-  const button =
-    document.createElement("button");
-
-  button.id =
-    "endTurnButton";
-
-  button.className =
-    "roll";
-
-  button.style.marginTop =
-    "8px";
-
-  button.style.background =
-    "#7a5430";
-
-  button.textContent =
-    "➡️ End Turn";
-
-  button.onclick =
-    endTurn;
-
-  panel.appendChild(button);
-
-}
-
-
-/* =========================================================
- TILE INFO
-========================================================= */
-
-function showTileInfo(tile){
-
-  let text =
-    "<p><b>"+
-    escapeHTML(tile.name)+
-    "</b></p>";
-
-  text +=
-    "<p>"+
-    tile.icon+
-    " "+(
-      tile.resource
-      ?
-      RESOURCE_NAMES[tile.resource]
-      :
-      "Desert"
-    )+
-    "</p>";
-
-  if(tile.number){
-
-    text +=
-      "<p>🎲 生產數字："+
-      tile.number+
-      "</p>";
-
-  }else{
-
-    text +=
-      "<p>🏴‍☠️ Desert 不生產資源。</p>";
 
   }
 
-  const settlement =
-    gameState.settlements.find(
-      s => s.tileId === tile.id
-    );
 
-  const city =
-    gameState.cities.find(
-      c => c.tileId === tile.id
-    );
+  resources[give] -=
+    giveAmount;
 
-  if(settlement){
 
-    const p =
-      players.find(
-        x =>
-          x.player_id ===
-          settlement.playerId
-      );
+  resources[get] +=
+    getAmount;
 
-    text +=
-      "<p>🏠 聚落："+
 
-      escapeHTML(
-        p ? p.name : "Unknown"
-      )+
+  updateResources();
 
-      "</p>";
 
-  }
+  log(
 
-  if(city){
+    "🤝 Free Trade: "+
+    giveAmount+
+    " "+give+
+    " → "+
+    getAmount+
+    " "+get
 
-    const p =
-      players.find(
-        x =>
-          x.player_id ===
-          city.playerId
-      );
-
-    text +=
-      "<p>🏰 城市："+
-
-      escapeHTML(
-        p ? p.name : "Unknown"
-      )+
-
-      "</p>";
-
-  }
-
-  showModal(
-    tile.name,
-    text
   );
 
 }
 
 
-/* =========================================================
- LOG
-========================================================= */
+/* =====================================================
+   CHAT
+===================================================== */
 
-function logGame(message){
-
-  if(!gameState){
-    return;
-  }
-
-  gameState.logs =
-    gameState.logs || [];
-
-  gameState.logs.unshift(
-    new Date().toLocaleTimeString(
-      "zh-TW",
-      {
-        hour:"2-digit",
-        minute:"2-digit"
-      }
-    )+
-    " "+message
-  );
-
-  gameState.logs =
-    gameState.logs.slice(0,80);
-
-  renderLog();
-
-}
-
-
-/* =========================================================
- CHAT
-========================================================= */
-
-async function sendChat(){
-
-  if(!me){
-
-    alert(
-      "請先加入遊戲。"
-    );
-
-    return;
-
-  }
+function sendChat(){
 
   const input =
     document.getElementById(
       "message"
     );
 
+
   const message =
     input.value.trim();
 
+
   if(!message){
-    return;
-  }
-
-  gameState.chat =
-    gameState.chat || [];
-
-  gameState.chat.push({
-
-    playerId:playerId,
-
-    name:me.name,
-
-    color:me.color,
-
-    message:message,
-
-    time:
-      new Date().toISOString()
-
-  });
-
-  gameState.chat =
-    gameState.chat.slice(-60);
-
-  input.value = "";
-
-  await saveGame();
-
-  renderChat();
-
-}
-
-
-/* =========================================================
- RENDER
-========================================================= */
-
-function render(){
-
-  if(!gameState){
-    return;
-  }
-
-  renderBoard();
-
-  renderPlayers();
-
-  updateResources();
-
-  renderTurn();
-
-  renderLog();
-
-  renderChat();
-
-  renderDevelopment();
-
-  document.getElementById(
-    "robberInfo"
-  ).textContent =
-    "Robber 在 "+
-    gameState.tiles[
-      gameState.robberTile
-    ].name;
-
-  addEndTurnButton();
-
-}
-
-
-/* =========================================================
- BOARD RENDER
-========================================================= */
-
-function renderBoard(){
-
-  const board =
-    document.getElementById(
-      "board"
-    );
-
-  board.innerHTML = "";
-
-  gameState.tiles.forEach(
-    tile => {
-
-      const el =
-        document.createElement(
-          "button"
-        );
-
-      el.className =
-        "tile "+tile.type;
-
-      el.onclick =
-        () => tileClick(tile.id);
-
-      let html = "";
-
-      html +=
-        '<div class="tileInner">';
-
-      html +=
-        '<div class="tileIcon">'+
-        tile.icon+
-        '</div>';
-
-      html +=
-        '<div class="tileName">'+
-        escapeHTML(tile.name)+
-        '</div>';
-
-      if(tile.number){
-
-        const red =
-          tile.number === 6 ||
-          tile.number === 8;
-
-        html +=
-          '<div class="number '+
-          (red ? "redNumber" : "")+
-          '">'+
-          tile.number+
-          '</div>';
-
-      }
-
-      html +=
-        '</div>';
-
-      if(
-        gameState.robberTile ===
-        tile.id
-      ){
-
-        el.classList.add(
-          "robber"
-        );
-
-        html +=
-          '<div class="robberMark">🏴‍☠️</div>';
-
-      }
-
-      const settlement =
-        gameState.settlements.find(
-          s =>
-            s.tileId === tile.id
-        );
-
-      const city =
-        gameState.cities.find(
-          c =>
-            c.tileId === tile.id
-        );
-
-      if(settlement){
-
-        const p =
-          players.find(
-            x =>
-              x.player_id ===
-              settlement.playerId
-          );
-
-        html +=
-          '<div style="position:absolute;bottom:7px;font-size:18px">'+
-          (p ?
-            COLOR_NAMES[p.color] :
-            "🏠")+
-          '🏠</div>';
-
-      }
-
-      if(city){
-
-        const p =
-          players.find(
-            x =>
-              x.player_id ===
-              city.playerId
-          );
-
-        html +=
-          '<div style="position:absolute;bottom:7px;font-size:18px">'+
-          (p ?
-            COLOR_NAMES[p.color] :
-            "🏰")+
-          '🏰</div>';
-
-      }
-
-      el.innerHTML =
-        html;
-
-      board.appendChild(el);
-
-    }
-  );
-
-}
-
-
-/* =========================================================
- PLAYER RENDER
-========================================================= */
-
-function renderPlayers(){
-
-  const box =
-    document.getElementById(
-      "players"
-    );
-
-  document.getElementById(
-    "playerCount"
-  ).textContent =
-    players.length+
-    " / 4 Players";
-
-  if(!players.length){
-
-    box.innerHTML =
-      "等待玩家加入...";
 
     return;
 
   }
 
-  box.innerHTML =
-    players.map(
-      (p,index) => {
 
-        const current =
-          index ===
-          gameState.currentTurn;
-
-        const totalBuildings =
-          (p.roads||0)+
-          (p.settlements||0)+
-          (p.cities||0);
-
-        return `
-
-          <div class="
-            player
-            ${current ? "current":""}
-          ">
-
-            <span>
-
-              <span class="dot ${p.color}">
-              </span>
-
-              <span class="playerName">
-                ${escapeHTML(p.name)}
-              </span>
-
-              ${current ? " 👑":""}
-
-              <div class="stats">
-                🛣️ ${p.roads||0}
-                · 🏠 ${p.settlements||0}
-                · 🏰 ${p.cities||0}
-                · ⚔️ ${p.knights||0}
-              </div>
-
-            </span>
-
-            <b>
-              ${p.vp||0} VP
-            </b>
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
-
-}
-
-
-/* =========================================================
- RESOURCES RENDER
-========================================================= */
-
-function updateResources(){
-
-  if(!me){
-
-    for(const key in RESOURCE_ICONS){
-
-      const el =
-        document.getElementById(key);
-
-      if(el){
-        el.textContent = "0";
-      }
-
-    }
-
-    return;
-
-  }
-
-  const r =
-    me.resources || {};
-
-  for(const key in RESOURCE_ICONS){
-
-    const el =
-      document.getElementById(key);
-
-    if(el){
-
-      el.textContent =
-        r[key] || 0;
-
-    }
-
-  }
-
-}
-
-
-/* =========================================================
- TURN RENDER
-========================================================= */
-
-function renderTurn(){
-
-  const el =
-    document.getElementById(
-      "turn"
-    );
-
-  if(!players.length){
-
-    el.textContent =
-      "等待玩家...";
-
-    return;
-
-  }
-
-  const p =
-    players[
-      gameState.currentTurn
-    ];
-
-  if(!p){
-
-    el.textContent =
-      "等待玩家...";
-
-    return;
-
-  }
-
-  el.textContent =
-    "👑 "+
-    p.name+
-    "'s Turn";
-
-  document.getElementById(
-    "rollButton"
-  ).disabled =
-    !isMyTurn() ||
-    !!(
-      gameState.lastRoll &&
-      gameState.lastRoll.turn ===
-      gameState.currentTurn
-    );
-
-}
-
-
-/* =========================================================
- LOG RENDER
-========================================================= */
-
-function renderLog(){
-
-  const box =
-    document.getElementById(
-      "log"
-    );
-
-  box.innerHTML =
-    (gameState.logs || [])
-      .map(
-        x =>
-          escapeHTML(x)
-      )
-      .join("<br>");
-
-}
-
-
-/* =========================================================
- CHAT RENDER
-========================================================= */
-
-function renderChat(){
-
-  const box =
+  const chat =
     document.getElementById(
       "chat"
     );
 
-  box.innerHTML =
-    (gameState.chat || [])
-      .map(
-        c => {
 
-          const icon =
-            COLOR_NAMES[c.color] ||
-            "⚪";
+  chat.innerHTML +=
 
-          return (
-            icon+
-            " <b>"+
-            escapeHTML(c.name)+
-            ":</b> "+
-            escapeHTML(c.message)+
-            "<br>"
-          );
+    "🔴 Raven: "+
+    escapeHTML(message)+
+    "<br>";
 
-        }
-      )
-      .join("");
 
-  box.scrollTop =
-    box.scrollHeight;
+  input.value="";
+
+
+  chat.scrollTop =
+    chat.scrollHeight;
 
 }
 
 
-/* =========================================================
- DEVELOPMENT RENDER
-========================================================= */
-
-function renderDevelopment(){
-
-  if(!me){
-
-    document.getElementById(
-      "knight"
-    ).textContent="0";
-
-    document.getElementById(
-      "roadBuilding"
-    ).textContent="0";
-
-    document.getElementById(
-      "yearPlenty"
-    ).textContent="0";
-
-    document.getElementById(
-      "monopoly"
-    ).textContent="0";
-
-    document.getElementById(
-      "victoryCard"
-    ).textContent="0";
-
-    return;
-
-  }
-
-  const d =
-    me.development || {};
-
-  document.getElementById(
-    "knight"
-  ).textContent =
-    d.knight || 0;
-
-  document.getElementById(
-    "roadBuilding"
-  ).textContent =
-    d.roadBuilding || 0;
-
-  document.getElementById(
-    "yearPlenty"
-  ).textContent =
-    d.yearPlenty || 0;
-
-  document.getElementById(
-    "monopoly"
-  ).textContent =
-    d.monopoly || 0;
-
-  document.getElementById(
-    "victoryCard"
-  ).textContent =
-    d.victory || 0;
-
-}
-
-
-/* =========================================================
- MODAL
-========================================================= */
-
-function showModal(title,content){
-
-  document.getElementById(
-    "modalTitle"
-  ).textContent =
-    title;
-
-  document.getElementById(
-    "modalContent"
-  ).innerHTML =
-    content;
-
-  document.getElementById(
-    "modal"
-  ).classList.add("show");
-
-}
-
-
-function closeModal(){
-
-  document.getElementById(
-    "modal"
-  ).classList.remove("show");
-
-}
-
-
-/* =========================================================
- ESCAPE
-========================================================= */
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 function escapeHTML(text){
 
@@ -4190,19 +3485,140 @@ function escapeHTML(text){
       "div"
     );
 
+
   div.textContent =
-    String(text);
+    text;
+
 
   return div.innerHTML;
 
 }
 
 
-/* =========================================================
- START
-========================================================= */
+/* =====================================================
+   SUPABASE HELPER
+===================================================== */
 
-init();
+async function supabaseRequest(
+  table,
+  method="GET",
+  body=null
+){
+
+  if(
+    SUPABASE_KEY ===
+    "YOUR_SUPABASE_PUBLISHABLE_KEY"
+  ){
+
+    return null;
+
+  }
+
+
+  try{
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL+
+        "/rest/v1/"+
+        table,
+
+        {
+
+          method:method,
+
+          headers:{
+
+            "apikey":
+              SUPABASE_KEY,
+
+            "Authorization":
+              "Bearer "+
+              SUPABASE_KEY,
+
+            "Content-Type":
+              "application/json",
+
+            "Prefer":
+              "return=representation"
+
+          },
+
+          body:
+            body
+            ?
+            JSON.stringify(body)
+            :
+            null
+
+        }
+
+      );
+
+
+    if(
+      !response.ok
+    ){
+
+      console.warn(
+        "Supabase error",
+        await response.text()
+      );
+
+      return null;
+
+    }
+
+
+    return await response.json();
+
+  }
+
+  catch(error){
+
+    console.warn(
+      "Supabase connection error",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+updateResources();
+
+
+log(
+  "🎮 Game ready!"
+);
+
+
+log(
+  "🛣️ Build Road → choose a road."
+);
+
+
+log(
+  "🏘️ Build Village → choose a node."
+);
+
+
+log(
+  "🤝 Trade → choose any resources."
+);
+
+
+log(
+  "🏴‍☠️ Roll 7 → choose a sea for the Pirate."
+);
 
 </script>
 

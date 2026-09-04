@@ -1,1 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kingdoms of England</title>
 
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #e9e2d0;
+  color: #29251f;
+}
+
+header {
+  background: #26352b;
+  color: white;
+  padding: 16px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+header p {
+  margin: 5px 0 0;
+  opacity: .8;
+}
+
+.game {
+  max-width: 1200px;
+  margin: auto;
+  padding: 12px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: #fffaf0;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.players {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.player {
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: #ddd;
+  font-size: 14px;
+}
+
+.red { background: #d9a1a1; }
+.blue { background: #9dbbd4; }
+.green { background: #a9c8a0; }
+.yellow { background: #dfcf91; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 12px;
+}
+
+.board {
+  position: relative;
+  min-height: 620px;
+  background: #c7d9c2;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 4px solid #536451;
+}
+
+.board-title {
+  position: absolute;
+  top: 12px;
+  left: 15px;
+  background: rgba(255,255,255,.85);
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.tile {
+  position: absolute;
+  width: 115px;
+  height: 100px;
+  clip-path: polygon(
+    25% 3%, 75% 3%, 100% 50%,
+    75% 97%, 25% 97%, 0 50%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: transform .15s;
+}
+
+.tile:hover {
+  transform: scale(1.05);
+}
+
+.forest { background: #71936b; }
+.field { background: #d7bd68; }
+.wool { background: #b9c99a; }
+.stone { background: #a8a8a8; }
+.iron { background: #8b7564; }
+.desert { background: #d8b87a; }
+
+.tile span {
+  background: rgba(255,255,255,.85);
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.city {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: #fffaf0;
+  border: 3px solid #6d5238;
+  padding: 7px 9px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 3px 8px rgba(0,0,0,.2);
+  z-index: 5;
+}
+
+.panel {
+  background: #fffaf0;
+  border-radius: 16px;
+  padding: 15px;
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 19px;
+}
+
+.resources {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+.resource {
+  background: #eee6d5;
+  border-radius: 8px;
+  padding: 9px;
+  text-align: center;
+}
+
+.resource strong {
+  display: block;
+  font-size: 18px;
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 9px;
+  padding: 12px;
+  margin-top: 7px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #526c56;
+  color: white;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.dice {
+  text-align: center;
+  font-size: 32px;
+  padding: 8px;
+}
+
+.log {
+  height: 150px;
+  overflow-y: auto;
+  background: #eee6d5;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.chat {
+  margin-top: 12px;
+}
+
+.chat-messages {
+  height: 150px;
+  overflow-y: auto;
+  background: #eee6d5;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 13px;
+}
+
+.chat-input {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.chat-input input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.chat-input button {
+  width: 55px;
+  margin: 0;
+}
+
+.turn {
+  background: #d7bd68;
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .board {
+    min-height: 500px;
+  }
+
+  .tile {
+    width: 85px;
+    height: 75px;
+    font-size: 12px;
+  }
+
+  .city {
+    font-size: 9px;
+    padding: 5px;
+  }
+}
+
+@media (max-width: 500px) {
+  header h1 {
+    font-size: 21px;
+  }
+
+  .board {
+    min-height: 430px;
+  }
+
+  .tile {
+    width: 68px;
+    height: 60px;
+  }
+
+  .city {
+    font-size: 8px;
+    padding: 4px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🇬🇧 Kingdoms of England</h1>
+  <p>Build • Trade • Conquer</p>
+</header>
+
+<div class="game">
+
+  <div class="topbar">
+    <div>
+      <strong>Room:</strong> ENGLAND-001
+    </div>
+
+    <div class="players">
+      <div class="player red">🔴 Raven</div>
+      <div class="player blue">🔵 Lion</div>
+      <div class="player green">🟢 Stag</div>
+      <div class="player yellow">🟡 Falcon</div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <div class="board">
+
+      <div class="board-title">🗺️ England</div>
+
+      <!-- Resource tiles -->
+
+      <div class="tile forest"
+           style="left:8%; top:22%;"
+           onclick="tileInfo('Forest 🌲')">
+        <span>🌲<br>Timber<br><small>8</small></span>
+      </div>
+
+      <div class="tile field"
+           style="left:27%; top:12%;"
+           onclick="tileInfo('Farmland 🌾')">
+        <span>🌾<br>Grain<br><small>6</small></span>
+      </div>
+
+      <div class="tile wool"
+           style="left:47%; top:20%;"
+           onclick="tileInfo('Sheep Country 🐑')">
+        <span>🐑<br>Wool<br><small>9</small></span>
+      </div>
+
+      <div class="tile iron"
+           style="left:67%; top:12%;"
+           onclick="tileInfo('Iron Country ⛏️')">
+        <span>⛏️<br>Iron<br><small>5</small></span>
+      </div>
+
+      <div class="tile stone"
+           style="left:82%; top:29%;"
+           onclick="tileInfo('Stone Country 🪨')">
+        <span>🪨<br>Stone<br><small>10</small></span>
+      </div>
+
+      <div class="tile field"
+           style="left:31%; top:39%;"
+           onclick="tileInfo('Somerset Fields 🌾')">
+        <span>🌾<br>Grain<br><small>8</small></span>
+      </div>
+
+      <div class="tile forest"
+           style="left:51%; top:39%;"
+           onclick="tileInfo('Forest 🌲')">
+        <span>🌲<br>Timber<br><small>4</small></span>
+      </div>
+
+      <div class="tile wool"
+           style="left:70%; top:47%;"
+           onclick="tileInfo('Wool Country 🐑')">
+        <span>🐑<br>Wool<br><small>11</small></span>
+      </div>
+
+      <div class="tile stone"
+           style="left:17%; top:56%;"
+           onclick="tileInfo('Stone Country 🪨')">
+        <span>🪨<br>Stone<br><small>3</small></span>
+      </div>
+
+      <div class="tile iron"
+           style="left:39%; top:59%;"
+           onclick="tileInfo('Iron Country ⛏️')">
+        <span>⛏️<br>Iron<br><small>6</small></span>
+      </div>
+
+      <div class="tile field"
+           style="left:59%; top:65%;"
+           onclick="tileInfo('Southern Fields 🌾')">
+        <span>🌾<br>Grain<br><small>5</small></span>
+      </div>
+
+      <div class="tile desert"
+           style="left:76%; top:67%;"
+           onclick="tileInfo('Open Country')">
+        <span>🏞️<br>Open Land</span>
+      </div>
+
+
+      <!-- Cities -->
+
+      <div class="city"
+           style="left:18%; top:18%;">
+        Liverpool
+      </div>
+
+      <div class="city"
+           style="left:48%; top:13%;">
+        Manchester
+      </div>
+
+      <div class="city"
+           style="left:72%; top:23%;">
+        Sheffield
+      </div>
+
+      <div class="city"
+           style="left:86%; top:42%;">
+        York
+      </div>
+
+      <div class="city"
+           style="left:60%; top:48%;">
+        Birmingham
+      </div>
+
+      <div class="city"
+           style="left:40%; top:48%;">
+        Bristol
+      </div>
+
+      <div class="city"
+           style="left:49%; top:69%;">
+        Bridgwater
+      </div>
+
+      <div class="city"
+           style="left:70%; top:78%;">
+        London
+      </div>
+
+      <div class="city"
+           style="left:28%; top:75%;">
+        Exeter
+      </div>
+
+      <div class="city"
+           style="left:16%; top:48%;">
+        Nottingham
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <div class="panel">
+
+        <div class="turn">
+          👑 <strong>Raven's Turn</strong>
+        </div>
+
+        <h2>🎲 Dice</h2>
+
+        <div class="dice" id="dice">
+          ⚀ ⚀
+        </div>
+
+        <button onclick="rollDice()">
+          🎲 Roll Dice
+        </button>
+
+        <h2>📦 Resources</h2>
+
+        <div class="resources">
+          <div class="resource">
+            🌲
+            <strong id="wood">3</strong>
+            Timber
+          </div>
+
+          <div class="resource">
+            🌾
+            <strong id="grain">2</strong>
+            Grain
+          </div>
+
+          <div class="resource">
+            🐑
+            <strong id="wool">2</strong>
+            Wool
+          </div>
+
+          <div class="resource">
+            🪨
+            <strong id="stone">1</strong>
+            Stone
+          </div>
+
+          <div class="resource">
+            ⛏️
+            <strong id="iron">2</strong>
+            Iron
+          </div>
+
+          <div class="resource">
+            🪙
+            <strong id="gold">0</strong>
+            Gold
+          </div>
+        </div>
+
+        <h2>🏗️ Build</h2>
+
+        <button onclick="buildRoad()">
+          🛣️ Road — 1 Timber + 1 Stone
+        </button>
+
+        <button onclick="buildVillage()">
+          🏘️ Village — 1 Timber + 1 Stone + 1 Grain + 1 Wool
+        </button>
+
+        <button onclick="buildTown()">
+          🏰 Town — 2 Grain + 3 Iron
+        </button>
+
+        <button onclick="trade()">
+          🤝 Trade
+        </button>
+
+        <div class="log" id="log">
+          <div>🏝️ Welcome to Kingdoms of England!</div>
+        </div>
+
+      </div>
+
+
+      <div class="panel chat">
+
+        <h2>💬 Chat</h2>
+
+        <div class="chat-messages" id="chat">
+          <div>🔴 Raven: Welcome!</div>
+          <div>🔵 Lion: Good luck!</div>
+        </div>
+
+        <div class="chat-input">
+          <input
+            id="message"
+            placeholder="Say something..."
+            onkeydown="if(event.key==='Enter') sendChat()"
+          >
+
+          <button onclick="sendChat()">
+            ➤
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let resources = {
+  wood: 3,
+  grain: 2,
+  wool: 2,
+  stone: 1,
+  iron: 2,
+  gold: 0
+};
+
+let victoryPoints = 0;
+
+function updateResources() {
+
+  document.getElementById("wood").textContent = resources.wood;
+  document.getElementById("grain").textContent = resources.grain;
+  document.getElementById("wool").textContent = resources.wool;
+  document.getElementById("stone").textContent = resources.stone;
+  document.getElementById("iron").textContent = resources.iron;
+  document.getElementById("gold").textContent = resources.gold;
+
+}
+
+function addLog(message) {
+
+  const log = document.getElementById("log");
+
+  const item = document.createElement("div");
+
+  item.textContent = message;
+
+  log.prepend(item);
+
+}
+
+function rollDice() {
+
+  const a = Math.floor(Math.random() * 6) + 1;
+  const b = Math.floor(Math.random() * 6) + 1;
+
+  const total = a + b;
+
+  document.getElementById("dice").textContent =
+    "🎲 " + a + " + " + b + " = " + total;
+
+  addLog("🎲 Raven rolled " + total);
+
+  if (total === 8) {
+    resources.wood++;
+    addLog("🌲 Raven received 1 Timber!");
+  }
+
+  if (total === 6) {
+    resources.grain++;
+    addLog("🌾 Raven received 1 Grain!");
+  }
+
+  if (total === 9) {
+    resources.wool++;
+    addLog("🐑 Raven received 1 Wool!");
+  }
+
+  if (total === 5) {
+    resources.iron++;
+    addLog("⛏️ Raven received 1 Iron!");
+  }
+
+  if (total === 10) {
+    resources.stone++;
+    addLog("🪨 Raven received 1 Stone!");
+  }
+
+  updateResources();
+
+}
+
+function buildRoad() {
+
+  if (resources.wood >= 1 && resources.stone >= 1) {
+
+    resources.wood--;
+    resources.stone--;
+
+    victoryPoints++;
+
+    addLog("🛣️ Raven built a Road! +1 VP");
+
+    updateResources();
+
+  } else {
+
+    addLog("❌ Not enough resources for a Road.");
+
+  }
+
+}
+
+function buildVillage() {
+
+  if (
+    resources.wood >= 1 &&
+    resources.stone >= 1 &&
+    resources.grain >= 1 &&
+    resources.wool >= 1
+  ) {
+
+    resources.wood--;
+    resources.stone--;
+    resources.grain--;
+    resources.wool--;
+
+    victoryPoints++;
+
+    addLog("🏘️ Raven built a Village! +1 VP");
+
+    updateResources();
+
+  } else {
+
+    addLog("❌ Not enough resources for a Village.");
+
+  }
+
+}
+
+function buildTown() {
+
+  if (
+    resources.grain >= 2 &&
+    resources.iron >= 3
+  ) {
+
+    resources.grain -= 2;
+    resources.iron -= 3;
+
+    victoryPoints += 2;
+
+    addLog("🏰 Raven upgraded to a Town! +2 VP");
+
+    updateResources();
+
+  } else {
+
+    addLog("❌ Not enough resources for a Town.");
+
+  }
+
+}
+
+function trade() {
+
+  if (resources.wood >= 2) {
+
+    resources.wood -= 2;
+    resources.grain++;
+
+    addLog("🤝 Trade completed: 2 Timber → 1 Grain");
+
+    updateResources();
+
+  } else {
+
+    addLog("❌ You need 2 Timber to trade.");
+
+  }
+
+}
+
+function tileInfo(name) {
+
+  addLog("🗺️ Selected: " + name);
+
+}
+
+function sendChat() {
+
+  const input = document.getElementById("message");
+
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  const chat = document.getElementById("chat");
+
+  const message = document.createElement("div");
+
+  message.textContent = "🔴 Raven: " + text;
+
+  chat.appendChild(message);
+
+  chat.scrollTop = chat.scrollHeight;
+
+  input.value = "";
+
+}
+
+updateResources();
+
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +9,7 @@
                maximum-scale=1,
                user-scalable=no">
 
-<title>MONOPOLY — Classic Board</title>
+<title>UK MONOPOLY — British Cities</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -28,6 +28,7 @@ html,
 body{
   margin:0;
   min-height:100%;
+  width:100%;
 }
 
 body{
@@ -45,6 +46,8 @@ body{
     Georgia,
     "Times New Roman",
     serif;
+
+  overflow-x:hidden;
 }
 
 button,
@@ -71,7 +74,11 @@ button:disabled{
 ========================================================= */
 
 .header{
-  padding:20px;
+  padding:
+    clamp(14px,3vw,25px)
+    12px
+    18px;
+
   text-align:center;
 
   border-bottom:
@@ -91,7 +98,8 @@ button:disabled{
 .logo{
   display:inline-block;
 
-  padding:8px 22px;
+  padding:
+    7px clamp(12px,3vw,25px);
 
   border:
     3px solid #d7b85b;
@@ -105,16 +113,13 @@ button:disabled{
 
   color:#17120a;
 
-  font-family:
-    Georgia,
-    serif;
-
   font-size:
-    clamp(32px,5vw,58px);
+    clamp(30px,7vw,58px);
 
   font-weight:900;
 
-  letter-spacing:3px;
+  letter-spacing:
+    clamp(1px,1vw,4px);
 
   box-shadow:
     inset 0 0 0 3px #6d4c16,
@@ -127,19 +132,20 @@ button:disabled{
   color:#eadfbf;
 
   font-size:
-    clamp(14px,2vw,20px);
+    clamp(10px,2.3vw,20px);
 
-  letter-spacing:2px;
+  letter-spacing:
+    clamp(1px,1vw,3px);
 }
 
 .connection{
   display:inline-flex;
   align-items:center;
-  gap:9px;
+  gap:8px;
 
   margin-top:12px;
 
-  padding:7px 15px;
+  padding:7px 14px;
 
   border-radius:999px;
 
@@ -147,13 +153,13 @@ button:disabled{
 
   font-family:Arial,sans-serif;
 
-  font-size:13px;
+  font-size:12px;
   font-weight:bold;
 }
 
 .dot{
-  width:12px;
-  height:12px;
+  width:11px;
+  height:11px;
 
   border-radius:50%;
 
@@ -181,13 +187,13 @@ button:disabled{
 
 .roomBar{
   width:
-    min(1700px,calc(100% - 30px));
+    min(1700px,calc(100% - 24px));
 
-  margin:16px auto;
+  margin:14px auto;
 
   display:flex;
 
-  gap:12px;
+  gap:10px;
 
   align-items:center;
 }
@@ -195,7 +201,9 @@ button:disabled{
 .roomInfo{
   flex:1;
 
-  padding:13px 18px;
+  min-width:0;
+
+  padding:12px 15px;
 
   border:
     1px solid #96783c;
@@ -206,6 +214,8 @@ button:disabled{
     rgba(10,29,23,.92);
 
   font-family:Arial,sans-serif;
+
+  font-size:14px;
 }
 
 .roomInfo b{
@@ -214,13 +224,13 @@ button:disabled{
 
 .joinBox{
   display:flex;
-  gap:8px;
+  gap:7px;
 }
 
 .joinBox input{
-  width:220px;
+  width:210px;
 
-  padding:12px 14px;
+  padding:11px 13px;
 
   border:
     2px solid #9a7b3c;
@@ -240,7 +250,7 @@ button:disabled{
 
   border-radius:9px;
 
-  padding:11px 17px;
+  padding:10px 15px;
 
   color:#fff4d0;
 
@@ -272,24 +282,24 @@ button:disabled{
 
 .layout{
   width:
-    min(1700px,calc(100% - 30px));
+    min(1700px,calc(100% - 24px));
 
   margin:auto;
 
   display:grid;
 
   grid-template-columns:
-    270px
-    minmax(500px,1fr)
-    300px;
+    260px
+    minmax(0,1fr)
+    290px;
 
-  gap:18px;
+  gap:15px;
 
   padding-bottom:30px;
 }
 
 .panel{
-  padding:15px;
+  padding:14px;
 
   border:
     1px solid #8d7139;
@@ -310,31 +320,31 @@ button:disabled{
 
 .panel h2{
   margin:
-    0 0 13px;
+    0 0 12px;
 
-  padding-bottom:9px;
+  padding-bottom:8px;
 
   border-bottom:
     1px solid #67542e;
 
   color:#e6c76c;
 
-  font-size:20px;
+  font-size:19px;
 }
 
 /* =========================================================
-   PLAYER PANEL
+   PLAYERS
 ========================================================= */
 
 .player{
   display:flex;
   align-items:center;
 
-  gap:10px;
+  gap:9px;
 
-  margin:8px 0;
+  margin:7px 0;
 
-  padding:9px;
+  padding:8px;
 
   border:
     1px solid #40534a;
@@ -358,8 +368,10 @@ button:disabled{
 }
 
 .avatar{
-  width:42px;
-  height:42px;
+  width:40px;
+  height:40px;
+
+  flex:none;
 
   display:grid;
   place-items:center;
@@ -375,7 +387,7 @@ button:disabled{
 
   color:#17130c;
 
-  font-size:24px;
+  font-size:22px;
 
   box-shadow:
     inset -4px -5px 8px rgba(0,0,0,.5),
@@ -388,7 +400,7 @@ button:disabled{
 }
 
 .playerMoney{
-  margin-top:4px;
+  margin-top:3px;
 
   color:#f0d05d;
 
@@ -400,30 +412,41 @@ button:disabled{
 
   color:#71df8d;
 
-  font-size:10px;
+  font-size:9px;
 }
 
 /* =========================================================
-   BOARD WRAPPER
+   BOARD PANEL
 ========================================================= */
 
 .boardPanel{
-  padding:13px;
+  padding:10px;
 }
 
 .boardWrap{
   width:100%;
 
-  overflow:auto;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 
-  padding:5px;
+  overflow:hidden;
+
+  padding:2px;
 }
+
+/*
+  IMPORTANT:
+  不再使用 min-width:650px
+  讓棋盤可以真正縮放到手機螢幕。
+*/
 
 .board{
   position:relative;
 
-  width:min(900px,90vw);
-  min-width:650px;
+  width:min(900px,100%);
+
+  max-width:900px;
 
   aspect-ratio:1 / 1;
 
@@ -438,21 +461,23 @@ button:disabled{
     1.25fr repeat(9,1fr) 1.25fr;
 
   border:
-    12px solid #4b2d17;
+    clamp(6px,1.2vw,12px)
+    solid #4b2d17;
 
   border-radius:7px;
 
-  background:
-    #0e3428;
+  background:#0e3428;
 
   box-shadow:
     0 30px 60px rgba(0,0,0,.75),
     0 8px 0 #241308,
     inset 0 0 0 4px #b17b39;
+
+  overflow:hidden;
 }
 
 /* =========================================================
-   BOARD CENTER
+   CENTER
 ========================================================= */
 
 .center{
@@ -472,7 +497,8 @@ button:disabled{
     );
 
   border:
-    4px solid #80622e;
+    clamp(2px,.5vw,4px)
+    solid #80622e;
 
   box-shadow:
     inset 0 0 70px rgba(0,0,0,.7);
@@ -516,7 +542,9 @@ button:disabled{
 
   width:82%;
 
-  padding:14px 8px;
+  padding:
+    clamp(7px,1.5vw,14px)
+    5px;
 
   text-align:center;
 
@@ -525,18 +553,18 @@ button:disabled{
   background:#fff4c7;
 
   border:
-    5px solid #16110b;
+    clamp(2px,.5vw,5px)
+    solid #16110b;
 
-  font-family:
-    Arial,
-    sans-serif;
+  font-family:Arial,sans-serif;
 
   font-size:
-    clamp(25px,5vw,55px);
+    clamp(18px,5vw,55px);
 
   font-weight:900;
 
-  letter-spacing:3px;
+  letter-spacing:
+    clamp(1px,1vw,4px);
 
   text-shadow:
     2px 2px 0 #d5a72e;
@@ -550,7 +578,7 @@ button:disabled{
 .centerTag{
   position:absolute;
 
-  top:42%;
+  top:43%;
 
   width:100%;
 
@@ -559,9 +587,10 @@ button:disabled{
   color:#f0d47a;
 
   font-size:
-    clamp(12px,2vw,20px);
+    clamp(7px,1.7vw,19px);
 
-  letter-spacing:4px;
+  letter-spacing:
+    clamp(1px,1vw,4px);
 
   z-index:2;
 }
@@ -575,7 +604,7 @@ button:disabled{
   transform:translateX(-50%);
 
   font-size:
-    clamp(65px,11vw,130px);
+    clamp(40px,10vw,130px);
 
   filter:
     drop-shadow(0 12px 10px rgba(0,0,0,.55));
@@ -586,7 +615,7 @@ button:disabled{
 .centerDice{
   position:absolute;
 
-  bottom:10%;
+  bottom:9%;
 
   left:50%;
 
@@ -594,7 +623,8 @@ button:disabled{
 
   display:flex;
 
-  gap:12px;
+  gap:
+    clamp(4px,1vw,12px);
 
   z-index:3;
 }
@@ -620,7 +650,7 @@ button:disabled{
   text-align:center;
 
   padding:
-    4px 2px;
+    3px 2px;
 
   background:
     linear-gradient(
@@ -652,26 +682,30 @@ button:disabled{
 .tileName{
   max-width:95%;
 
-  margin-top:8px;
-
-  font-size:
-    clamp(7px,1.05vw,13px);
-
-  font-weight:900;
-
-  line-height:1.05;
-}
-
-.tilePrice{
   margin-top:4px;
 
   font-size:
-    clamp(7px,1vw,11px);
+    clamp(5px,1.05vw,13px);
+
+  font-weight:900;
+
+  line-height:1.03;
+
+  word-break:normal;
+}
+
+.tilePrice{
+  margin-top:3px;
+
+  font-size:
+    clamp(5px, .9vw, 11px);
 }
 
 .tileIcon{
   font-size:
-    clamp(15px,2vw,25px);
+    clamp(10px,2vw,24px);
+
+  line-height:1;
 }
 
 .colorBar{
@@ -684,22 +718,8 @@ button:disabled{
   height:18%;
 }
 
-.corner{
-  background:
-    linear-gradient(
-      145deg,
-      #fff0c7,
-      #d7c39c
-    );
-}
-
-.corner .tileIcon{
-  font-size:
-    clamp(25px,3vw,40px);
-}
-
 /* =========================================================
-   PROPERTY COLORS
+   PROPERTY GROUPS
 ========================================================= */
 
 .brown .colorBar{
@@ -734,28 +754,37 @@ button:disabled{
   background:#3b55a4;
 }
 
+.corner{
+  background:
+    linear-gradient(
+      145deg,
+      #fff0c7,
+      #d7c39c
+    );
+}
+
 /* =========================================================
    OWNERSHIP
 ========================================================= */
 
 .owner1{
   box-shadow:
-    inset 0 -6px 0 #d64039;
+    inset 0 -5px 0 #d64039;
 }
 
 .owner2{
   box-shadow:
-    inset 0 -6px 0 #3d83d2;
+    inset 0 -5px 0 #3d83d2;
 }
 
 .owner3{
   box-shadow:
-    inset 0 -6px 0 #4ba95b;
+    inset 0 -5px 0 #4ba95b;
 }
 
 .owner4{
   box-shadow:
-    inset 0 -6px 0 #dfb937;
+    inset 0 -5px 0 #dfb937;
 }
 
 /* =========================================================
@@ -776,8 +805,11 @@ button:disabled{
 }
 
 .house{
-  width:7px;
-  height:7px;
+  width:
+    clamp(3px,.7vw,7px);
+
+  height:
+    clamp(3px,.7vw,7px);
 
   background:#347d3b;
 
@@ -786,8 +818,11 @@ button:disabled{
 }
 
 .hotel{
-  width:13px;
-  height:8px;
+  width:
+    clamp(7px,1.2vw,13px);
+
+  height:
+    clamp(4px,.8vw,8px);
 
   background:#bd3933;
 
@@ -802,8 +837,11 @@ button:disabled{
 .piece{
   position:absolute;
 
-  width:29px;
-  height:29px;
+  width:
+    clamp(16px,3vw,29px);
+
+  height:
+    clamp(16px,3vw,29px);
 
   display:grid;
   place-items:center;
@@ -815,7 +853,8 @@ button:disabled{
 
   color:#fff;
 
-  font-size:16px;
+  font-size:
+    clamp(9px,1.6vw,16px);
 
   text-shadow:
     0 2px 3px #000;
@@ -847,26 +886,6 @@ button:disabled{
   color:#17120b;
 }
 
-.piece::after{
-  content:"";
-
-  position:absolute;
-
-  left:-3px;
-  right:-3px;
-
-  bottom:-5px;
-
-  height:7px;
-
-  border-radius:50%;
-
-  background:
-    rgba(0,0,0,.3);
-
-  z-index:-1;
-}
-
 /* =========================================================
    DICE
 ========================================================= */
@@ -876,14 +895,17 @@ button:disabled{
 
   justify-content:center;
 
-  gap:12px;
+  gap:10px;
 
-  margin:12px 0;
+  margin:10px 0;
 }
 
 .die{
-  width:54px;
-  height:54px;
+  width:
+    clamp(42px,6vw,54px);
+
+  height:
+    clamp(42px,6vw,54px);
 
   display:grid;
   place-items:center;
@@ -901,7 +923,8 @@ button:disabled{
 
   font-family:Arial,sans-serif;
 
-  font-size:29px;
+  font-size:
+    clamp(21px,3vw,29px);
 
   font-weight:bold;
 
@@ -939,13 +962,13 @@ button:disabled{
   grid-template-columns:
     repeat(5,1fr);
 
-  gap:8px;
+  gap:7px;
 
-  margin-top:12px;
+  margin-top:10px;
 }
 
 .action{
-  min-height:62px;
+  min-height:58px;
 
   border:
     1px solid #8e753d;
@@ -990,7 +1013,7 @@ button:disabled{
 }
 
 /* =========================================================
-   RIGHT PROPERTY CARD
+   PROPERTY CARD
 ========================================================= */
 
 .propertyCard{
@@ -1005,12 +1028,12 @@ button:disabled{
 }
 
 .propertyImage{
-  height:115px;
+  height:100px;
 
   display:grid;
   place-items:center;
 
-  font-size:68px;
+  font-size:60px;
 
   background:
     radial-gradient(
@@ -1021,7 +1044,7 @@ button:disabled{
 }
 
 .propertyInfo{
-  padding:13px;
+  padding:12px;
 }
 
 .propertyInfo h3{
@@ -1029,6 +1052,8 @@ button:disabled{
     0 0 5px;
 
   color:#e7c96d;
+
+  font-size:18px;
 }
 
 .stat{
@@ -1036,7 +1061,7 @@ button:disabled{
 
   justify-content:space-between;
 
-  padding:7px 0;
+  padding:6px 0;
 
   border-bottom:
     1px solid #243831;
@@ -1045,7 +1070,7 @@ button:disabled{
 }
 
 .ownerText{
-  margin-top:12px;
+  margin-top:10px;
 
   text-align:center;
 
@@ -1057,7 +1082,7 @@ button:disabled{
 ========================================================= */
 
 .log{
-  max-height:300px;
+  max-height:270px;
 
   overflow:auto;
 
@@ -1111,7 +1136,7 @@ button:disabled{
   align-items:center;
   justify-content:center;
 
-  padding:20px;
+  padding:15px;
 
   background:
     rgba(0,0,0,.78);
@@ -1132,7 +1157,7 @@ button:disabled{
 
   overflow:auto;
 
-  padding:22px;
+  padding:20px;
 
   border:
     2px solid #a1813e;
@@ -1200,7 +1225,7 @@ button:disabled{
 }
 
 /* =========================================================
-   RESPONSIVE
+   TABLET
 ========================================================= */
 
 @media(max-width:1150px){
@@ -1208,7 +1233,7 @@ button:disabled{
   .layout{
     grid-template-columns:
       220px
-      minmax(450px,1fr);
+      minmax(0,1fr);
   }
 
   .rightPanel{
@@ -1219,9 +1244,13 @@ button:disabled{
     grid-template-columns:
       1fr 1fr 1fr;
 
-    gap:15px;
+    gap:12px;
   }
 }
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media(max-width:800px){
 
@@ -1243,15 +1272,32 @@ button:disabled{
     display:block;
 
     width:
-      calc(100% - 12px);
+      calc(100% - 10px);
   }
 
   .leftPanel{
-    margin-bottom:12px;
+    margin-bottom:10px;
   }
 
+  .boardPanel{
+    padding:5px;
+  }
+
+  .boardWrap{
+    overflow:hidden;
+
+    width:100%;
+  }
+
+  /*
+    關鍵：
+    棋盤直接使用父容器寬度，
+    不再產生水平裁切。
+  */
+
   .board{
-    min-width:650px;
+    width:100%;
+    max-width:none;
   }
 
   .actions{
@@ -1259,42 +1305,97 @@ button:disabled{
       repeat(2,1fr);
   }
 
+  .action:last-child{
+    grid-column:1 / -1;
+  }
+
   .rightPanel{
     display:block;
   }
 
   .rightPanel .panel{
-    margin-top:12px;
+    margin-top:10px;
   }
 }
 
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
 @media(max-width:500px){
 
-  .logo{
-    font-size:30px;
+  .header{
+    padding-top:12px;
+  }
 
-    padding:
-      7px 12px;
+  .logo{
+    font-size:29px;
   }
 
   .subtitle{
+    font-size:9px;
+  }
+
+  .connection{
+    font-size:10px;
+    padding:6px 11px;
+  }
+
+  .roomInfo{
     font-size:12px;
+    padding:10px;
   }
 
   .board{
-    min-width:620px;
+    border-width:6px;
   }
 
   .tileName{
-    font-size:7px;
+    font-size:5px;
   }
 
   .tilePrice{
-    font-size:7px;
+    font-size:5px;
+  }
+
+  .tileIcon{
+    font-size:10px;
   }
 
   .tradeGrid{
     grid-template-columns:1fr;
+  }
+
+  .actions{
+    gap:6px;
+  }
+
+  .action{
+    min-height:52px;
+    font-size:12px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONE
+========================================================= */
+
+@media(max-width:380px){
+
+  .tileName{
+    font-size:4.5px;
+  }
+
+  .tilePrice{
+    font-size:4.5px;
+  }
+
+  .tileIcon{
+    font-size:9px;
+  }
+
+  .centerTag{
+    font-size:6px;
   }
 }
 
@@ -1316,7 +1417,7 @@ button:disabled{
   </div>
 
   <div class="subtitle">
-    CLASSIC PROPERTY TRADING BOARD GAME
+    UK CITIES • CLASSIC PROPERTY TRADING BOARD GAME
   </div>
 
   <div
@@ -1343,13 +1444,14 @@ button:disabled{
   <div class="roomInfo">
 
     ROOM:
-    <b>MONOPOLY-001</b>
+    <b>UK-MONOPOLY-001</b>
 
     ·
 
     <span id="playerCount">
       0
     </span>
+
     / 4 Players
 
     ·
@@ -1389,7 +1491,7 @@ button:disabled{
 
 
 <!-- =======================================================
-     LEFT
+     LEFT PANEL
 ======================================================= -->
 
 <section class="leftPanel">
@@ -1419,20 +1521,20 @@ button:disabled{
   <div class="panel">
 
     <h2>
-      📜 MONOPOLY RULES
+      🇬🇧 UK MONOPOLY RULES
     </h2>
 
     <div
       style="
-        line-height:1.8;
+        line-height:1.75;
         font-family:Arial,sans-serif;
-        font-size:13px">
+        font-size:12px">
 
       <b>GO：</b>
       經過 GO 獲得 £200<br>
 
       <b>Property：</b>
-      購買未擁有的地產<br>
+      購買英國城市地產<br>
 
       <b>Rent：</b>
       其他玩家停留時支付租金<br>
@@ -1441,10 +1543,10 @@ button:disabled{
       建造房屋提高租金<br>
 
       <b>Hotel：</b>
-      4 間房屋後可升級旅館<br>
+      4 間房屋後升級旅館<br>
 
-      <b>Railroad：</b>
-      火車站提供固定租金<br>
+      <b>Railway：</b>
+      鐵路站提供固定租金<br>
 
       <b>Chance：</b>
       隨機事件<br>
@@ -1528,11 +1630,11 @@ button:disabled{
     </div>
 
     <div class="centerTag">
-      BUY • SELL • TRADE • BUILD
+      UK CITIES • BUY • SELL • TRADE • BUILD
     </div>
 
     <div class="centerMoney">
-      💰
+      💷
     </div>
 
     <div class="centerDice">
@@ -1615,7 +1717,7 @@ button:disabled{
 
 
 <!-- =======================================================
-     RIGHT
+     RIGHT PANEL
 ======================================================= -->
 
 <section class="rightPanel">
@@ -1626,7 +1728,7 @@ button:disabled{
   <div class="panel">
 
     <h2>
-      🏙️ PROPERTY
+      🏙️ LOCATION
     </h2>
 
     <div class="propertyCard">
@@ -1642,13 +1744,15 @@ button:disabled{
       <div class="propertyInfo">
 
         <h3 id="propertyName">
-          Mediterranean Avenue
+          Bridgwater
         </h3>
 
         <div
           id="propertyType"
           style="color:#aaa">
-          Property
+
+          UK Property
+
         </div>
 
         <div class="stat">
@@ -1711,7 +1815,7 @@ button:disabled{
           class="goldBtn"
           style="
             width:100%;
-            margin-top:12px"
+            margin-top:10px"
           onclick="buyCurrentProperty()">
 
           🏠 BUY PROPERTY
@@ -1738,8 +1842,10 @@ button:disabled{
       id="gameLog">
 
       <div class="logLine">
+
         <b>System</b>：
         等待玩家加入。
+
       </div>
 
     </div>
@@ -1864,7 +1970,7 @@ button:disabled{
       class="goldBtn"
       style="
         width:100%;
-        margin-top:16px"
+        margin-top:15px"
       onclick="sendTrade()">
 
       🤝 完成交易
@@ -1900,12 +2006,12 @@ button:disabled{
 
     <div
       style="
-        padding:30px;
+        padding:25px;
         text-align:center;
         border:2px solid #a98243;
         border-radius:12px;
         background:#172b25;
-        font-size:20px">
+        font-size:18px">
 
       <div
         style="
@@ -1982,8 +2088,11 @@ const pieceSymbols = [
 
 
 /* =========================================================
-   MONOPOLY BOARD
+   UK MONOPOLY BOARD
    40 SPACES
+
+   0 = GO
+   clockwise around board
 ========================================================= */
 
 const boardSpaces = [
@@ -1995,7 +2104,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Mediterranean Avenue",
+    name:"Bridgwater",
     type:"property",
     group:"brown",
     price:60,
@@ -2011,13 +2120,13 @@ const boardSpaces = [
   },
 
   {
-    name:"Baltic Avenue",
+    name:"Bath",
     type:"property",
     group:"brown",
     price:60,
     rent:[4,20,60,180,320,450],
     houseCost:50,
-    icon:"🏠"
+    icon:"🏛️"
   },
 
   {
@@ -2028,15 +2137,15 @@ const boardSpaces = [
   },
 
   {
-    name:"Reading Railroad",
+    name:"London Underground",
     type:"railroad",
     price:200,
     rent:[25,50,100,200],
-    icon:"🚂"
+    icon:"🚇"
   },
 
   {
-    name:"Oriental Avenue",
+    name:"Bristol",
     type:"property",
     group:"lightblue",
     price:100,
@@ -2052,23 +2161,23 @@ const boardSpaces = [
   },
 
   {
-    name:"Vermont Avenue",
+    name:"Oxford",
     type:"property",
     group:"lightblue",
     price:100,
     rent:[6,30,90,270,400,550],
     houseCost:50,
-    icon:"🏠"
+    icon:"🎓"
   },
 
   {
-    name:"Connecticut Avenue",
+    name:"Cambridge",
     type:"property",
     group:"lightblue",
     price:120,
     rent:[8,40,100,300,450,600],
     houseCost:50,
-    icon:"🏠"
+    icon:"🎓"
   },
 
   {
@@ -2078,7 +2187,7 @@ const boardSpaces = [
   },
 
   {
-    name:"St. Charles Place",
+    name:"Birmingham",
     type:"property",
     group:"pink",
     price:140,
@@ -2088,14 +2197,14 @@ const boardSpaces = [
   },
 
   {
-    name:"Electric Company",
+    name:"Scottish Power",
     type:"utility",
     price:150,
     icon:"⚡"
   },
 
   {
-    name:"States Avenue",
+    name:"Coventry",
     type:"property",
     group:"pink",
     price:140,
@@ -2105,7 +2214,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Virginia Avenue",
+    name:"Leicester",
     type:"property",
     group:"pink",
     price:160,
@@ -2115,15 +2224,15 @@ const boardSpaces = [
   },
 
   {
-    name:"Pennsylvania Railroad",
+    name:"Edinburgh Waverley",
     type:"railroad",
     price:200,
     rent:[25,50,100,200],
-    icon:"🚂"
+    icon:"🚆"
   },
 
   {
-    name:"St. James Place",
+    name:"Nottingham",
     type:"property",
     group:"orange",
     price:180,
@@ -2139,7 +2248,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Tennessee Avenue",
+    name:"Sheffield",
     type:"property",
     group:"orange",
     price:180,
@@ -2149,7 +2258,7 @@ const boardSpaces = [
   },
 
   {
-    name:"New York Avenue",
+    name:"Leeds",
     type:"property",
     group:"orange",
     price:200,
@@ -2165,7 +2274,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Kentucky Avenue",
+    name:"Manchester",
     type:"property",
     group:"red",
     price:220,
@@ -2181,7 +2290,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Indiana Avenue",
+    name:"Liverpool",
     type:"property",
     group:"red",
     price:220,
@@ -2191,7 +2300,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Illinois Avenue",
+    name:"Newcastle",
     type:"property",
     group:"red",
     price:240,
@@ -2201,15 +2310,15 @@ const boardSpaces = [
   },
 
   {
-    name:"B. & O. Railroad",
+    name:"York Station",
     type:"railroad",
     price:200,
     rent:[25,50,100,200],
-    icon:"🚂"
+    icon:"🚆"
   },
 
   {
-    name:"Atlantic Avenue",
+    name:"Cardiff",
     type:"property",
     group:"yellow",
     price:260,
@@ -2219,7 +2328,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Ventnor Avenue",
+    name:"Swansea",
     type:"property",
     group:"yellow",
     price:260,
@@ -2229,20 +2338,20 @@ const boardSpaces = [
   },
 
   {
-    name:"Water Works",
+    name:"Welsh Water",
     type:"utility",
     price:150,
     icon:"💧"
   },
 
   {
-    name:"Marvin Gardens",
+    name:"Brighton",
     type:"property",
     group:"yellow",
     price:280,
     rent:[24,120,360,850,1025,1200],
     houseCost:150,
-    icon:"🏠"
+    icon:"🏖️"
   },
 
   {
@@ -2252,7 +2361,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Pacific Avenue",
+    name:"Glasgow",
     type:"property",
     group:"green",
     price:300,
@@ -2262,7 +2371,7 @@ const boardSpaces = [
   },
 
   {
-    name:"North Carolina Avenue",
+    name:"Aberdeen",
     type:"property",
     group:"green",
     price:300,
@@ -2278,7 +2387,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Pennsylvania Avenue",
+    name:"Belfast",
     type:"property",
     group:"green",
     price:320,
@@ -2288,11 +2397,11 @@ const boardSpaces = [
   },
 
   {
-    name:"Short Line",
+    name:"Belfast Central",
     type:"railroad",
     price:200,
     rent:[25,50,100,200],
-    icon:"🚂"
+    icon:"🚆"
   },
 
   {
@@ -2302,13 +2411,13 @@ const boardSpaces = [
   },
 
   {
-    name:"Park Place",
+    name:"London",
     type:"property",
     group:"darkblue",
     price:350,
     rent:[35,175,500,1100,1300,1500],
     houseCost:200,
-    icon:"🏠"
+    icon:"🏙️"
   },
 
   {
@@ -2319,7 +2428,7 @@ const boardSpaces = [
   },
 
   {
-    name:"Boardwalk",
+    name:"Plymouth",
     type:"property",
     group:"darkblue",
     price:400,
@@ -2416,8 +2525,10 @@ function createBoard(){
 
       const color =
         space.group
-        ? `<div class="colorBar"></div>`
-        : "";
+        ?
+        `<div class="colorBar"></div>`
+        :
+        "";
 
       tile.innerHTML = `
 
@@ -2458,12 +2569,9 @@ function createBoard(){
 }
 
 
-/*
-  40 spaces around the board.
-
-  0 = bottom-right
-  moving clockwise.
-*/
+/* =========================================================
+   BOARD POSITION
+========================================================= */
 
 function getBoardPosition(index){
 
@@ -2518,6 +2626,14 @@ async function joinGame(){
 
   }
 
+  if(players.length >= MAX_PLAYERS){
+
+    alert("遊戲已滿，最多 4 名玩家。");
+
+    return;
+
+  }
+
   const input =
     document.getElementById(
       "nameInput"
@@ -2564,7 +2680,7 @@ async function joinGame(){
   renderAll();
 
   addLog(
-    `${name} 加入遊戲。`
+    `${name} 加入 UK MONOPOLY。`
   );
 
   connectSupabase();
@@ -2573,7 +2689,7 @@ async function joinGame(){
 
 
 /* =========================================================
-   SUPABASE REALTIME
+   SUPABASE
 ========================================================= */
 
 async function connectSupabase(){
@@ -2588,7 +2704,7 @@ async function connectSupabase(){
 
     channel =
       supabaseClient.channel(
-        "monopoly-room-001",
+        "uk-monopoly-room-001",
         {
 
           config:{
@@ -2823,7 +2939,7 @@ async function broadcastState(){
 
 
 /* =========================================================
-   RECEIVE STATE
+   RECEIVE
 ========================================================= */
 
 function receiveGame(data){
@@ -2909,7 +3025,7 @@ function setConnection(ok){
 
 
 /* =========================================================
-   RENDER ALL
+   RENDER
 ========================================================= */
 
 function renderAll(){
@@ -3106,6 +3222,7 @@ function updateMyStatus(){
 
     📍
     ${escapeHTML(space.name)}
+
     <br>
 
     🏠
@@ -3197,7 +3314,7 @@ function renderPieces(){
 
 
       const offset =
-        index * 5;
+        index * 4;
 
 
       piece.style.left =
@@ -3417,12 +3534,8 @@ async function movePlayer(
   steps
 ){
 
-  let old =
-    localState.positions[id] ?? 0;
-
-
   let current =
-    old;
+    localState.positions[id] ?? 0;
 
 
   for(
@@ -3442,7 +3555,7 @@ async function movePlayer(
     renderPieces();
 
 
-    await wait(180);
+    await wait(150);
 
 
     if(current===0){
@@ -3603,9 +3716,7 @@ function handleLanding(
   }
 
 
-  if(
-    space.type==="railroad"
-  ){
+  if(space.type==="railroad"){
 
     const owner =
       localState.owners[index];
@@ -3619,8 +3730,7 @@ function handleLanding(
 
       const rent =
         calculateRailroadRent(
-          owner,
-          space
+          owner
         );
 
       payRent(
@@ -3636,9 +3746,7 @@ function handleLanding(
   }
 
 
-  if(
-    space.type==="utility"
-  ){
+  if(space.type==="utility"){
 
     const owner =
       localState.owners[index];
@@ -3649,16 +3757,6 @@ function handleLanding(
       &&
       owner!==id
     ){
-
-      /*
-        Standard utility rule:
-        4x dice if one utility,
-        10x if both.
-
-        We use 8 as fallback
-        because the dice result is
-        stored only locally.
-      */
 
       const utilities =
         countOwnedUtilities(
@@ -3689,9 +3787,7 @@ function handleLanding(
   }
 
 
-  if(
-    space.type==="property"
-  ){
+  if(space.type==="property"){
 
     const owner =
       localState.owners[index];
@@ -3731,6 +3827,7 @@ function handleLanding(
       }
 
     }
+
     else if(
       owner!==id
     ){
@@ -3809,7 +3906,7 @@ function buyProperty(
   ){
 
     alert(
-      "這個格子不能購買。"
+      "這個位置不能購買。"
     );
 
     return;
@@ -3828,7 +3925,7 @@ function buyProperty(
   ){
 
     alert(
-      "這個格子不能購買。"
+      "這個位置不能購買。"
     );
 
     return;
@@ -4107,6 +4204,7 @@ function updateOwnership(){
         );
 
       }
+
       else{
 
         for(
@@ -4252,11 +4350,6 @@ function handleBankruptcy(
     true;
 
 
-  /*
-    Transfer properties to creditor
-    if there is one.
-  */
-
   Object
     .entries(
       localState.owners
@@ -4271,7 +4364,9 @@ function handleBankruptcy(
             localState.owners[index] =
               creditor;
 
-          }else{
+          }
+
+          else{
 
             delete localState.owners[index];
 
@@ -4384,7 +4479,7 @@ function countOwnedUtilities(
 
 
 /* =========================================================
-   CHANCE / COMMUNITY CHEST
+   CHANCE
 ========================================================= */
 
 const chanceCards = [
@@ -4421,7 +4516,7 @@ const chanceCards = [
   },
 
   {
-    text:"前往 Boardwalk。",
+    text:"前往 Plymouth。",
     action:()=>{
 
       localState.positions[
@@ -4441,7 +4536,7 @@ const chanceCards = [
   },
 
   {
-    text:"支付修理費 £75。",
+    text:"支付城市維修費 £75。",
     action:()=>{
       changeMoney(-75);
     }
@@ -4449,6 +4544,10 @@ const chanceCards = [
 
 ];
 
+
+/* =========================================================
+   COMMUNITY CHEST
+========================================================= */
 
 const chestCards = [
 
@@ -4544,28 +4643,9 @@ const chestCards = [
 ];
 
 
-function showCards(){
-
-  if(!me){
-
-    alert(
-      "請先加入遊戲。"
-    );
-
-    return;
-
-  }
-
-  document
-    .getElementById(
-      "cardModal"
-    )
-    .classList.add(
-      "show"
-    );
-
-}
-
+/* =========================================================
+   DRAW CARD
+========================================================= */
 
 function drawCard(
   type="chance"
@@ -4758,6 +4838,10 @@ function openTrade(){
 }
 
 
+/* =========================================================
+   SEND TRADE
+========================================================= */
+
 function sendTrade(){
 
   if(!me){
@@ -4949,6 +5033,7 @@ function endTurn(){
       );
 
   }
+
   while(
     players[next]
     &&
@@ -5012,7 +5097,7 @@ function selectProperty(
 
 
   let typeText =
-    "Property";
+    "UK Property";
 
 
   if(
@@ -5020,7 +5105,7 @@ function selectProperty(
   ){
 
     typeText =
-      "Railroad";
+      "Railway Station";
 
   }
 
@@ -5057,6 +5142,33 @@ function selectProperty(
 
     typeText =
       "Tax";
+
+  }
+
+  else if(
+    space.type==="go"
+  ){
+
+    typeText =
+      "START";
+
+  }
+
+  else if(
+    space.type==="jail"
+  ){
+
+    typeText =
+      "Jail";
+
+  }
+
+  else if(
+    space.type==="parking"
+  ){
+
+    typeText =
+      "Free Parking";
 
   }
 
@@ -5165,7 +5277,7 @@ function addLog(
       )}
     </b>
 
-   　${escapeHTML(message)}
+     ${escapeHTML(message)}
 
   `;
 

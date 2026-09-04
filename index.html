@@ -3,763 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07141b">
-<title>Kingdoms of England • Catan Style</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Kingdoms Monopoly 3D</title>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
   margin:0;
   padding:0;
-  min-height:100%;
-  background:#07141b;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#071018;
   color:#f5ead0;
   font-family:Georgia,"Times New Roman",serif;
 }
 
 body{
-  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-button,input,select{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-button:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
+/* =========================
+   HEADER
+========================= */
 
 header{
-  background:
-    radial-gradient(circle at 50% 0%,#19372d 0,#0c1d18 42%,#07141b 100%);
-  border-bottom:2px solid #a98443;
-  text-align:center;
-  padding:22px 12px 18px;
+  height:72px;
+  flex-shrink:0;
+  background:linear-gradient(#182821,#0a1512);
+  border-bottom:2px solid #a27d3d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:100;
 }
 
 header h1{
   margin:0;
-  color:#e7ca79;
-  font-size:clamp(26px,4vw,46px);
-  text-shadow:0 2px 8px #000;
+  color:#e7c975;
+  font-size:28px;
+  letter-spacing:1px;
 }
 
 header p{
-  margin:5px 0 8px;
-  font-size:clamp(14px,2vw,20px);
-}
-
-.connection{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 13px;
-  border-radius:20px;
-  background:#251c1c;
-  color:#ff7777;
-  font-family:Arial,sans-serif;
-  font-size:14px;
-  font-weight:bold;
-}
-
-.connection.ok{
-  background:#12301f;
-  color:#72e98b;
-}
-
-.connection.local{
-  background:#332b15;
-  color:#e8c768;
-}
-
-.statusDot{
-  width:11px;
-  height:11px;
-  border-radius:50%;
-  background:#ef3838;
-  box-shadow:0 0 8px currentColor;
-}
-
-.connection.ok .statusDot{
-  background:#20d957;
-}
-
-.connection.local .statusDot{
-  background:#d6a928;
-}
-
-.roomBar{
-  width:min(1500px,calc(100% - 24px));
-  margin:12px auto 0;
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-.roomInfo{
-  flex:1;
-  padding:13px 16px;
-  border:1px solid #927343;
-  border-radius:9px;
-  background:#14211e;
-  font-size:16px;
-}
-
-.roomControls{
-  display:flex;
-  gap:7px;
-}
-
-.roomControls input{
-  width:190px;
-  padding:12px;
-  border:1px solid #9c7d45;
-  border-radius:8px;
-  background:#f5ead0;
-  color:#292219;
-}
-
-.btn{
-  border:1px solid #a98548;
-  border-radius:8px;
-  padding:11px 14px;
-  background:#315a3d;
-  color:#fff;
-  font-weight:bold;
-}
-
-.btn:hover{
-  background:#40734e;
-}
-
-.btn.gold{
-  background:#72552a;
-}
-
-.btn.gold:hover{
-  background:#8a6833;
-}
-
-.btn.red{
-  background:#71352d;
-}
-
-.btn.blue{
-  background:#2d5575;
-}
-
-.layout{
-  width:min(1500px,100%);
-  margin:auto;
-  padding:10px;
-  display:grid;
-  grid-template-columns:225px minmax(520px,1fr) 285px;
-  gap:10px;
-}
-
-.panel{
-  background:#14211e;
-  border:1px solid #927343;
-  border-radius:10px;
-  padding:12px;
-  margin-bottom:10px;
-  box-shadow:0 4px 14px #0009;
-}
-
-.panel h2{
-  margin:0 0 10px;
-  padding-bottom:7px;
-  border-bottom:1px solid #665637;
-  color:#e5c978;
-  font-size:17px;
-}
-
-.player{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:9px 2px;
-  border-bottom:1px solid #35443e;
-}
-
-.player.me{
-  background:#263b30;
-  border-radius:6px;
-  padding-left:6px;
-  padding-right:6px;
-}
-
-.dot{
-  display:inline-block;
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  margin-right:6px;
-}
-
-.red{background:#c83c32}
-.blue{background:#377ec0}
-.green{background:#4f9d50}
-.yellow{background:#ddb42c}
-
-.small{
+  margin:3px 0 0;
   font-size:12px;
   opacity:.8;
 }
 
-.rules{
-  line-height:1.65;
+/* =========================
+   GAME
+========================= */
+
+.game{
+  flex:1;
+  min-height:0;
+  display:grid;
+  grid-template-columns:260px 1fr 290px;
+  gap:8px;
+  padding:8px;
+}
+
+/* =========================
+   SIDE PANELS
+========================= */
+
+.sidebar{
+  min-height:0;
+  overflow:auto;
+}
+
+.panel{
+  background:linear-gradient(145deg,#182722,#101b18);
+  border:1px solid #8d6e39;
+  border-radius:9px;
+  padding:11px;
+  margin-bottom:8px;
+  box-shadow:0 4px 16px #0009;
+}
+
+.panel h2{
+  margin:0 0 9px;
+  padding-bottom:6px;
+  border-bottom:1px solid #625334;
+  color:#e4c777;
+  font-size:15px;
+}
+
+.turn{
+  background:#69392d;
+  border:1px solid #b7884c;
+  border-radius:7px;
+  padding:10px;
+  text-align:center;
+  font-weight:bold;
+  margin-bottom:9px;
+}
+
+.player{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px 2px;
+  border-bottom:1px solid #33413b;
+}
+
+.player:last-child{
+  border-bottom:0;
+}
+
+.playerLeft{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.playerPiece{
+  font-size:22px;
+}
+
+.playerMoney{
+  color:#e9c86c;
+  font-weight:bold;
   font-size:13px;
 }
 
-.map{
-  position:relative;
-  width:100%;
-  aspect-ratio:1.42;
-  min-height:610px;
-  overflow:hidden;
-  border:2px solid #927343;
-  border-radius:11px;
-  background:
-    radial-gradient(circle at 30% 25%,#267484 0,#15576a 35%,#0d4052 70%,#0a3343 100%);
-  box-shadow:0 4px 20px #000b;
-}
+/* =========================
+   GAME LOG
+========================= */
 
-.mapTitle{
-  position:absolute;
-  top:10px;
-  left:10px;
-  z-index:100;
-  padding:8px 12px;
-  border:1px solid #b08b49;
-  border-radius:7px;
-  background:#0b1714e8;
-  color:#f5ead0;
-  font-weight:bold;
-  font-size:14px;
-}
-
-.seaLabel{
-  position:absolute;
-  z-index:2;
-  color:#c8dfdf;
-  opacity:.65;
-  font-size:14px;
-  font-style:italic;
-  pointer-events:none;
-}
-
-.irish{
-  left:3%;
-  top:45%;
-}
-
-.north{
-  right:5%;
-  top:17%;
-}
-
-.channel{
-  left:43%;
-  bottom:3%;
-}
-
-.land{
-  position:absolute;
-  left:17%;
-  top:9%;
-  width:67%;
-  height:82%;
-  z-index:3;
-  clip-path:polygon(
-    45% 0%,
-    62% 4%,
-    70% 12%,
-    82% 19%,
-    88% 30%,
-    93% 43%,
-    90% 54%,
-    84% 65%,
-    82% 78%,
-    70% 86%,
-    59% 93%,
-    44% 100%,
-    31% 94%,
-    22% 88%,
-    14% 78%,
-    8% 67%,
-    12% 55%,
-    7% 45%,
-    12% 33%,
-    19% 25%,
-    23% 14%,
-    34% 7%
-  );
-  background:
-    radial-gradient(circle at 55% 45%,#69884c 0,#527442 28%,#3f6039 58%,#304c32 100%);
-  border:5px solid #a47d3e;
-  box-shadow:0 0 30px #0009;
-}
-
-.terrain{
-  position:absolute;
-  z-index:4;
-  width:11%;
-  aspect-ratio:1;
-  border-radius:50%;
-  border:2px solid #4e432e;
-  box-shadow:inset 0 0 12px #0007,0 2px 5px #0008;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  font-size:10px;
-  font-weight:bold;
-  color:#f9efd7;
-  text-shadow:0 2px 3px #000;
-  cursor:pointer;
-}
-
-.terrain:hover{
-  transform:scale(1.05);
-  filter:brightness(1.15);
-}
-
-.terrain.selected{
-  outline:4px solid #f2d16d;
-  box-shadow:0 0 18px #f2d16d;
-}
-
-.forest{
-  background:
-    radial-gradient(circle,#477b3d,#28542f);
-}
-
-.field{
-  background:
-    radial-gradient(circle,#b69a43,#81712e);
-}
-
-.hill{
-  background:
-    radial-gradient(circle,#a85d39,#713a2c);
-}
-
-.mountain{
-  background:
-    radial-gradient(circle,#85847b,#4e514e);
-}
-
-.pasture{
-  background:
-    radial-gradient(circle,#83a357,#4f743e);
-}
-
-.desert{
-  background:
-    radial-gradient(circle,#c4a45d,#8e713b);
-}
-
-.terrain .num{
-  display:block;
-  margin:3px auto 0;
-  width:25px;
-  height:25px;
-  line-height:21px;
-  border-radius:50%;
-  border:2px solid #604c30;
-  background:#f2e6bd;
-  color:#30271b;
-  text-shadow:none;
-  font-size:12px;
-}
-
-.robber{
-  position:absolute;
-  z-index:80;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  border:3px solid #d3a64d;
-  background:#07141bee;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:24px;
-  cursor:pointer;
-  box-shadow:0 3px 12px #000;
-  transition:.25s;
-}
-
-.robber:hover{
-  transform:scale(1.12);
-}
-
-.robber.active{
-  animation:robberPulse .7s ease;
-}
-
-@keyframes robberPulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.35)}
-  100%{transform:scale(1)}
-}
-
-.node{
-  position:absolute;
-  z-index:60;
-  width:23px;
-  height:23px;
-  border-radius:50%;
-  border:3px solid #392d20;
-  background:#f2e6bd;
-  box-shadow:0 2px 6px #0009;
-  cursor:pointer;
-  transform:translate(-50%,-50%);
-}
-
-.node:hover{
-  transform:translate(-50%,-50%) scale(1.2);
-  background:#fff0a7;
-}
-
-.node.selected{
-  outline:4px solid #f0d06e;
-  box-shadow:0 0 15px #f0d06e;
-}
-
-.node.village{
-  background:#d5a927;
-  border-color:#fff0a6;
-}
-
-.node.city{
-  background:#a94a38;
-  border-color:#f4c89d;
-  width:28px;
-  height:28px;
-}
-
-.nodeLabel{
-  position:absolute;
-  z-index:61;
-  transform:translate(-50%,8px);
-  pointer-events:none;
-  font-size:8px;
-  white-space:nowrap;
-  color:#fff;
-  text-shadow:0 2px 4px #000;
-}
-
-.road{
-  position:absolute;
-  z-index:50;
-  height:8px;
-  background:#c28b45;
-  border:2px solid #53361f;
-  border-radius:8px;
-  transform-origin:0 50%;
-  box-shadow:0 2px 5px #0009;
-  cursor:pointer;
-}
-
-.road.mine{
-  background:#d4aa49;
-  border-color:#fff0a0;
-}
-
-.road.other{
-  background:#777;
-}
-
-.city{
-  position:absolute;
-  z-index:70;
-  padding:4px 7px;
-  border:2px solid #5d4329;
+.log{
+  height:150px;
+  overflow:auto;
+  background:#eee3cf;
+  color:#2e281f;
   border-radius:6px;
-  background:#f0dfb5ee;
-  color:#292016;
-  font-size:10px;
-  font-weight:bold;
-  cursor:pointer;
-  white-space:nowrap;
-  box-shadow:0 2px 5px #0008;
+  padding:8px;
+  font-family:Arial,sans-serif;
+  font-size:12px;
+  line-height:1.5;
 }
 
-.city:hover{
-  transform:scale(1.05);
-}
-
-.c-newcastle{left:71%;top:9%}
-.c-leeds{left:68%;top:21%}
-.c-manchester{left:31%;top:29%}
-.c-sheffield{left:48%;top:33%}
-.c-liverpool{left:12%;top:35%}
-.c-nottingham{left:40%;top:43%}
-.c-birmingham{left:42%;top:57%}
-.c-bristol{left:27%;top:68%}
-.c-bridgwater{left:27%;top:81%}
-.c-oxford{left:51%;top:67%}
-.c-london{left:69%;top:81%}
-.c-plymouth{left:14%;top:90%}
-
-.turn{
-  padding:12px;
-  border:1px solid #b57d45;
-  border-radius:8px;
-  background:#68352b;
-  text-align:center;
-  font-weight:bold;
-  font-size:17px;
-}
+/* =========================
+   DICE
+========================= */
 
 .dice{
-  min-height:62px;
+  height:70px;
   display:flex;
-  align-items:center;
   justify-content:center;
-  gap:8px;
-  font-size:39px;
+  align-items:center;
+  gap:12px;
+  font-size:45px;
 }
 
 .roll{
   width:100%;
-  padding:13px;
-  border:1px solid #9bb095;
-  border-radius:8px;
-  background:#486b52;
-  color:white;
+  padding:12px;
+  border-radius:7px;
+  border:1px solid #a8bd9e;
+  background:#456b4e;
+  color:#fff;
   font-size:16px;
   font-weight:bold;
 }
 
-.resources{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
+.roll:hover{
+  background:#5a805f;
 }
 
-.resource{
-  padding:9px 5px;
-  border-radius:7px;
-  background:#eee3cc;
-  color:#332a20;
-  text-align:center;
+.roll:disabled{
+  opacity:.5;
+  cursor:not-allowed;
 }
 
-.resource span{
-  display:block;
-  font-size:22px;
-}
+/* =========================
+   ACTION
+========================= */
 
-.resource b{
-  font-size:20px;
-}
-
-.build button{
+.action{
   width:100%;
-  margin:4px 0;
-  padding:11px 6px;
-  border:1px solid #6e8e76;
+  margin-top:7px;
+  padding:10px;
   border-radius:7px;
-  background:#31553d;
+  border:1px solid #8e7542;
+  background:#6c5129;
   color:white;
   font-weight:bold;
 }
 
-.tradeBox{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
+.action:hover{
+  background:#876936;
 }
 
-.tradeBox select,
-.tradeBox input{
-  width:100%;
-  padding:9px;
-  border:1px solid #a58a58;
-  border-radius:6px;
-  background:#f4ead2;
-  color:#222;
+.action:disabled{
+  opacity:.45;
+  cursor:not-allowed;
 }
 
-.tradeBox button{
-  grid-column:1/-1;
-}
+/* =========================
+   MONEY
+========================= */
 
-.log,
-.chat{
-  height:150px;
-  overflow:auto;
-  padding:8px;
+.moneyBox{
+  text-align:center;
+  padding:10px;
   border-radius:7px;
+  background:#eee4cc;
+  color:#30281e;
+}
+
+.money{
+  font-size:25px;
+  font-weight:bold;
+}
+
+/* =========================
+   CITY INFO
+========================= */
+
+.cityInfo{
   background:#eee3cf;
-  color:#2e271e;
+  color:#2d271e;
+  border-radius:7px;
+  padding:9px;
   font-family:Arial,sans-serif;
   font-size:12px;
-  line-height:1.55;
+  line-height:1.5;
+  min-height:110px;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat{
+  height:110px;
+  overflow:auto;
+  background:#eee3cf;
+  color:#2d271e;
+  border-radius:6px;
+  padding:7px;
+  font-family:Arial,sans-serif;
+  font-size:12px;
 }
 
 .chatInput{
   display:flex;
   gap:5px;
-  margin-top:6px;
+  margin-top:5px;
 }
 
 .chatInput input{
   flex:1;
   min-width:0;
-  padding:9px;
+  padding:8px;
+  border-radius:5px;
   border:1px solid #aaa;
-  border-radius:6px;
-  background:#f8f0dc;
-  color:#222;
 }
 
 .chatInput button{
-  width:46px;
+  width:40px;
   border:0;
-  border-radius:6px;
-  background:#b58b43;
-  color:#fff;
-  font-weight:bold;
+  border-radius:5px;
+  background:#b58a43;
+  color:white;
 }
 
-.modal{
-  position:fixed;
+/* =========================
+   3D AREA
+========================= */
+
+#scene{
+  position:relative;
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+  border:2px solid #967442;
+  border-radius:10px;
+  background:
+    radial-gradient(circle at center,#183e42 0,#0b2028 55%,#061117 100%);
+  box-shadow:inset 0 0 50px #0009;
+}
+
+#threeCanvas{
+  position:absolute;
   inset:0;
-  z-index:1000;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:#000b;
-  padding:16px;
-}
-
-.modal.show{
-  display:flex;
-}
-
-.modalBox{
-  width:min(480px,100%);
-  max-height:90vh;
-  overflow:auto;
-  padding:18px;
-  border:2px solid #a98443;
-  border-radius:12px;
-  background:#14211e;
-  box-shadow:0 10px 40px #000;
-}
-
-.modalBox h2{
-  margin-top:0;
-  color:#e5c978;
-}
-
-.modalGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-}
-
-.modalGrid input,
-.modalGrid select{
   width:100%;
-  padding:10px;
-  border-radius:6px;
-  border:1px solid #a58a58;
-  background:#f4ead2;
+  height:100%;
 }
 
-.modalActions{
-  display:flex;
-  gap:7px;
-  margin-top:12px;
+/* =========================
+   3D UI
+========================= */
+
+.sceneTop{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:20;
+  background:#091512dd;
+  border:1px solid #ae8746;
+  border-radius:7px;
+  padding:8px 10px;
+  font-size:13px;
+  font-weight:bold;
+  pointer-events:none;
 }
 
-.modalActions button{
-  flex:1;
-}
-
-.toast{
-  position:fixed;
+.sceneHint{
+  position:absolute;
+  bottom:10px;
   left:50%;
-  bottom:20px;
-  z-index:2000;
   transform:translateX(-50%);
-  max-width:90%;
-  padding:12px 18px;
-  border:1px solid #c39b51;
-  border-radius:9px;
-  background:#111d19f2;
-  box-shadow:0 5px 20px #000;
-  display:none;
-  text-align:center;
+  z-index:20;
+  background:#07120fe0;
+  border:1px solid #816638;
+  border-radius:7px;
+  padding:6px 10px;
+  font-family:Arial,sans-serif;
+  font-size:11px;
+  pointer-events:none;
+  white-space:nowrap;
 }
 
-.toast.show{
-  display:block;
+/* =========================
+   PROPERTY COLORS
+========================= */
+
+.colorBar{
+  height:7px;
+  border-radius:4px;
+  margin-bottom:5px;
 }
 
-@media(max-width:1150px){
+.brown{background:#8b5a3c;}
+.lightblue{background:#76c7d9;}
+.pink{background:#d06c91;}
+.orange{background:#d27b35;}
+.red{background:#bd4139;}
+.yellow{background:#d5ad37;}
+.green{background:#4e8d54;}
+.blue{background:#4a6fc0;}
 
-  .layout{
-    grid-template-columns:190px minmax(450px,1fr);
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:1050px){
+
+  .game{
+    grid-template-columns:210px 1fr;
   }
 
   .right{
     grid-column:1/-1;
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:1fr 1fr;
     gap:8px;
   }
 
-  .right .panel{
-    margin-bottom:0;
-  }
 }
 
-@media(max-width:750px){
+@media(max-width:700px){
+
+  html,
+  body{
+    overflow:auto;
+  }
 
   header{
-    padding:15px 8px;
+    height:60px;
   }
 
-  .roomBar{
-    flex-direction:column;
-    align-items:stretch;
+  header h1{
+    font-size:21px;
   }
 
-  .roomControls{
-    width:100%;
+  header p{
+    font-size:10px;
   }
 
-  .roomControls input{
-    flex:1;
-    width:auto;
-  }
-
-  .layout{
+  .game{
     display:flex;
     flex-direction:column;
-    padding:5px;
+    height:auto;
+    overflow:visible;
   }
 
-  .map{
+  #scene{
     order:1;
-    min-height:0;
-    aspect-ratio:1.05;
+    width:100%;
+    height:65vh;
+    min-height:430px;
   }
 
   .left{
@@ -771,52 +414,16 @@ header p{
     display:block;
   }
 
-  .terrain{
-    width:13%;
-    font-size:7px;
+  .sidebar{
+    overflow:visible;
   }
 
-  .terrain .num{
-    width:20px;
-    height:20px;
-    line-height:16px;
+  .sceneHint{
     font-size:9px;
   }
 
-  .node{
-    width:17px;
-    height:17px;
-  }
-
-  .node.city{
-    width:22px;
-    height:22px;
-  }
-
-  .city{
-    font-size:7px;
-    padding:2px 4px;
-  }
-
-  .mapTitle{
-    font-size:10px;
-    padding:6px 8px;
-  }
-
-  .seaLabel{
-    font-size:9px;
-  }
-
-  .robber{
-    width:35px;
-    height:35px;
-    font-size:20px;
-  }
-
-  .right .panel{
-    margin-bottom:8px;
-  }
 }
+
 </style>
 </head>
 
@@ -824,61 +431,109 @@ header p{
 
 <header>
 
-  <h1>♜ Kingdoms of England</h1>
+  <h1>♜ Kingdoms Monopoly 3D</h1>
 
-  <p>Build • Trade • Conquer</p>
-
-  <div id="connectionStatus" class="connection">
-    <span class="statusDot"></span>
-    <span id="connectionText">Connecting to Supabase...</span>
-  </div>
+  <p>
+    Build • Trade • Conquer • Rule Britain
+  </p>
 
 </header>
 
 
-<div class="roomBar">
-
-  <div class="roomInfo">
-    ROOM :
-    <b>ENGLAND-001</b>
-    ·
-    <span id="playerCount">0</span> / 4 Players
-    ·
-    <span id="gameStatus">Waiting</span>
-  </div>
-
-  <div class="roomControls">
-
-    <input
-      id="playerName"
-      maxlength="20"
-      placeholder="你的玩家名稱"
-    >
-
-    <button
-      class="btn"
-      onclick="joinGame()">
-      👤 加入遊戲
-    </button>
-
-  </div>
-
-</div>
+<div class="game">
 
 
-<div class="layout">
+<!-- =====================================================
+     LEFT
+===================================================== -->
 
-
-<!-- LEFT -->
-
-<aside class="left">
+<aside class="sidebar left">
 
   <div class="panel">
 
-    <h2>👑 PLAYERS</h2>
+    <h2>👥 PLAYERS</h2>
 
-    <div id="players">
-      <div class="small">載入玩家中...</div>
+    <div class="player">
+
+      <div class="playerLeft">
+
+        <span class="playerPiece">👑</span>
+
+        <div>
+          <b>King</b>
+          <br>
+          <small>Player 1</small>
+        </div>
+
+      </div>
+
+      <span class="playerMoney" id="money1">
+        £1500
+      </span>
+
+    </div>
+
+
+    <div class="player">
+
+      <div class="playerLeft">
+
+        <span class="playerPiece">🧙</span>
+
+        <div>
+          <b>Wizard</b>
+          <br>
+          <small>Player 2</small>
+        </div>
+
+      </div>
+
+      <span class="playerMoney" id="money2">
+        £1500
+      </span>
+
+    </div>
+
+
+    <div class="player">
+
+      <div class="playerLeft">
+
+        <span class="playerPiece">🛡️</span>
+
+        <div>
+          <b>Knight</b>
+          <br>
+          <small>Player 3</small>
+        </div>
+
+      </div>
+
+      <span class="playerMoney" id="money3">
+        £1500
+      </span>
+
+    </div>
+
+
+    <div class="player">
+
+      <div class="playerLeft">
+
+        <span class="playerPiece">🏹</span>
+
+        <div>
+          <b>Archer</b>
+          <br>
+          <small>Player 4</small>
+        </div>
+
+      </div>
+
+      <span class="playerMoney" id="money4">
+        £1500
+      </span>
+
     </div>
 
   </div>
@@ -886,27 +541,13 @@ header p{
 
   <div class="panel">
 
-    <h2>📜 GAME RULES</h2>
+    <h2>📜 GAME LOG</h2>
 
-    <div class="rules">
+    <div class="log" id="log">
 
-      <b>勝利：10 VP</b><br><br>
-
-      🎲 每回合先擲兩顆骰子。<br>
-
-      🏘️ 聚落產生 1 張資源。<br>
-
-      🏰 城市產生 2 張資源。<br>
-
-      🏴‍☠️ 7 = Robber。<br>
-
-      🃏 發展卡可以提供特殊能力。<br>
-
-      🛣️ 最長道路 +2 VP。<br>
-
-      ⚔️ 最大騎士軍隊 +2 VP。<br>
-
-      🤝 玩家可以自由交換資源。<br>
+      🇬🇧 Welcome to Kingdoms Monopoly 3D!<br>
+      🎲 King starts the game.<br>
+      🏙️ Explore Britain and build your kingdom.<br>
 
     </div>
 
@@ -915,475 +556,122 @@ header p{
 
   <div class="panel">
 
-    <h2>🏴‍☠️ ROBBER</h2>
+    <h2>🏙️ SELECTED PROPERTY</h2>
 
-    <div style="font-size:38px;text-align:center">
-      🏴‍☠️
+    <div class="cityInfo" id="cityInfo">
+
+      點擊棋盤上的城市查看資料。
+
     </div>
-
-    <p>
-      Robber：
-      <b id="robberLocation">Desert</b>
-    </p>
-
-    <button
-      class="btn gold"
-      style="width:100%"
-      onclick="enableRobberMove()">
-      移動強盜
-    </button>
 
   </div>
 
 </aside>
 
 
-<!-- MAP -->
 
-<main class="map" id="gameMap">
+<!-- =====================================================
+     3D SCENE
+===================================================== -->
 
-  <div class="mapTitle">
-    🗺️ ENGLAND • CATAN STYLE
+<main id="scene">
+
+  <div class="sceneTop">
+
+    🇬🇧 BRITAIN • 3D KINGDOM BOARD
+
   </div>
 
-  <div class="seaLabel irish">
-    Irish Sea
-  </div>
+  <canvas id="threeCanvas"></canvas>
 
-  <div class="seaLabel north">
-    North Sea
-  </div>
+  <div class="sceneHint">
 
-  <div class="seaLabel channel">
-    English Channel
-  </div>
+    🖱️ 拖曳旋轉　•　滾輪縮放　•　點擊城市查看
 
-
-  <div class="land"></div>
-
-
-  <!-- TERRAIN -->
-
-  <div
-    class="terrain forest"
-    style="left:25%;top:17%"
-    data-resource="wood"
-    data-number="8"
-    onclick="selectTerrain(this)">
-    🌲<br>Northumberland
-    <span class="num">8</span>
-  </div>
-
-  <div
-    class="terrain field"
-    style="left:42%;top:15%"
-    data-resource="grain"
-    data-number="6"
-    onclick="selectTerrain(this)">
-    🌾<br>Durham
-    <span class="num">6</span>
-  </div>
-
-  <div
-    class="terrain pasture"
-    style="left:57%;top:17%"
-    data-resource="wool"
-    data-number="9"
-    onclick="selectTerrain(this)">
-    🐑<br>Yorkshire
-    <span class="num">9</span>
-  </div>
-
-  <div
-    class="terrain mountain"
-    style="left:27%;top:31%"
-    data-resource="stone"
-    data-number="5"
-    onclick="selectTerrain(this)">
-    🪨<br>Cumbria
-    <span class="num">5</span>
-  </div>
-
-  <div
-    class="terrain forest"
-    style="left:42%;top:31%"
-    data-resource="wood"
-    data-number="8"
-    onclick="selectTerrain(this)">
-    🌲<br>Lancashire
-    <span class="num">8</span>
-  </div>
-
-  <div
-    class="terrain mountain"
-    style="left:57%;top:31%"
-    data-resource="iron"
-    data-number="10"
-    onclick="selectTerrain(this)">
-    ⛏️<br>Pennines
-    <span class="num">10</span>
-  </div>
-
-  <div
-    class="terrain pasture"
-    style="left:70%;top:31%"
-    data-resource="wool"
-    data-number="9"
-    onclick="selectTerrain(this)">
-    🐑<br>Wolds
-    <span class="num">9</span>
-  </div>
-
-  <div
-    class="terrain pasture"
-    style="left:35%;top:46%"
-    data-resource="wool"
-    data-number="9"
-    onclick="selectTerrain(this)">
-    🐑<br>Shropshire
-    <span class="num">9</span>
-  </div>
-
-  <div
-    class="terrain mountain"
-    style="left:50%;top:46%"
-    data-resource="iron"
-    data-number="3"
-    onclick="selectTerrain(this)">
-    ⛏️<br>Staffordshire
-    <span class="num">3</span>
-  </div>
-
-  <div
-    class="terrain forest"
-    style="left:64%;top:46%"
-    data-resource="wood"
-    data-number="4"
-    onclick="selectTerrain(this)">
-    🌲<br>Nottingham
-    <span class="num">4</span>
-  </div>
-
-  <div
-    class="terrain field"
-    style="left:77%;top:46%"
-    data-resource="grain"
-    data-number="9"
-    onclick="selectTerrain(this)">
-    🌾<br>Norfolk
-    <span class="num">9</span>
-  </div>
-
-  <div
-    class="terrain field"
-    style="left:42%;top:62%"
-    data-resource="grain"
-    data-number="6"
-    onclick="selectTerrain(this)">
-    🌾<br>Somerset
-    <span class="num">6</span>
-  </div>
-
-  <div
-    class="terrain forest"
-    style="left:57%;top:62%"
-    data-resource="wood"
-    data-number="4"
-    onclick="selectTerrain(this)">
-    🌲<br>Gloucester
-    <span class="num">4</span>
-  </div>
-
-  <div
-    class="terrain field"
-    style="left:70%;top:62%"
-    data-resource="grain"
-    data-number="5"
-    onclick="selectTerrain(this)">
-    🌾<br>Cambridge
-    <span class="num">5</span>
-  </div>
-
-  <div
-    class="terrain desert"
-    style="left:50%;top:77%"
-    data-resource=""
-    data-number="0"
-    onclick="selectTerrain(this)">
-    🏜️<br>Desert
-    <span class="num">7</span>
-  </div>
-
-  <div
-    class="terrain field"
-    style="left:65%;top:77%"
-    data-resource="grain"
-    data-number="10"
-    onclick="selectTerrain(this)">
-    🌾<br>Kent
-    <span class="num">10</span>
-  </div>
-
-
-  <!-- NODES -->
-
-  <div class="node" data-node="1" style="left:28%;top:28%" onclick="selectNode(1)"></div>
-  <div class="node" data-node="2" style="left:43%;top:28%" onclick="selectNode(2)"></div>
-  <div class="node" data-node="3" style="left:58%;top:28%" onclick="selectNode(3)"></div>
-  <div class="node" data-node="4" style="left:72%;top:28%" onclick="selectNode(4)"></div>
-
-  <div class="node" data-node="5" style="left:35%;top:43%" onclick="selectNode(5)"></div>
-  <div class="node" data-node="6" style="left:50%;top:43%" onclick="selectNode(6)"></div>
-  <div class="node" data-node="7" style="left:65%;top:43%" onclick="selectNode(7)"></div>
-  <div class="node" data-node="8" style="left:79%;top:43%" onclick="selectNode(8)"></div>
-
-  <div class="node" data-node="9" style="left:42%;top:58%" onclick="selectNode(9)"></div>
-  <div class="node" data-node="10" style="left:57%;top:58%" onclick="selectNode(10)"></div>
-  <div class="node" data-node="11" style="left:72%;top:58%" onclick="selectNode(11)"></div>
-
-  <div class="node" data-node="12" style="left:50%;top:73%" onclick="selectNode(12)"></div>
-  <div class="node" data-node="13" style="left:65%;top:73%" onclick="selectNode(13)"></div>
-
-  <div class="node" data-node="14" style="left:57%;top:87%" onclick="selectNode(14)"></div>
-
-
-  <!-- ROBBER -->
-
-  <div
-    id="robber"
-    class="robber"
-    style="left:52%;top:74%"
-    onclick="clickRobber()"
-    title="Robber">
-    🏴‍☠️
-  </div>
-
-
-  <!-- CITIES -->
-
-  <div class="city c-newcastle" onclick="cityInfo('Newcastle')">
-    Newcastle
-  </div>
-
-  <div class="city c-leeds" onclick="cityInfo('Leeds')">
-    Leeds
-  </div>
-
-  <div class="city c-manchester" onclick="cityInfo('Manchester')">
-    Manchester
-  </div>
-
-  <div class="city c-sheffield" onclick="cityInfo('Sheffield')">
-    Sheffield
-  </div>
-
-  <div class="city c-liverpool" onclick="cityInfo('Liverpool')">
-    Liverpool
-  </div>
-
-  <div class="city c-nottingham" onclick="cityInfo('Nottingham')">
-    Nottingham
-  </div>
-
-  <div class="city c-birmingham" onclick="cityInfo('Birmingham')">
-    Birmingham
-  </div>
-
-  <div class="city c-bristol" onclick="cityInfo('Bristol')">
-    Bristol
-  </div>
-
-  <div class="city c-bridgwater" onclick="cityInfo('Bridgwater')">
-    Bridgwater
-  </div>
-
-  <div class="city c-oxford" onclick="cityInfo('Oxford')">
-    Oxford
-  </div>
-
-  <div class="city c-london" onclick="cityInfo('London')">
-    👑 London
-  </div>
-
-  <div class="city c-plymouth" onclick="cityInfo('Plymouth')">
-    Plymouth
   </div>
 
 </main>
 
 
-<!-- RIGHT -->
 
-<aside class="right">
+<!-- =====================================================
+     RIGHT
+===================================================== -->
+
+<aside class="sidebar right">
+
 
   <div class="panel">
 
-    <div class="turn" id="turnDisplay">
-      等待玩家...
+    <div class="turn" id="turn">
+
+      👑 King 的回合
+
     </div>
 
     <h2>🎲 DICE</h2>
 
     <div class="dice" id="dice">
+
       ⚀ ⚀
+
     </div>
 
     <button
-      id="rollButton"
       class="roll"
-      onclick="rollDice()"
+      id="rollButton"
+      onclick="rollDice()">
+
+      🎲 擲骰子
+
+    </button>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h2>💷 MONEY</h2>
+
+    <div class="moneyBox">
+
+      <div class="money" id="currentMoney">
+        £1500
+      </div>
+
+      <small>
+        👑 King
+      </small>
+
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h2>🏠 PROPERTY</h2>
+
+    <button
+      class="action"
+      id="buyButton"
+      onclick="buyProperty()"
       disabled>
-      🎲 Roll Dice
+
+      🏠 購買城市
+
     </button>
 
-  </div>
 
+    <button
+      class="action"
+      id="upgradeButton"
+      onclick="upgradeProperty()"
+      disabled>
 
-  <div class="panel">
+      🏰 升級建築
 
-    <h2>📦 RESOURCES</h2>
-
-    <div class="resources">
-
-      <div class="resource">
-        <span>🌲</span>
-        <b id="wood">0</b>
-        <br>Timber
-      </div>
-
-      <div class="resource">
-        <span>🌾</span>
-        <b id="grain">0</b>
-        <br>Grain
-      </div>
-
-      <div class="resource">
-        <span>🐑</span>
-        <b id="wool">0</b>
-        <br>Wool
-      </div>
-
-      <div class="resource">
-        <span>🧱</span>
-        <b id="brick">0</b>
-        <br>Brick
-      </div>
-
-      <div class="resource">
-        <span>⛏️</span>
-        <b id="iron">0</b>
-        <br>Iron
-      </div>
-
-      <div class="resource">
-        <span>🪨</span>
-        <b id="stone">0</b>
-        <br>Stone
-      </div>
-
-      <div class="resource">
-        <span>🪙</span>
-        <b id="gold">0</b>
-        <br>Gold
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="panel build">
-
-    <h2>🏗️ BUILD</h2>
-
-    <div class="small" style="margin-bottom:7px">
-      先點地圖上的節點，再選擇建造。
-    </div>
-
-    <button onclick="buildRoad()">
-      🛣️ Build Road<br>
-      1 Timber + 1 Brick
     </button>
-
-    <button onclick="buildSettlement()">
-      🏘️ Build Settlement<br>
-      1 Timber + 1 Brick + 1 Grain + 1 Wool
-    </button>
-
-    <button onclick="buildCity()">
-      🏰 Upgrade City<br>
-      2 Grain + 3 Iron
-    </button>
-
-    <button onclick="buyDevelopmentCard()">
-      🃏 Development Card<br>
-      1 Grain + 1 Wool + 1 Iron
-    </button>
-
-  </div>
-
-
-  <div class="panel">
-
-    <h2>🤝 FREE TRADE</h2>
-
-    <div class="tradeBox">
-
-      <select id="tradeGive">
-        <option value="wood">🌲 Timber</option>
-        <option value="grain">🌾 Grain</option>
-        <option value="wool">🐑 Wool</option>
-        <option value="brick">🧱 Brick</option>
-        <option value="iron">⛏️ Iron</option>
-        <option value="stone">🪨 Stone</option>
-        <option value="gold">🪙 Gold</option>
-      </select>
-
-      <input
-        id="tradeGiveAmount"
-        type="number"
-        min="1"
-        value="1">
-
-      <select id="tradeGet">
-        <option value="grain">🌾 Grain</option>
-        <option value="wood">🌲 Timber</option>
-        <option value="wool">🐑 Wool</option>
-        <option value="brick">🧱 Brick</option>
-        <option value="iron">⛏️ Iron</option>
-        <option value="stone">🪨 Stone</option>
-        <option value="gold">🪙 Gold</option>
-      </select>
-
-      <input
-        id="tradeGetAmount"
-        type="number"
-        min="1"
-        value="1">
-
-      <button
-        class="btn gold"
-        onclick="freeTrade()">
-        🤝 執行交換
-      </button>
-
-    </div>
-
-    <div class="small" style="margin-top:7px">
-      玩家可以自由決定交換比例。
-    </div>
-
-  </div>
-
-
-  <div class="panel">
-
-    <h2>GAME LOG</h2>
-
-    <div id="log" class="log">
-      🇬🇧 Welcome to Kingdoms of England!<br>
-      👤 請輸入名稱並加入遊戲。<br>
-    </div>
 
   </div>
 
@@ -1392,16 +680,20 @@ header p{
 
     <h2>💬 CHAT</h2>
 
-    <div id="chat" class="chat">
-      🔴 Raven: Good luck everyone!<br>
+    <div class="chat" id="chat">
+
+      🔴 King: Good luck!<br>
+      🔵 Wizard: Let's build!<br>
+      🟢 Knight: Britain will be mine!<br>
+      🟡 Archer: Watch the roads!<br>
+
     </div>
 
     <div class="chatInput">
 
       <input
         id="message"
-        maxlength="200"
-        placeholder="Type a message..."
+        placeholder="輸入訊息..."
         onkeydown="if(event.key==='Enter')sendChat()">
 
       <button onclick="sendChat()">
@@ -1417,1055 +709,1831 @@ header p{
 </div>
 
 
-<!-- TRADE MODAL -->
+<!-- =====================================================
+     THREE.JS
+===================================================== -->
 
-<div class="modal" id="tradeModal">
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-  <div class="modalBox">
-
-    <h2>🤝 玩家交易</h2>
-
-    <p>
-      這個版本允許你自由設定交換比例。
-    </p>
-
-    <div class="modalGrid">
-
-      <select id="playerTradeTarget">
-      </select>
-
-      <input
-        id="playerGiveAmount"
-        type="number"
-        min="1"
-        value="1">
-
-      <select id="playerGiveResource">
-        <option value="wood">🌲 Timber</option>
-        <option value="grain">🌾 Grain</option>
-        <option value="wool">🐑 Wool</option>
-        <option value="brick">🧱 Brick</option>
-        <option value="iron">⛏️ Iron</option>
-        <option value="stone">🪨 Stone</option>
-        <option value="gold">🪙 Gold</option>
-      </select>
-
-      <input
-        id="playerGetAmount"
-        type="number"
-        min="1"
-        value="1">
-
-      <select id="playerGetResource">
-        <option value="grain">🌾 Grain</option>
-        <option value="wood">🌲 Timber</option>
-        <option value="wool">🐑 Wool</option>
-        <option value="brick">🧱 Brick</option>
-        <option value="iron">⛏️ Iron</option>
-        <option value="stone">🪨 Stone</option>
-        <option value="gold">🪙 Gold</option>
-      </select>
-
-    </div>
-
-    <div class="modalActions">
-
-      <button
-        class="btn"
-        onclick="closeTradeModal()">
-        取消
-      </button>
-
-      <button
-        class="btn gold"
-        onclick="sendPlayerTrade()">
-        發送交易
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
 
 
 <script>
 
-/* =========================================================
-   SUPABASE
-========================================================= */
+/* =====================================================
+   GAME DATA
+===================================================== */
 
-const SUPABASE_URL =
-  "https://aeqhrcdlmpqncddridaj.supabase.co";
+const players = [
 
-const SUPABASE_KEY =
-  "sb_publishable_mpr9262EO73p6B6KHBhc7A_l-TBVzPc";
+  {
+    id:1,
+    name:"King",
+    icon:"👑",
+    money:1500,
+    color:0xb52e2e,
+    position:0
+  },
 
-let supabaseClient = null;
+  {
+    id:2,
+    name:"Wizard",
+    icon:"🧙",
+    money:1500,
+    color:0x3c72bd,
+    position:0
+  },
 
-let supabaseConnected = false;
+  {
+    id:3,
+    name:"Knight",
+    icon:"🛡️",
+    money:1500,
+    color:0x4e9849,
+    position:0
+  },
 
+  {
+    id:4,
+    name:"Archer",
+    icon:"🏹",
+    money:1500,
+    color:0xd2a727,
+    position:0
+  }
 
-/* =========================================================
-   GAME CONSTANTS
-========================================================= */
-
-const ROOM_CODE = "ENGLAND-001";
-
-const MAX_PLAYERS = 4;
-
-const WIN_VP = 10;
-
-const COLORS = [
-  "red",
-  "blue",
-  "green",
-  "yellow"
 ];
 
-const RESOURCE_NAMES = {
-  wood:"Timber",
-  grain:"Grain",
-  wool:"Wool",
-  brick:"Brick",
-  iron:"Iron",
-  stone:"Stone",
-  gold:"Gold"
-};
 
-const RESOURCE_ICONS = {
-  wood:"🌲",
-  grain:"🌾",
-  wool:"🐑",
-  brick:"🧱",
-  iron:"⛏️",
-  stone:"🪨",
-  gold:"🪙"
-};
+let currentPlayer = 0;
+
+let selectedProperty = null;
+
+let moving = false;
 
 
-/* =========================================================
-   LOCAL PLAYER
-========================================================= */
+/* =====================================================
+   PROPERTY DATA
+===================================================== */
 
-let playerId =
-  localStorage.getItem("england_player_id");
+const properties = [
 
-if(!playerId){
+  {
+    name:"GO",
+    type:"go",
+    price:0,
+    rent:0,
+    description:"起點。經過 GO 可獲得 £200。"
+  },
 
-  playerId =
-    crypto.randomUUID
-      ? crypto.randomUUID()
-      : "p-"+Date.now()+"-"+Math.random();
+  {
+    name:"Cambridge",
+    type:"property",
+    price:100,
+    rent:10,
+    color:"brown",
+    description:"劍橋。歷史悠久的大學城市。"
+  },
 
-  localStorage.setItem(
-    "england_player_id",
-    playerId
+  {
+    name:"Norwich",
+    type:"property",
+    price:120,
+    rent:12,
+    color:"brown",
+    description:"諾里奇。東英格蘭重要城市。"
+  },
+
+  {
+    name:"Chance",
+    type:"chance",
+    price:0,
+    rent:0,
+    description:"抽取一張機會卡。"
+  },
+
+  {
+    name:"Ipswich",
+    type:"property",
+    price:140,
+    rent:14,
+    color:"lightblue",
+    description:"伊普斯威奇。薩福克重要港口。"
+  },
+
+  {
+    name:"London",
+    type:"property",
+    price:400,
+    rent:50,
+    color:"blue",
+    description:"倫敦。英國首都與最重要的金融中心。"
+  },
+
+  {
+    name:"Birmingham",
+    type:"property",
+    price:300,
+    rent:35,
+    color:"red",
+    description:"伯明翰。英格蘭中部重要工業與商業中心。"
+  },
+
+  {
+    name:"Nottingham",
+    type:"property",
+    price:220,
+    rent:24,
+    color:"orange",
+    description:"諾丁漢。傳說中的 Robin Hood 城市。"
+  },
+
+  {
+    name:"Sheffield",
+    type:"property",
+    price:240,
+    rent:26,
+    color:"orange",
+    description:"謝菲爾德。著名鋼鐵城市。"
+  },
+
+  {
+    name:"Leeds",
+    type:"property",
+    price:260,
+    rent:28,
+    color:"yellow",
+    description:"利茲。約克郡重要商業城市。"
+  },
+
+  {
+    name:"York",
+    type:"property",
+    price:280,
+    rent:30,
+    color:"yellow",
+    description:"約克。擁有悠久歷史的古城。"
+  },
+
+  {
+    name:"Newcastle",
+    type:"property",
+    price:300,
+    rent:32,
+    color:"yellow",
+    description:"紐卡斯爾。英格蘭東北部重要城市。"
+  },
+
+  {
+    name:"Edinburgh",
+    type:"property",
+    price:350,
+    rent:40,
+    color:"green",
+    description:"愛丁堡。蘇格蘭首府。"
+  },
+
+  {
+    name:"Glasgow",
+    type:"property",
+    price:340,
+    rent:38,
+    color:"green",
+    description:"格拉斯哥。蘇格蘭最大城市之一。"
+  },
+
+  {
+    name:"Liverpool",
+    type:"property",
+    price:280,
+    rent:30,
+    color:"red",
+    description:"利物浦。著名港口城市與文化城市。"
+  },
+
+  {
+    name:"Manchester",
+    type:"property",
+    price:320,
+    rent:36,
+    color:"red",
+    description:"曼徹斯特。英格蘭北部重要都市。"
+  },
+
+  {
+    name:"Cardiff",
+    type:"property",
+    price:260,
+    rent:28,
+    color:"green",
+    description:"卡迪夫。威爾斯首府。"
+  },
+
+  {
+    name:"Bristol",
+    type:"property",
+    price:280,
+    rent:30,
+    color:"green",
+    description:"布里斯托。英格蘭西南部重要城市與港口。"
+  },
+
+  {
+    name:"Bridgwater",
+    type:"property",
+    price:180,
+    rent:18,
+    color:"lightblue",
+    description:"Bridgwater（布里奇沃特）。Somerset 的歷史城鎮，也是西南英格蘭重要交通與商業節點。"
+  },
+
+  {
+    name:"Exeter",
+    type:"property",
+    price:220,
+    rent:22,
+    color:"lightblue",
+    description:"埃克塞特。德文郡重要城市。"
+  },
+
+  {
+    name:"Plymouth",
+    type:"property",
+    price:240,
+    rent:24,
+    color:"blue",
+    description:"普利茅斯。英格蘭西南部重要海港。"
+  },
+
+  {
+    name:"Jail",
+    type:"jail",
+    price:0,
+    rent:0,
+    description:"監獄。停留一回合。"
+  },
+
+  {
+    name:"Southampton",
+    type:"property",
+    price:260,
+    rent:28,
+    color:"orange",
+    description:"南安普敦。重要海港與郵輪港口。"
+  },
+
+  {
+    name:"Oxford",
+    type:"property",
+    price:320,
+    rent:38,
+    color:"blue",
+    description:"牛津。世界著名的大學城市。"
+  },
+
+  {
+    name:"Reading",
+    type:"property",
+    price:220,
+    rent:22,
+    color:"pink",
+    description:"雷丁。倫敦以西重要商業城市。"
+  }
+
+];
+
+
+/* =====================================================
+   OWNERS
+===================================================== */
+
+const owners = {};
+
+
+/* =====================================================
+   THREE SCENE
+===================================================== */
+
+const container =
+  document.getElementById("scene");
+
+const canvas =
+  document.getElementById("threeCanvas");
+
+
+const renderer =
+  new THREE.WebGLRenderer({
+    canvas:canvas,
+    antialias:true,
+    alpha:true
+  });
+
+
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio,2)
+);
+
+renderer.setSize(
+  container.clientWidth,
+  container.clientHeight
+);
+
+
+renderer.shadowMap.enabled = true;
+
+
+const scene =
+  new THREE.Scene();
+
+
+const camera =
+  new THREE.PerspectiveCamera(
+    45,
+    container.clientWidth /
+    container.clientHeight,
+    0.1,
+    1000
   );
 
-}
 
-let playerName =
-  localStorage.getItem("england_player_name") || "";
-
-let myColor =
-  localStorage.getItem("england_player_color") || "";
-
-
-/* =========================================================
-   GAME STATE
-========================================================= */
-
-let players = [];
-
-let currentPlayerIndex = 0;
-
-let gameStarted = false;
-
-let selectedNode = null;
-
-let selectedTerrain = null;
-
-let robberMoveMode = false;
-
-let robberTerrain = "Desert";
-
-let diceRolledThisTurn = false;
-
-let localMode = false;
-
-let realtimeChannel = null;
-
-let buildings = {};
-
-let roads = {};
-
-let developmentCards = {};
-
-let diceValue = [1,1];
+camera.position.set(
+  0,
+  24,
+  25
+);
 
 
-/* =========================================================
-   LOCAL RESOURCES
-========================================================= */
-
-let myResources = {
-  wood:0,
-  grain:0,
-  wool:0,
-  brick:0,
-  iron:0,
-  stone:0,
-  gold:0
-};
-
-let myVP = 0;
-
-let myKnights = 0;
-
-let myRoadLength = 0;
+const controls =
+  new THREE.OrbitControls(
+    camera,
+    renderer.domElement
+  );
 
 
-/* =========================================================
-   INITIAL STARTING RESOURCES
-========================================================= */
+controls.target.set(
+  0,
+  0,
+  0
+);
 
-function startingResources(){
+
+controls.enableDamping = true;
+
+controls.minDistance = 13;
+controls.maxDistance = 40;
+
+controls.maxPolarAngle =
+  Math.PI / 2.05;
+
+
+/* =====================================================
+   LIGHT
+===================================================== */
+
+const ambient =
+  new THREE.HemisphereLight(
+    0xfff2d0,
+    0x16303a,
+    2.2
+  );
+
+scene.add(ambient);
+
+
+const light =
+  new THREE.DirectionalLight(
+    0xffe5ad,
+    3
+  );
+
+light.position.set(
+  10,
+  25,
+  12
+);
+
+light.castShadow = true;
+
+scene.add(light);
+
+
+/* =====================================================
+   BOARD
+===================================================== */
+
+const boardGroup =
+  new THREE.Group();
+
+scene.add(boardGroup);
+
+
+const BOARD_SIZE = 24;
+
+const TILE = 2.1;
+
+const boardBase =
+  new THREE.Mesh(
+    new THREE.BoxGeometry(
+      BOARD_SIZE,
+      1.1,
+      BOARD_SIZE
+    ),
+    new THREE.MeshStandardMaterial({
+      color:0x253b35,
+      roughness:.8
+    })
+  );
+
+
+boardBase.position.y = -0.55;
+
+boardBase.receiveShadow = true;
+
+boardGroup.add(boardBase);
+
+
+/* =====================================================
+   TILE POSITIONS
+===================================================== */
+
+const tileObjects = [];
+
+const tileMeshes = [];
+
+
+function getTilePosition(index){
+
+  const n =
+    properties.length;
+
+  const side =
+    Math.ceil(n / 4);
+
+  let x = 0;
+  let z = 0;
+
+  if(index < side){
+
+    x =
+      -BOARD_SIZE/2 +
+      TILE/2 +
+      index*TILE;
+
+    z =
+      BOARD_SIZE/2 -
+      TILE/2;
+
+  }
+
+  else if(index < side*2){
+
+    const i =
+      index-side;
+
+    x =
+      BOARD_SIZE/2 -
+      TILE/2;
+
+    z =
+      BOARD_SIZE/2 -
+      TILE/2 -
+      i*TILE;
+
+  }
+
+  else if(index < side*3){
+
+    const i =
+      index-side*2;
+
+    x =
+      BOARD_SIZE/2 -
+      TILE/2 -
+      i*TILE;
+
+    z =
+      -BOARD_SIZE/2 +
+      TILE/2;
+
+  }
+
+  else{
+
+    const i =
+      index-side*3;
+
+    x =
+      -BOARD_SIZE/2 +
+      TILE/2;
+
+    z =
+      -BOARD_SIZE/2 +
+      TILE/2 +
+      i*TILE;
+
+  }
 
   return {
-    wood:2,
-    grain:2,
-    wool:2,
-    brick:2,
-    iron:2,
-    stone:0,
-    gold:0
+    x:x,
+    z:z
   };
 
 }
 
 
-/* =========================================================
-   HELPERS
-========================================================= */
+/* =====================================================
+   CREATE TILE
+===================================================== */
 
-function $(id){
+function createTile(data,index){
 
-  return document.getElementById(id);
-
-}
-
-
-function escapeHTML(text){
-
-  const div =
-    document.createElement("div");
-
-  div.textContent =
-    String(text);
-
-  return div.innerHTML;
-
-}
+  const pos =
+    getTilePosition(index);
 
 
-function toast(message){
-
-  const box = $("toast");
-
-  box.textContent = message;
-
-  box.classList.add("show");
-
-  setTimeout(()=>{
-    box.classList.remove("show");
-  },2200);
-
-}
+  const material =
+    new THREE.MeshStandardMaterial({
+      color:
+        data.type==="property"
+          ? 0xf0dfb8
+          : 0xd9c99e,
+      roughness:.7
+    });
 
 
-function log(message){
-
-  const box = $("log");
-
-  box.innerHTML =
-    escapeHTML(message) +
-    "<br>" +
-    box.innerHTML;
-
-}
-
-
-function chatLog(name,message,color="red"){
-
-  const box = $("chat");
-
-  box.innerHTML +=
-    `<span style="color:${color}">
-      ${escapeHTML(name)}:
-    </span>
-    ${escapeHTML(message)}
-    <br>`;
-
-  box.scrollTop =
-    box.scrollHeight;
-
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-async function initSupabase(){
-
-  try{
-
-    if(!window.supabase){
-
-      throw new Error(
-        "Supabase library failed to load."
-      );
-
-    }
-
-    supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-
-    /*
-      測試 Supabase REST API。
-      這裡使用 OPTIONS/HEAD 不一定在所有瀏覽器可用，
-      因此直接測試專案 URL。
-    */
-
-    const response =
-      await fetch(
-        SUPABASE_URL + "/rest/v1/",
-        {
-          method:"GET",
-          headers:{
-            "apikey":SUPABASE_KEY,
-            "Authorization":
-              "Bearer "+SUPABASE_KEY
-          }
-        }
-      );
-
-    if(
-      response.ok ||
-      response.status===401 ||
-      response.status===404
-    ){
-
-      supabaseConnected = true;
-
-      setConnection(
-        "ok",
-        "Supabase connected"
-      );
-
-      log("🟢 Supabase connection established.");
-
-      setupRealtime();
-
-      return;
-
-    }
-
-    throw new Error(
-      "HTTP "+response.status
+  const mesh =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        TILE-.08,
+        .45,
+        TILE-.08
+      ),
+      material
     );
 
-  }catch(error){
 
-    console.warn(
-      "Supabase connection:",
-      error
+  mesh.position.set(
+    pos.x,
+    .25,
+    pos.z
+  );
+
+
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+
+  mesh.userData.index =
+    index;
+
+
+  boardGroup.add(mesh);
+
+  tileMeshes.push(mesh);
+
+
+  /* =====================
+     COLOR BAR
+  ===================== */
+
+  if(data.type==="property"){
+
+    const colorMap = {
+
+      brown:0x8b5a3c,
+      lightblue:0x73bfd0,
+      pink:0xd16a91,
+      orange:0xd47d35,
+      red:0xbd4039,
+      yellow:0xd4ad37,
+      green:0x4f8d56,
+      blue:0x4d70bf
+
+    };
+
+
+    const bar =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          TILE-.18,
+          .08,
+          .34
+        ),
+        new THREE.MeshStandardMaterial({
+          color:
+            colorMap[data.color] ||
+            0x555555
+        })
+      );
+
+
+    bar.position.set(
+      pos.x,
+      .5,
+      pos.z-TILE*.34
     );
 
-    supabaseConnected = false;
 
-    localMode = true;
-
-    setConnection(
-      "local",
-      "Local game mode"
-    );
-
-    log(
-      "🟡 Supabase unavailable，已切換本機遊戲模式。"
-    );
-
-    loadLocalPlayers();
+    boardGroup.add(bar);
 
   }
 
-}
 
-
-function setConnection(type,text){
-
-  const box =
-    $("connectionStatus");
+  /* =====================
+     LABEL
+  ===================== */
 
   const label =
-    $("connectionText");
-
-  box.className =
-    "connection "+type;
-
-  label.textContent =
-    text;
-
-}
-
-
-/* =========================================================
-   REALTIME
-========================================================= */
-
-function setupRealtime(){
-
-  if(!supabaseClient){
-
-    return;
-
-  }
-
-  try{
-
-    realtimeChannel =
-      supabaseClient
-        .channel("england-"+ROOM_CODE)
-        .on(
-          "postgres_changes",
-          {
-            event:"*",
-            schema:"public"
-          },
-          payload=>{
-            handleRealtime(payload);
-          }
-        )
-        .subscribe();
-
-  }catch(error){
-
-    console.warn(
-      "Realtime error",
-      error
+    createTextSprite(
+      data.name
     );
 
-  }
 
-}
-
-
-function handleRealtime(payload){
-
-  const row =
-    payload.new || payload.old;
-
-  if(!row){
-
-    return;
-
-  }
-
-  /*
-    支援常見的 players/game_state/chat table。
-  */
-
-  if(
-    payload.table === "game_players" ||
-    payload.table === "players"
-  ){
-
-    loadPlayersFromSupabase();
-
-  }
-
-  if(
-    payload.table === "game_state" ||
-    payload.table === "game_states"
-  ){
-
-    loadGameState();
-
-  }
-
-  if(
-    payload.table === "game_chat" ||
-    payload.table === "chat"
-  ){
-
-    loadChat();
-
-  }
-
-}
-
-
-/* =========================================================
-   JOIN
-========================================================= */
-
-async function joinGame(){
-
-  const input =
-    $("playerName");
-
-  let name =
-    input.value.trim();
-
-  if(!name){
-
-    toast("請先輸入玩家名稱");
-
-    input.focus();
-
-    return;
-
-  }
-
-  name =
-    name.substring(0,20);
-
-  playerName = name;
-
-  localStorage.setItem(
-    "england_player_name",
-    name
+  label.position.set(
+    pos.x,
+    .72,
+    pos.z
   );
 
 
-  if(!myColor){
+  label.scale.set(
+    1.65,
+    .55,
+    1
+  );
 
-    myColor =
-      COLORS[players.length % COLORS.length];
 
-    localStorage.setItem(
-      "england_player_color",
-      myColor
+  boardGroup.add(label);
+
+
+  tileObjects[index] =
+    mesh;
+
+}
+
+
+/* =====================================================
+   TEXT SPRITE
+===================================================== */
+
+function createTextSprite(text){
+
+  const canvas =
+    document.createElement("canvas");
+
+  canvas.width=512;
+  canvas.height=128;
+
+
+  const ctx =
+    canvas.getContext("2d");
+
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+
+  ctx.fillStyle =
+    "rgba(30,25,17,.92)";
+
+
+  ctx.roundRect(
+    4,
+    4,
+    504,
+    120,
+    18
+  );
+
+
+  ctx.fill();
+
+
+  ctx.fillStyle =
+    "#f8e9bd";
+
+
+  ctx.font =
+    "bold 42px Georgia";
+
+
+  ctx.textAlign =
+    "center";
+
+  ctx.textBaseline =
+    "middle";
+
+
+  ctx.fillText(
+    text,
+    256,
+    64
+  );
+
+
+  const texture =
+    new THREE.CanvasTexture(
+      canvas
+    );
+
+
+  texture.needsUpdate=true;
+
+
+  const material =
+    new THREE.SpriteMaterial({
+      map:texture,
+      transparent:true
+    });
+
+
+  return new THREE.Sprite(
+    material
+  );
+
+}
+
+
+/* =====================================================
+   BUILD TILES
+===================================================== */
+
+properties.forEach(
+  (property,index)=>{
+    createTile(
+      property,
+      index
+    );
+  }
+);
+
+
+/* =====================================================
+   CENTER CASTLE
+===================================================== */
+
+const castleGroup =
+  new THREE.Group();
+
+
+boardGroup.add(
+  castleGroup
+);
+
+
+/* floor */
+
+const castleFloor =
+  new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      5.2,
+      5.5,
+      .7,
+      32
+    ),
+    new THREE.MeshStandardMaterial({
+      color:0x6d5637
+    })
+  );
+
+
+castleFloor.position.y=.4;
+
+castleFloor.receiveShadow=true;
+
+castleGroup.add(
+  castleFloor
+);
+
+
+/* castle body */
+
+const castleBody =
+  new THREE.Mesh(
+    new THREE.BoxGeometry(
+      6,
+      3.8,
+      5
+    ),
+    new THREE.MeshStandardMaterial({
+      color:0xb4a789
+    })
+  );
+
+
+castleBody.position.y=2.4;
+
+castleBody.castShadow=true;
+
+castleGroup.add(
+  castleBody
+);
+
+
+/* towers */
+
+[
+  [-2.7,2.7,-2.2],
+  [ 2.7,2.7,-2.2],
+  [-2.7,2.7, 2.2],
+  [ 2.7,2.7, 2.2]
+].forEach(
+  p=>{
+
+    const tower =
+      new THREE.Mesh(
+        new THREE.CylinderGeometry(
+          .75,
+          .9,
+          5,
+          10
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0x958a70
+        })
+      );
+
+
+    tower.position.set(
+      p[0],
+      p[1],
+      p[2]
+    );
+
+
+    tower.castShadow=true;
+
+    castleGroup.add(
+      tower
+    );
+
+
+    const roof =
+      new THREE.Mesh(
+        new THREE.ConeGeometry(
+          1.05,
+          1.7,
+          10
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0x6c3030
+        })
+      );
+
+
+    roof.position.set(
+      p[0],
+      5.8,
+      p[2]
+    );
+
+
+    roof.castShadow=true;
+
+    castleGroup.add(
+      roof
     );
 
   }
+);
 
 
-  if(localMode){
+/* flag */
 
-    joinLocalGame();
+const pole =
+  new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      .06,
+      .06,
+      4,
+      8
+    ),
+    new THREE.MeshStandardMaterial({
+      color:0x3b2b1b
+    })
+  );
 
-    return;
+
+pole.position.y=7;
+
+castleGroup.add(pole);
+
+
+const flag =
+  new THREE.Mesh(
+    new THREE.PlaneGeometry(
+      1.7,
+      1
+    ),
+    new THREE.MeshStandardMaterial({
+      color:0xb82d2d,
+      side:THREE.DoubleSide
+    })
+  );
+
+
+flag.position.set(
+  .8,
+  7.5,
+  0
+);
+
+
+castleGroup.add(flag);
+
+
+/* =====================================================
+   PLAYER PIECES
+===================================================== */
+
+const playerMeshes = [];
+
+
+function createPlayerPiece(player,index){
+
+  const group =
+    new THREE.Group();
+
+
+  const material =
+    new THREE.MeshStandardMaterial({
+      color:player.color,
+      metalness:.15,
+      roughness:.4
+    });
+
+
+  /* base */
+
+  const base =
+    new THREE.Mesh(
+      new THREE.CylinderGeometry(
+        .42,
+        .5,
+        .25,
+        24
+      ),
+      material
+    );
+
+
+  base.position.y=.75;
+
+  base.castShadow=true;
+
+  group.add(base);
+
+
+  /* body */
+
+  const body =
+    new THREE.Mesh(
+      new THREE.CylinderGeometry(
+        .24,
+        .35,
+        .9,
+        16
+      ),
+      material
+    );
+
+
+  body.position.y=1.25;
+
+  body.castShadow=true;
+
+  group.add(body);
+
+
+  /* head */
+
+  const head =
+    new THREE.Mesh(
+      new THREE.SphereGeometry(
+        .28,
+        20,
+        20
+      ),
+      material
+    );
+
+
+  head.position.y=1.9;
+
+  head.castShadow=true;
+
+  group.add(head);
+
+
+  /* crown */
+
+  if(index===0){
+
+    const crown =
+      new THREE.Mesh(
+        new THREE.ConeGeometry(
+          .34,
+          .45,
+          5
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0xe4bd43
+        })
+      );
+
+    crown.position.y=2.35;
+
+    group.add(crown);
 
   }
 
 
-  try{
+  /* wizard hat */
 
-    /*
-      嘗試使用 game_players。
-    */
+  if(index===1){
 
-    const result =
-      await supabaseClient
-        .from("game_players")
-        .upsert(
-          {
-            id:playerId,
-            room_code:ROOM_CODE,
-            name:name,
-            color:myColor,
-            vp:0
-          },
-          {
-            onConflict:"id"
-          }
-        );
-
-    if(result.error){
-
-      console.warn(
-        "game_players unavailable:",
-        result.error
+    const hat =
+      new THREE.Mesh(
+        new THREE.ConeGeometry(
+          .42,
+          .85,
+          12
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0x57398f
+        })
       );
 
-      /*
-        如果你的 SQL 使用 players，
-        自動嘗試 players。
-      */
+    hat.position.y=2.45;
 
-      const fallback =
-        await supabaseClient
-          .from("players")
-          .upsert(
-            {
-              id:playerId,
-              room_code:ROOM_CODE,
-              name:name,
-              color:myColor,
-              vp:0
-            },
-            {
-              onConflict:"id"
-            }
-          );
+    group.add(hat);
 
-      if(fallback.error){
+  }
 
-        throw fallback.error;
 
-      }
+  /* knight shield */
+
+  if(index===2){
+
+    const shield =
+      new THREE.Mesh(
+        new THREE.SphereGeometry(
+          .35,
+          16,
+          12
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0xd8d8d8,
+          metalness:.5
+        })
+      );
+
+    shield.scale.set(
+      .55,
+      .8,
+      .2
+    );
+
+    shield.position.set(
+      .35,
+      1.35,
+      .05
+    );
+
+    group.add(shield);
+
+  }
+
+
+  /* archer bow */
+
+  if(index===3){
+
+    const bow =
+      new THREE.Mesh(
+        new THREE.TorusGeometry(
+          .35,
+          .055,
+          8,
+          16,
+          Math.PI
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0x6f4725
+        })
+      );
+
+    bow.rotation.z=
+      Math.PI/2;
+
+    bow.position.set(
+      .4,
+      1.4,
+      .05
+    );
+
+    group.add(bow);
+
+  }
+
+
+  const pos =
+    getTilePosition(0);
+
+
+  group.position.set(
+    pos.x,
+    0,
+    pos.z
+  );
+
+
+  /* spread players */
+
+  group.position.x +=
+    (index-1.5)*.35;
+
+
+  group.position.z +=
+    .35;
+
+
+  scene.add(group);
+
+
+  playerMeshes.push(group);
+
+}
+
+
+/* create all */
+
+players.forEach(
+  createPlayerPiece
+);
+
+
+/* =====================================================
+   POSITION PLAYER
+===================================================== */
+
+function positionPlayer(
+  playerIndex,
+  tileIndex
+){
+
+  const mesh =
+    playerMeshes[playerIndex];
+
+  const pos =
+    getTilePosition(tileIndex);
+
+
+  mesh.position.x =
+    pos.x +
+    (playerIndex-1.5)*.35;
+
+
+  mesh.position.z =
+    pos.z +
+    .35;
+
+
+}
+
+
+/* =====================================================
+   ANIMATE PLAYER
+===================================================== */
+
+async function movePlayerSteps(
+  playerIndex,
+  steps
+){
+
+  moving=true;
+
+  const button =
+    document.getElementById(
+      "rollButton"
+    );
+
+  button.disabled=true;
+
+
+  const player =
+    players[playerIndex];
+
+
+  for(let i=0;i<steps;i++){
+
+    const old =
+      player.position;
+
+    const next =
+      (old+1)%properties.length;
+
+
+    /* GO */
+
+    if(
+      next===0 &&
+      old!==0
+    ){
+
+      player.money+=200;
+
+      log(
+        "🏁 "+
+        player.name+
+        " 經過 GO，獲得 £200！"
+      );
+
+      updateUI();
 
     }
 
-    await loadPlayersFromSupabase();
 
-    toast("成功加入遊戲");
+    player.position =
+      next;
 
-  }catch(error){
 
-    console.error(error);
-
-    localMode = true;
-
-    setConnection(
-      "local",
-      "Local game mode"
+    positionPlayer(
+      playerIndex,
+      next
     );
+
+
+    await wait(260);
+
+  }
+
+
+  resolveLanding(
+    playerIndex
+  );
+
+
+  moving=false;
+
+  button.disabled=false;
+
+}
+
+
+/* =====================================================
+   LANDING
+===================================================== */
+
+function resolveLanding(
+  playerIndex
+){
+
+  const player =
+    players[playerIndex];
+
+  const property =
+    properties[
+      player.position
+    ];
+
+
+  selectedProperty =
+    player.position;
+
+
+  updatePropertyInfo();
+
+
+  /* GO */
+
+  if(property.type==="go"){
 
     log(
-      "🟡 Supabase table 尚未可用，使用本機模式。"
+      "🏁 "+
+      player.name+
+      " 停在 GO。"
     );
 
-    joinLocalGame();
-
+    return;
   }
 
-}
 
+  /* CHANCE */
 
-/* =========================================================
-   LOCAL PLAYERS
-========================================================= */
+  if(property.type==="chance"){
 
-function loadLocalPlayers(){
-
-  const saved =
-    localStorage.getItem(
-      "england_local_players"
+    chanceCard(
+      playerIndex
     );
 
-  if(saved){
+    return;
+  }
 
-    try{
 
-      players =
-        JSON.parse(saved);
+  /* JAIL */
 
-    }catch{
+  if(property.type==="jail"){
 
-      players = [];
+    log(
+      "👮 "+
+      player.name+
+      " 進入監獄！"
+    );
+
+    return;
+  }
+
+
+  /* PROPERTY */
+
+  if(property.type==="property"){
+
+    const owner =
+      owners[
+        player.position
+      ];
+
+
+    if(
+      owner===undefined
+    ){
+
+      log(
+        "🏙️ "+
+        player.name+
+        " 到達 "+
+        property.name+
+        "。可以購買。"
+      );
+
+      enableBuy();
+
+    }
+
+
+    else if(
+      owner!==playerIndex
+    ){
+
+      const rent =
+        property.rent *
+        (
+          property.level ||
+          1
+        );
+
+
+      const actualRent =
+        Math.min(
+          rent,
+          player.money
+        );
+
+
+      player.money -=
+        actualRent;
+
+
+      players[owner].money +=
+        actualRent;
+
+
+      log(
+        "💰 "+
+        player.name+
+        " 支付 £"+
+        actualRent+
+        " 租金給 "+
+        players[owner].name+
+        "。"
+      );
+
+
+      updateUI();
+
+    }
+
+
+    else{
+
+      log(
+        "🏠 "+
+        player.name+
+        " 回到自己的 "+
+        property.name+
+        "。"
+      );
+
+      enableUpgrade();
 
     }
 
   }
 
-  renderPlayers();
-
 }
 
 
-function saveLocalPlayers(){
+/* =====================================================
+   BUY
+===================================================== */
 
-  localStorage.setItem(
-    "england_local_players",
-    JSON.stringify(players)
-  );
+function buyProperty(){
 
-}
+  if(
+    selectedProperty===null
+  ){
+    return;
+  }
 
 
-function joinLocalGame(){
+  const player =
+    players[currentPlayer];
 
-  let existing =
-    players.find(
-      p=>p.id===playerId
+  const property =
+    properties[
+      selectedProperty
+    ];
+
+
+  if(
+    property.type!=="property"
+  ){
+    return;
+  }
+
+
+  if(
+    owners[
+      selectedProperty
+    ]!==undefined
+  ){
+    return;
+  }
+
+
+  if(
+    player.money<
+    property.price
+  ){
+
+    log(
+      "❌ 金錢不足，無法購買 "+
+      property.name
     );
 
-  if(existing){
-
-    existing.name =
-      playerName;
-
-    renderPlayers();
-
-    startGameIfReady();
-
     return;
-
   }
 
-  if(players.length>=MAX_PLAYERS){
 
-    toast("房間已滿");
+  player.money -=
+    property.price;
 
-    return;
 
-  }
+  owners[
+    selectedProperty
+  ] =
+    currentPlayer;
 
-  const p = {
 
-    id:playerId,
+  property.level=1;
 
-    name:playerName,
-
-    color:
-      myColor ||
-      COLORS[players.length],
-
-    vp:0,
-
-    resources:
-      startingResources(),
-
-    knights:0,
-
-    roadLength:0
-
-  };
-
-  myColor =
-    p.color;
-
-  localStorage.setItem(
-    "england_player_color",
-    myColor
-  );
-
-  players.push(p);
-
-  saveLocalPlayers();
-
-  renderPlayers();
 
   log(
-    "👤 "+playerName+
-    " joined the game."
+    "🏠 "+
+    player.name+
+    " 買下 "+
+    property.name+
+    "，支付 £"+
+    property.price+
+    "。"
   );
 
-  startGameIfReady();
+
+  createPropertyBuilding(
+    selectedProperty,
+    currentPlayer
+  );
+
+
+  updateUI();
+
+  disableActions();
 
 }
 
 
-/* =========================================================
-   LOAD PLAYERS
-========================================================= */
+/* =====================================================
+   UPGRADE
+===================================================== */
 
-async function loadPlayersFromSupabase(){
+function upgradeProperty(){
 
-  if(!supabaseClient){
-
+  if(
+    selectedProperty===null
+  ){
     return;
-
   }
 
-  let result =
-    await supabaseClient
-      .from("game_players")
-      .select("*")
-      .eq("room_code",ROOM_CODE)
-      .order("created_at",{ascending:true});
 
-  if(result.error){
+  const property =
+    properties[
+      selectedProperty
+    ];
 
-    result =
-      await supabaseClient
-        .from("players")
-        .select("*")
-        .eq("room_code",ROOM_CODE)
-        .order("created_at",{ascending:true});
 
-  }
-
-  if(result.error){
-
-    console.warn(result.error);
-
+  if(
+    owners[
+      selectedProperty
+    ]!==currentPlayer
+  ){
     return;
-
   }
 
-  players =
-    (result.data || []).map(row=>({
 
-      id:
-        row.id ||
-        row.player_id,
+  const player =
+    players[currentPlayer];
 
-      name:
-        row.name ||
-        row.player_name ||
-        "Player",
 
-      color:
-        row.color ||
-        COLORS[0],
+  const level =
+    property.level || 1;
 
-      vp:
-        Number(row.vp || 0),
 
-      resources:
-        row.resources ||
-        startingResources(),
+  if(level>=4){
 
-      knights:
-        Number(row.knights || 0),
-
-      roadLength:
-        Number(row.road_length || 0)
-
-    }));
-
-  renderPlayers();
-
-  const me =
-    players.find(
-      p=>p.id===playerId
+    log(
+      "🏰 "+
+      property.name+
+      " 已經升到最高等級。"
     );
 
-  if(me){
+    return;
+  }
 
-    myResources =
-      Object.assign(
-        myResources,
-        me.resources || {}
+
+  const cost =
+    80*level;
+
+
+  if(
+    player.money<
+    cost
+  ){
+
+    log(
+      "❌ 升級需要 £"+
+      cost
+    );
+
+    return;
+  }
+
+
+  player.money -=
+    cost;
+
+
+  property.level =
+    level+1;
+
+
+  log(
+    "🏰 "+
+    player.name+
+    " 升級 "+
+    property.name+
+    " 到 Lv."+
+    property.level+
+    "。"
+  );
+
+
+  createPropertyBuilding(
+    selectedProperty,
+    currentPlayer
+  );
+
+
+  updateUI();
+
+  disableActions();
+
+}
+
+
+/* =====================================================
+   BUILDING
+===================================================== */
+
+const buildingMeshes = {};
+
+
+function createPropertyBuilding(
+  tileIndex,
+  ownerIndex
+){
+
+  if(
+    buildingMeshes[tileIndex]
+  ){
+
+    boardGroup.remove(
+      buildingMeshes[tileIndex]
+    );
+
+  }
+
+
+  const property =
+    properties[tileIndex];
+
+
+  const level =
+    property.level || 1;
+
+
+  const group =
+    new THREE.Group();
+
+
+  const ownerColor =
+    players[ownerIndex].color;
+
+
+  for(
+    let i=0;
+    i<level;
+    i++
+  ){
+
+    const building =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          .42,
+          .38,
+          .42
+        ),
+        new THREE.MeshStandardMaterial({
+          color:ownerColor
+        })
       );
 
-    myVP =
-      me.vp || 0;
 
-    myKnights =
-      me.knights || 0;
-
-    myRoadLength =
-      me.roadLength || 0;
-
-    updateResources();
-
-  }
-
-  startGameIfReady();
-
-}
-
-
-/* =========================================================
-   RENDER PLAYERS
-========================================================= */
-
-function renderPlayers(){
-
-  const box =
-    $("players");
-
-  if(!players.length){
-
-    box.innerHTML =
-      '<div class="small">等待玩家加入...</div>';
-
-  }else{
-
-    box.innerHTML =
-      players.map((p,i)=>{
-
-        const me =
-          p.id===playerId;
-
-        return `
-          <div class="player ${me?"me":""}">
-            <span>
-              <i class="dot ${p.color}"></i>
-              ${escapeHTML(p.name)}
-              ${me?" ★":""}
-            </span>
-            <b>${Number(p.vp||0)} VP</b>
-          </div>
-        `;
-
-      }).join("");
-
-  }
-
-  $("playerCount").textContent =
-    players.length;
-
-  updateTradePlayers();
-
-}
-
-
-/* =========================================================
-   START GAME
-========================================================= */
-
-function startGameIfReady(){
-
-  if(players.length===0){
-
-    return;
-
-  }
-
-  /*
-    單人也可以測試遊戲。
-    兩人以上則進入正常模式。
-  */
-
-  gameStarted = true;
-
-  $("gameStatus").textContent =
-    players.length>=2
-      ? "Game"
-      : "Practice";
-
-  currentPlayerIndex =
-    Math.min(
-      currentPlayerIndex,
-      players.length-1
+    building.position.set(
+      0,
+      .72+i*.4,
+      0
     );
 
-  renderTurn();
 
-  enableButtons();
-
-}
+    building.castShadow=true;
 
 
-/* =========================================================
-   TURN
-========================================================= */
-
-function currentPlayer(){
-
-  return players[currentPlayerIndex];
-
-}
-
-
-function isMyTurn(){
-
-  const p =
-    currentPlayer();
-
-  return p &&
-    p.id===playerId;
-
-}
-
-
-function renderTurn(){
-
-  const p =
-    currentPlayer();
-
-  if(!p){
-
-    $("turnDisplay").textContent =
-      "等待玩家...";
-
-    $("rollButton").disabled = true;
-
-    return;
+    group.add(
+      building
+    );
 
   }
 
-  $("turnDisplay").textContent =
-    "👑 "+p.name+"'s Turn";
 
-  $("rollButton").disabled =
-    !isMyTurn() ||
-    diceRolledThisTurn;
-
-}
+  const pos =
+    getTilePosition(
+      tileIndex
+    );
 
 
-function endTurn(){
-
-  if(!isMyTurn()){
-
-    return;
-
-  }
-
-  diceRolledThisTurn = false;
-
-  currentPlayerIndex =
-    (currentPlayerIndex+1) %
-    players.length;
-
-  renderTurn();
-
-  log(
-    "➡️ Turn passed to "+
-    currentPlayer().name
+  group.position.set(
+    pos.x+.48,
+    0,
+    pos.z
   );
 
-  syncGameState();
+
+  boardGroup.add(
+    group
+  );
+
+
+  buildingMeshes[
+    tileIndex
+  ] =
+    group;
 
 }
 
 
-/* =========================================================
-   DICE
-========================================================= */
+/* =====================================================
+   CHANCE
+===================================================== */
+
+function chanceCard(
+  playerIndex
+){
+
+  const player =
+    players[playerIndex];
+
+
+  const cards = [
+
+    {
+      text:"🎁 皇室獎賞：獲得 £100。",
+      action:()=>{
+        player.money+=100;
+      }
+    },
+
+    {
+      text:"💸 城堡維修：支付 £50。",
+      action:()=>{
+        player.money=
+          Math.max(
+            0,
+            player.money-50
+          );
+      }
+    },
+
+    {
+      text:"⚓ 港口貿易：獲得 £150。",
+      action:()=>{
+        player.money+=150;
+      }
+    },
+
+    {
+      text:"🌧️ 農業歉收：支付 £80。",
+      action:()=>{
+        player.money=
+          Math.max(
+            0,
+            player.money-80
+          );
+      }
+    }
+
+  ];
+
+
+  const card =
+    cards[
+      Math.floor(
+        Math.random()*
+        cards.length
+      )
+    ];
+
+
+  card.action();
+
+
+  log(
+    "🎴 "+
+    player.name+
+    " 抽到機會卡："+ 
+    card.text
+  );
+
+
+  updateUI();
+
+}
+
+
+/* =====================================================
+   ROLL
+===================================================== */
 
 function rollDice(){
 
-  if(!gameStarted){
-
-    toast("請先加入遊戲");
-
+  if(moving){
     return;
-
   }
 
-  if(!isMyTurn()){
 
-    toast("現在不是你的回合");
+  const player =
+    players[currentPlayer];
 
-    return;
-
-  }
-
-  if(diceRolledThisTurn){
-
-    toast("這回合已經擲過骰子");
-
-    return;
-
-  }
-
-  diceRolledThisTurn = true;
 
   const a =
-    Math.floor(Math.random()*6)+1;
+    Math.floor(
+      Math.random()*6
+    )+1;
+
 
   const b =
-    Math.floor(Math.random()*6)+1;
+    Math.floor(
+      Math.random()*6
+    )+1;
 
-  diceValue =
-    [a,b];
 
   const total =
     a+b;
+
 
   const faces = [
     "⚀",
@@ -2476,2103 +2544,375 @@ function rollDice(){
     "⚅"
   ];
 
-  $("dice").textContent =
-    faces[a-1]+" "+
-    faces[b-1]+" = "+
+
+  document.getElementById(
+    "dice"
+  ).textContent =
+    faces[a-1]+
+    " "+
+    faces[b-1]+
+    " = "+
     total;
+
 
   log(
     "🎲 "+
-    playerName+
-    " rolled "+
-    total+"."
+    player.name+
+    " 擲出 "+
+    total+"。"
   );
 
 
-  if(total===7){
-
-    log(
-      "🏴‍☠️ 7！Robber activated."
-    );
-
-    robberMoveMode = true;
-
-    toast(
-      "🎲 擲出 7！請點擊地圖上的地形移動 Robber。"
-    );
-
-    $("rollButton").disabled = true;
-
-    return;
-
-  }
+  disableActions();
 
 
-  produceResources(total);
+  movePlayerSteps(
+    currentPlayer,
+    total
+  ).then(()=>{
 
-  renderTurn();
-
-}
-
-
-/* =========================================================
-   RESOURCE PRODUCTION
-========================================================= */
-
-function produceResources(number){
-
-  /*
-    Catan 類型：
-    每個有建築的玩家都根據地形數字得到資源。
-  */
-
-  const terrainList =
-    document.querySelectorAll(".terrain");
-
-  let produced = 0;
-
-  terrainList.forEach(terrain=>{
-
-    const n =
-      Number(
-        terrain.dataset.number
-      );
-
-    const resource =
-      terrain.dataset.resource;
-
-    if(n!==number || !resource){
-
-      return;
-
-    }
-
-    if(
-      terrain.textContent.includes("Robber")
-    ){
-
-      return;
-
-    }
-
-    /*
-      實際建築資料：
-      buildings[node] =
-      {
-        owner:id,
-        type:settlement/city
-      }
-    */
-
-    Object.keys(buildings).forEach(nodeId=>{
-
-      const building =
-        buildings[nodeId];
-
-      if(!building){
-
-        return;
-
-      }
-
-      const owner =
-        players.find(
-          p=>p.id===building.owner
-        );
-
-      if(!owner){
-
-        return;
-
-      }
-
-      /*
-        目前使用簡化鄰接規則。
-        每個節點依其位置附近地形產生。
-      */
-
-      if(
-        nodeTouchesTerrain(
-          Number(nodeId),
-          terrain
-        )
-      ){
-
-        const amount =
-          building.type==="city"
-            ? 2
-            : 1;
-
-        if(owner.id===playerId){
-
-          myResources[resource] =
-            Number(myResources[resource]||0)
-            + amount;
-
-          produced += amount;
-
-        }else{
-
-          owner.resources =
-            owner.resources ||
-            startingResources();
-
-          owner.resources[resource] =
-            Number(owner.resources[resource]||0)
-            + amount;
-
-        }
-
-        owner.vp =
-          Number(owner.vp||0);
-
-      }
-
-    });
+    nextTurn();
 
   });
 
-  updateResources();
-
-  renderPlayers();
-
-  if(produced){
-
-    log(
-      "📦 "+RESOURCE_ICONS[
-        Object.keys(RESOURCE_NAMES).find(
-          r=>myResources[r] > 0
-        ) || "wood"
-      ]+
-      " 資源生產 +"+produced
-    );
-
-  }
-
-  syncGameState();
-
 }
 
 
-/* =========================================================
-   NODE / TERRAIN CONNECTION
-========================================================= */
+/* =====================================================
+   TURN
+===================================================== */
 
-const nodePositions = {
+function nextTurn(){
 
-  1:[28,28],
-  2:[43,28],
-  3:[58,28],
-  4:[72,28],
-
-  5:[35,43],
-  6:[50,43],
-  7:[65,43],
-  8:[79,43],
-
-  9:[42,58],
-  10:[57,58],
-  11:[72,58],
-
-  12:[50,73],
-  13:[65,73],
-
-  14:[57,87]
-
-};
-
-
-function nodeTouchesTerrain(nodeId,terrain){
-
-  /*
-    以節點與地形中心距離判斷，
-    避免把節點固定綁死在某一塊地。
-  */
-
-  const pos =
-    nodePositions[nodeId];
-
-  if(!pos){
-
-    return false;
-
-  }
-
-  const style =
-    getComputedStyle(terrain);
-
-  const map =
-    $("gameMap");
-
-  const mapRect =
-    map.getBoundingClientRect();
-
-  const terrainRect =
-    terrain.getBoundingClientRect();
-
-  const tx =
-    ((terrainRect.left +
-      terrainRect.width/2 -
-      mapRect.left) /
-      mapRect.width)*100;
-
-  const ty =
-    ((terrainRect.top +
-      terrainRect.height/2 -
-      mapRect.top) /
-      mapRect.height)*100;
-
-  const dx =
-    pos[0]-tx;
-
-  const dy =
-    pos[1]-ty;
-
-  return Math.sqrt(
-    dx*dx+dy*dy
-  ) < 16;
-
-}
-
-
-/* =========================================================
-   SELECT NODE
-========================================================= */
-
-function selectNode(number){
-
-  if(robberMoveMode){
-
-    toast("現在請選擇地形移動 Robber");
-
-    return;
-
-  }
-
-  document
-    .querySelectorAll(".node")
-    .forEach(n=>{
-      n.classList.remove("selected");
-    });
-
-  const node =
-    document.querySelector(
-      `[data-node="${number}"]`
-    );
-
-  if(!node){
-
-    return;
-
-  }
-
-  node.classList.add("selected");
-
-  selectedNode =
-    number;
-
-  log(
-    "📍 Selected build node "+number
-  );
-
-}
-
-
-/* =========================================================
-   TERRAIN SELECT
-========================================================= */
-
-function selectTerrain(element){
-
-  document
-    .querySelectorAll(".terrain")
-    .forEach(t=>{
-      t.classList.remove("selected");
-    });
-
-  element.classList.add("selected");
-
-  selectedTerrain =
-    element;
-
-  const resource =
-    element.dataset.resource;
-
-  const number =
-    element.dataset.number;
-
-  log(
-    "🗺️ "+
-    element.innerText.replace(/\s+/g," ").trim()+
-    " • "+
+  currentPlayer =
     (
-      RESOURCE_NAMES[resource] ||
-      "Desert"
-    )+
-    " • Dice "+
-    number
-  );
-
-  if(robberMoveMode){
-
-    moveRobberToTerrain(element);
-
-  }
-
-}
+      currentPlayer+1
+    )%
+    players.length;
 
 
-/* =========================================================
-   BUILDING
-========================================================= */
+  const player =
+    players[
+      currentPlayer
+    ];
 
-function hasCost(cost){
 
-  for(const key in cost){
+  document.getElementById(
+    "turn"
+  ).textContent =
+    player.icon+
+    " "+
+    player.name+
+    " 的回合";
 
-    if(
-      Number(myResources[key]||0)
-      <
-      Number(cost[key])
-    ){
 
-      return false;
+  document.getElementById(
+    "currentMoney"
+  ).textContent =
+    "£"+
+    player.money;
 
-    }
 
-  }
-
-  return true;
+  updateUI();
 
 }
 
 
-function spend(cost){
-
-  if(!hasCost(cost)){
-
-    return false;
-
-  }
-
-  for(const key in cost){
-
-    myResources[key] -=
-      Number(cost[key]);
-
-  }
-
-  updateResources();
-
-  return true;
-
-}
-
-
-function buildSettlement(){
-
-  if(!isMyTurn()){
-
-    toast("現在不是你的回合");
-
-    return;
-
-  }
-
-  if(selectedNode===null){
-
-    toast("請先點擊地圖上的建築節點");
-
-    return;
-
-  }
-
-  if(buildings[selectedNode]){
-
-    toast("這個節點已經有建築");
-
-    return;
-
-  }
-
-  const cost = {
-    wood:1,
-    brick:1,
-    grain:1,
-    wool:1
-  };
-
-  if(!spend(cost)){
-
-    toast(
-      "資源不足：需要 Timber + Brick + Grain + Wool"
-    );
-
-    return;
-
-  }
-
-  buildings[selectedNode] = {
-
-    owner:playerId,
-
-    type:"settlement"
-
-  };
-
-  myVP++;
-
-  renderBuildings();
-
-  log(
-    "🏘️ "+playerName+
-    " built a Settlement! +1 VP"
-  );
-
-  checkVictory();
-
-  syncGameState();
-
-}
-
-
-function buildCity(){
-
-  if(!isMyTurn()){
-
-    toast("現在不是你的回合");
-
-    return;
-
-  }
-
-  if(selectedNode===null){
-
-    toast("請先選擇你的 Settlement");
-
-    return;
-
-  }
-
-  const building =
-    buildings[selectedNode];
-
-  if(!building){
-
-    toast("這個節點沒有 Settlement");
-
-    return;
-
-  }
-
-  if(building.owner!==playerId){
-
-    toast("不能升級其他玩家的建築");
-
-    return;
-
-  }
-
-  if(building.type==="city"){
-
-    toast("已經是 City");
-
-    return;
-
-  }
-
-  const cost = {
-    grain:2,
-    iron:3
-  };
-
-  if(!spend(cost)){
-
-    toast(
-      "資源不足：需要 2 Grain + 3 Iron"
-    );
-
-    return;
-
-  }
-
-  building.type =
-    "city";
-
-  myVP++;
-
-  renderBuildings();
-
-  log(
-    "🏰 "+playerName+
-    " upgraded to a City! +1 VP"
-  );
-
-  checkVictory();
-
-  syncGameState();
-
-}
-
-
-/* =========================================================
-   ROAD
-========================================================= */
-
-const roadEdges = {
-
-  1:[[1,2],[1,5]],
-
-  2:[[1,2],[2,3],[2,5],[2,6]],
-
-  3:[[2,3],[3,4],[3,6],[3,7]],
-
-  4:[[3,4],[4,7],[4,8]],
-
-  5:[[1,5],[2,5],[5,6],[5,9]],
-
-  6:[[2,6],[3,6],[5,6],[6,7],[6,9],[6,10]],
-
-  7:[[3,7],[4,7],[6,7],[7,8],[7,10],[7,11]],
-
-  8:[[4,8],[7,8],[8,11]],
-
-  9:[[5,9],[6,9],[9,10],[9,12]],
-
-  10:[[6,10],[7,10],[9,10],[10,11],[10,12],[10,13]],
-
-  11:[[7,11],[8,11],[10,11],[11,13]],
-
-  12:[[9,12],[10,12],[12,13],[12,14]],
-
-  13:[[10,13],[11,13],[12,13],[13,14]],
-
-  14:[[12,14],[13,14]]
-
-};
-
-
-function normalizeEdge(a,b){
-
-  if(a>b){
-
-    return a+"-"+b;
-
-  }
-
-  return a+"-"+b;
-
-}
-
-
-function canBuildRoad(){
-
-  if(selectedNode===null){
-
-    return false;
-
-  }
-
-  /*
-    第一條道路必須連接自己的 Settlement/City。
-  */
-
-  const ownBuildings =
-    Object.values(buildings)
-      .filter(
-        b=>b.owner===playerId
-      );
-
-  if(!ownBuildings.length){
-
-    return false;
-
-  }
-
-  /*
-    如果選擇節點有自己的建築，
-    可以從這裡開始。
-  */
-
-  if(
-    buildings[selectedNode] &&
-    buildings[selectedNode].owner===playerId
-  ){
-
-    return true;
-
-  }
-
-  /*
-    否則看是否連接自己的道路。
-  */
-
-  for(const edge of roadEdges[selectedNode] || []){
-
-    const key =
-      normalizeEdge(
-        edge[0],
-        edge[1]
-      );
-
-    const road =
-      roads[key];
-
-    if(
-      road &&
-      road.owner===playerId
-    ){
-
-      return true;
-
-    }
-
-  }
-
-  return false;
-
-}
-
-
-function buildRoad(){
-
-  if(!isMyTurn()){
-
-    toast("現在不是你的回合");
-
-    return;
-
-  }
-
-  if(selectedNode===null){
-
-    toast(
-      "請先點擊地圖上的節點，選擇道路位置"
-    );
-
-    return;
-
-  }
-
-  if(!canBuildRoad()){
-
-    toast(
-      "道路必須連接自己的建築或道路"
-    );
-
-    return;
-
-  }
-
-  const cost = {
-    wood:1,
-    brick:1
-  };
-
-  if(!spend(cost)){
-
-    toast(
-      "需要 1 Timber + 1 Brick"
-    );
-
-    return;
-
-  }
-
-  const neighbours =
-    roadEdges[selectedNode] || [];
-
-  let target =
-    null;
-
-  for(const edge of neighbours){
-
-    const key =
-      normalizeEdge(
-        edge[0],
-        edge[1]
-      );
-
-    if(!roads[key]){
-
-      target = {
-        key:key,
-        a:edge[0],
-        b:edge[1]
-      };
-
-      break;
-
-    }
-
-  }
-
-  if(!target){
-
-    /*
-      如果節點所有邊已被佔用，
-      退還資源。
-    */
-
-    myResources.wood++;
-    myResources.brick++;
-
-    updateResources();
-
-    toast(
-      "這個節點附近沒有可建造的道路"
-    );
-
-    return;
-
-  }
-
-  roads[target.key] = {
-
-    owner:playerId,
-
-    a:target.a,
-
-    b:target.b
-
-  };
-
-  myRoadLength++;
-
-  myVP =
-    Number(myVP);
-
-  renderRoads();
-
-  renderPlayers();
-
-  log(
-    "🛣️ "+playerName+
-    " built a Road! +0 VP"
-  );
-
-  updateLongestRoad();
-
-  checkVictory();
-
-  syncGameState();
-
-}
-
-
-/* =========================================================
-   RENDER ROADS
-========================================================= */
-
-function renderRoads(){
-
-  document
-    .querySelectorAll(".road")
-    .forEach(r=>r.remove());
-
-  Object.keys(roads).forEach(key=>{
-
-    const road =
-      roads[key];
-
-    const a =
-      nodePositions[road.a];
-
-    const b =
-      nodePositions[road.b];
-
-    if(!a || !b){
-
-      return;
-
-    }
-
-    const line =
-      document.createElement("div");
-
-    line.className =
-      "road "+
-      (
-        road.owner===playerId
-          ? "mine"
-          : "other"
-      );
-
-    const dx =
-      b[0]-a[0];
-
-    const dy =
-      b[1]-a[1];
-
-    const length =
-      Math.sqrt(
-        dx*dx+dy*dy
-      );
-
-    const angle =
-      Math.atan2(
-        dy,
-        dx
-      )*180/Math.PI;
-
-    line.style.left =
-      a[0]+"%";
-
-    line.style.top =
-      a[1]+"%";
-
-    line.style.width =
-      length+"%";
-
-    line.style.transform =
-      "rotate("+angle+"deg)";
-
-    $("gameMap").appendChild(line);
-
-  });
-
-}
-
-
-/* =========================================================
-   BUILDINGS RENDER
-========================================================= */
-
-function renderBuildings(){
-
-  document
-    .querySelectorAll(".node")
-    .forEach(node=>{
-
-      node.classList.remove(
-        "village",
-        "city"
-      );
-
-    });
-
-  Object.keys(buildings).forEach(nodeId=>{
-
-    const building =
-      buildings[nodeId];
-
-    const node =
-      document.querySelector(
-        `[data-node="${nodeId}"]`
-      );
-
-    if(!node){
-
-      return;
-
-    }
-
-    if(building.type==="city"){
-
-      node.classList.add("city");
-
-    }else{
-
-      node.classList.add("village");
-
-    }
-
-  });
-
-}
-
-
-/* =========================================================
-   LONGEST ROAD
-========================================================= */
-
-function updateLongestRoad(){
-
-  players.forEach(p=>{
-
-    if(p.id===playerId){
-
-      p.roadLength =
-        myRoadLength;
-
-    }
-
-  });
-
-  const best =
-    Math.max(
-      0,
-      ...players.map(
-        p=>Number(p.roadLength||0)
-      )
-    );
-
-  if(best>=5){
-
-    const winner =
-      players.find(
-        p=>Number(p.roadLength||0)===best
-      );
-
-    if(winner){
-
-      /*
-        簡化處理：
-        第一名取得 +2 VP。
-      */
-
-      if(
-        winner.id===playerId &&
-        !window.longestRoadAwarded
-      ){
-
-        myVP += 2;
-
-        window.longestRoadAwarded = true;
-
-        log(
-          "🛣️ "+playerName+
-          " has the Longest Road! +2 VP"
+/* =====================================================
+   UI
+===================================================== */
+
+function updateUI(){
+
+  players.forEach(
+    (player,index)=>{
+
+      const el =
+        document.getElementById(
+          "money"+
+          (index+1)
         );
 
-      }
-
-    }
-
-  }
-
-  renderPlayers();
-
-}
-
-
-/* =========================================================
-   DEVELOPMENT CARD
-========================================================= */
-
-function buyDevelopmentCard(){
-
-  if(!isMyTurn()){
-
-    toast("現在不是你的回合");
-
-    return;
-
-  }
-
-  const cost = {
-
-    grain:1,
-    wool:1,
-    iron:1
-
-  };
-
-  if(!spend(cost)){
-
-    toast(
-      "需要 1 Grain + 1 Wool + 1 Iron"
-    );
-
-    return;
-
-  }
-
-  myKnights++;
-
-  log(
-    "🃏 "+playerName+
-    " bought a Development Card."
-  );
-
-  /*
-    本版本將 Development Card
-    以 Knight 基礎機制處理。
-  */
-
-  if(myKnights>=3){
-
-    myVP += 2;
-
-    log(
-      "⚔️ Largest Army! +2 VP"
-    );
-
-  }
-
-  checkVictory();
-
-  syncGameState();
-
-}
-
-
-/* =========================================================
-   ROBBER
-========================================================= */
-
-function enableRobberMove(){
-
-  robberMoveMode = true;
-
-  toast(
-    "請點擊地圖上的地形移動 Robber"
-  );
-
-}
-
-
-function clickRobber(){
-
-  enableRobberMove();
-
-}
-
-
-function moveRobberToTerrain(terrain){
-
-  if(!robberMoveMode){
-
-    return;
-
-  }
-
-  const rect =
-    terrain.getBoundingClientRect();
-
-  const mapRect =
-    $("gameMap")
-      .getBoundingClientRect();
-
-  const x =
-    ((rect.left+
-      rect.width/2-
-      mapRect.left) /
-      mapRect.width)*100;
-
-  const y =
-    ((rect.top+
-      rect.height/2-
-      mapRect.top) /
-      mapRect.height)*100;
-
-  const robber =
-    $("robber");
-
-  robber.style.left =
-    x+"%";
-
-  robber.style.top =
-    y+"%";
-
-  robber.classList.remove("active");
-
-  void robber.offsetWidth;
-
-  robber.classList.add("active");
-
-  robberRegionName(terrain);
-
-  robberMoveMode = false;
-
-  /*
-    7 的回合移動 Robber 後，
-    回合可以繼續。
-  */
-
-  renderTurn();
-
-  log(
-    "🏴‍☠️ Robber moved to "+
-    terrain.innerText.replace(/\s+/g," ").trim()
-  );
-
-  syncGameState();
-
-}
-
-
-function robberRegionName(terrain){
-
-  const name =
-    terrain.innerText
-      .replace(/\s+/g," ")
-      .trim();
-
-  robberTerrain =
-    name;
-
-  $("robberLocation").textContent =
-    name;
-
-}
-
-
-/* =========================================================
-   FREE TRADE
-========================================================= */
-
-function freeTrade(){
-
-  if(!isMyTurn()){
-
-    toast("現在不是你的回合");
-
-    return;
-
-  }
-
-  const give =
-    $("tradeGive").value;
-
-  const get =
-    $("tradeGet").value;
-
-  const giveAmount =
-    Math.max(
-      1,
-      Number(
-        $("tradeGiveAmount").value
-      )
-    );
-
-  const getAmount =
-    Math.max(
-      1,
-      Number(
-        $("tradeGetAmount").value
-      )
-    );
-
-  if(give===get){
-
-    toast(
-      "交換的兩種資源不能相同"
-    );
-
-    return;
-
-  }
-
-  if(
-    Number(myResources[give]||0)
-    <
-    giveAmount
-  ){
-
-    toast(
-      "你沒有足夠的 "+
-      RESOURCE_NAMES[give]
-    );
-
-    return;
-
-  }
-
-  myResources[give] -=
-    giveAmount;
-
-  myResources[get] =
-    Number(myResources[get]||0)
-    + getAmount;
-
-  updateResources();
-
-  log(
-    "🤝 Free Trade: "+
-    giveAmount+
-    " "+RESOURCE_NAMES[give]+
-    " → "+
-    getAmount+
-    " "+RESOURCE_NAMES[get]
-  );
-
-  syncGameState();
-
-}
-
-
-/* =========================================================
-   PLAYER TRADE
-========================================================= */
-
-function updateTradePlayers(){
-
-  const select =
-    $("playerTradeTarget");
-
-  if(!select){
-
-    return;
-
-  }
-
-  select.innerHTML =
-    players
-      .filter(
-        p=>p.id!==playerId
-      )
-      .map(
-        p=>
-        `<option value="${escapeHTML(p.id)}">
-          ${escapeHTML(p.name)}
-        </option>`
-      )
-      .join("");
-
-}
-
-
-function openTradeModal(){
-
-  updateTradePlayers();
-
-  $("tradeModal")
-    .classList.add("show");
-
-}
-
-
-function closeTradeModal(){
-
-  $("tradeModal")
-    .classList.remove("show");
-
-}
-
-
-function sendPlayerTrade(){
-
-  const target =
-    $("playerTradeTarget").value;
-
-  if(!target){
-
-    toast("沒有其他玩家");
-
-    return;
-
-  }
-
-  const giveResource =
-    $("playerGiveResource").value;
-
-  const giveAmount =
-    Math.max(
-      1,
-      Number(
-        $("playerGiveAmount").value
-      )
-    );
-
-  const getResource =
-    $("playerGetResource").value;
-
-  const getAmount =
-    Math.max(
-      1,
-      Number(
-        $("playerGetAmount").value
-      )
-    );
-
-  if(giveResource===getResource){
-
-    toast("資源種類不能相同");
-
-    return;
-
-  }
-
-  if(
-    Number(myResources[giveResource]||0)
-    <
-    giveAmount
-  ){
-
-    toast("你的資源不足");
-
-    return;
-
-  }
-
-  /*
-    簡化版：
-    雙方立即完成交易。
-  */
-
-  const other =
-    players.find(
-      p=>p.id===target
-    );
-
-  if(!other){
-
-    toast("玩家不存在");
-
-    return;
-
-  }
-
-  other.resources =
-    other.resources ||
-    startingResources();
-
-  if(
-    Number(other.resources[getResource]||0)
-    <
-    getAmount
-  ){
-
-    toast(
-      other.name+
-      " 沒有足夠的 "+
-      RESOURCE_NAMES[getResource]
-    );
-
-    return;
-
-  }
-
-  myResources[giveResource] -=
-    giveAmount;
-
-  myResources[getResource] =
-    Number(myResources[getResource]||0)
-    + getAmount;
-
-  other.resources[getResource] -=
-    getAmount;
-
-  other.resources[giveResource] =
-    Number(other.resources[giveResource]||0)
-    + giveAmount;
-
-  updateResources();
-
-  renderPlayers();
-
-  log(
-    "🤝 Trade completed with "+
-    other.name
-  );
-
-  closeTradeModal();
-
-  syncGameState();
-
-}
-
-
-/* =========================================================
-   RESOURCE UPDATE
-========================================================= */
-
-function updateResources(){
-
-  Object.keys(
-    RESOURCE_NAMES
-  ).forEach(key=>{
-
-    const el =
-      $(key);
-
-    if(el){
 
       el.textContent =
-        Number(
-          myResources[key]||0
-        );
+        "£"+
+        player.money;
 
     }
-
-  });
-
-}
-
-
-/* =========================================================
-   VICTORY
-========================================================= */
-
-function checkVictory(){
-
-  if(myVP<WIN_VP){
-
-    return;
-
-  }
-
-  gameStarted = false;
-
-  $("turnDisplay").textContent =
-    "🏆 "+playerName+" WINS!";
-
-  $("rollButton").disabled =
-    true;
-
-  log(
-    "🏆 "+playerName+
-    " reached "+WIN_VP+
-    " VP and won the game!"
-  );
-
-  toast(
-    "🏆 恭喜！你達到 10 VP，贏得遊戲！"
-  );
-
-}
-
-
-/* =========================================================
-   CHAT
-========================================================= */
-
-async function sendChat(){
-
-  const input =
-    $("message");
-
-  const message =
-    input.value.trim();
-
-  if(!message){
-
-    return;
-
-  }
-
-  input.value = "";
-
-  chatLog(
-    playerName || "Raven",
-    message,
-    myColor==="blue"
-      ? "#3179bd"
-      : myColor==="green"
-        ? "#3d8b42"
-        : myColor==="yellow"
-          ? "#a67c00"
-          : "#a52f29"
   );
 
 
-  if(
-    supabaseConnected &&
-    supabaseClient
-  ){
+  document.getElementById(
+    "currentMoney"
+  ).textContent =
+    "£"+
+    players[
+      currentPlayer
+    ].money;
 
-    try{
 
-      let result =
-        await supabaseClient
-          .from("game_chat")
-          .insert({
-            room_code:ROOM_CODE,
-            player_id:playerId,
-            player_name:playerName,
-            message:message
-          });
+  document.getElementById(
+    "turn"
+  ).textContent =
+    players[
+      currentPlayer
+    ].icon+
+    " "+
+    players[
+      currentPlayer
+    ].name+
+    " 的回合";
 
-      if(result.error){
 
-        console.warn(
-          "Chat sync:",
-          result.error
-        );
-
-      }
-
-    }catch(error){
-
-      console.warn(error);
-
-    }
-
-  }
+  updatePropertyInfo();
 
 }
 
 
-/* =========================================================
-   CITY INFO
-========================================================= */
-
-function cityInfo(city){
-
-  const cityData = {
-
-    Newcastle:"Northern port • Timber",
-
-    Leeds:"Yorkshire trade city • Wool",
-
-    Manchester:"Industrial region • Iron",
-
-    Sheffield:"Steel region • Iron",
-
-    Liverpool:"Western port • Grain",
-
-    Nottingham:"Central England • Timber",
-
-    Birmingham:"Central trade hub • Iron",
-
-    Bristol:"Western port • Grain",
-
-    Bridgwater:"Southern settlement • Grain",
-
-    Oxford:"University city • Gold",
-
-    London:"Capital • Gold",
-
-    Plymouth:"Southern port • Grain"
-
-  };
-
-  log(
-    "🏙️ "+
-    city+
-    " — "+
-    (
-      cityData[city] ||
-      "City"
-    )
-  );
-
-}
-
-
-/* =========================================================
-   GAME STATE SYNC
-========================================================= */
-
-async function syncGameState(){
-
-  saveLocalGame();
-
-  if(
-    !supabaseConnected ||
-    !supabaseClient
-  ){
-
-    return;
-
-  }
-
-  const state = {
-
-    currentPlayerIndex,
-
-    gameStarted,
-
-    diceValue,
-
-    diceRolledThisTurn,
-
-    robberTerrain,
-
-    buildings,
-
-    roads,
-
-    players,
-
-    updatedAt:
-      new Date().toISOString()
-
-  };
-
-
-  try{
-
-    let result =
-      await supabaseClient
-        .from("game_state")
-        .upsert(
-          {
-            room_code:ROOM_CODE,
-            state:state
-          },
-          {
-            onConflict:"room_code"
-          }
-        );
-
-    if(result.error){
-
-      console.warn(
-        "game_state sync:",
-        result.error
-      );
-
-    }
-
-  }catch(error){
-
-    console.warn(error);
-
-  }
-
-}
-
-
-async function loadGameState(){
-
-  if(
-    !supabaseConnected ||
-    !supabaseClient
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    let result =
-      await supabaseClient
-        .from("game_state")
-        .select("*")
-        .eq(
-          "room_code",
-          ROOM_CODE
-        )
-        .maybeSingle();
-
-    if(result.error){
-
-      return;
-
-    }
-
-    if(
-      !result.data ||
-      !result.data.state
-    ){
-
-      return;
-
-    }
-
-    const state =
-      result.data.state;
-
-    currentPlayerIndex =
-      Number(
-        state.currentPlayerIndex || 0
-      );
-
-    gameStarted =
-      Boolean(
-        state.gameStarted
-      );
-
-    diceValue =
-      state.diceValue ||
-      [1,1];
-
-    diceRolledThisTurn =
-      Boolean(
-        state.diceRolledThisTurn
-      );
-
-    robberTerrain =
-      state.robberTerrain ||
-      "Desert";
-
-    buildings =
-      state.buildings ||
-      {};
-
-    roads =
-      state.roads ||
-      {};
-
-    if(
-      Array.isArray(state.players)
-    ){
-
-      players =
-        state.players;
-
-    }
-
-    renderAll();
-
-  }catch(error){
-
-    console.warn(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   LOCAL SAVE
-========================================================= */
-
-function saveLocalGame(){
-
-  try{
-
-    localStorage.setItem(
-      "england_game_state",
-      JSON.stringify({
-
-        players,
-
-        currentPlayerIndex,
-
-        gameStarted,
-
-        diceValue,
-
-        diceRolledThisTurn,
-
-        robberTerrain,
-
-        buildings,
-
-        roads
-
-      })
+/* =====================================================
+   PROPERTY INFO
+===================================================== */
+
+function updatePropertyInfo(){
+
+  const box =
+    document.getElementById(
+      "cityInfo"
     );
 
-  }catch(error){
 
-    console.warn(error);
+  if(
+    selectedProperty===null
+  ){
 
-  }
-
-}
-
-
-function loadLocalGame(){
-
-  try{
-
-    const saved =
-      localStorage.getItem(
-        "england_game_state"
-      );
-
-    if(!saved){
-
-      return;
-
-    }
-
-    const state =
-      JSON.parse(saved);
-
-    players =
-      state.players ||
-      players;
-
-    currentPlayerIndex =
-      Number(
-        state.currentPlayerIndex || 0
-      );
-
-    gameStarted =
-      Boolean(
-        state.gameStarted
-      );
-
-    diceValue =
-      state.diceValue ||
-      [1,1];
-
-    diceRolledThisTurn =
-      Boolean(
-        state.diceRolledThisTurn
-      );
-
-    robberTerrain =
-      state.robberTerrain ||
-      "Desert";
-
-    buildings =
-      state.buildings ||
-      {};
-
-    roads =
-      state.roads ||
-      {};
-
-  }catch(error){
-
-    console.warn(error);
-
-  }
-
-}
-
-
-/* =========================================================
-   RENDER ALL
-========================================================= */
-
-function renderAll(){
-
-  renderPlayers();
-
-  renderBuildings();
-
-  renderRoads();
-
-  updateResources();
-
-  renderTurn();
-
-  /*
-    更新自己的玩家資料
-  */
-
-  const me =
-    players.find(
-      p=>p.id===playerId
-    );
-
-  if(me){
-
-    myVP =
-      Number(me.vp||myVP);
-
-    myKnights =
-      Number(me.knights||myKnights);
-
-    myRoadLength =
-      Number(
-        me.roadLength ||
-        myRoadLength
-      );
-
-  }
-
-  updateRobberVisual();
-
-}
-
-
-function updateRobberVisual(){
-
-  /*
-    不依賴精確 terrain ID，
-    根據 terrain 名稱找位置。
-  */
-
-  const terrainList =
-    [...document.querySelectorAll(".terrain")];
-
-  const target =
-    terrainList.find(
-      t=>
-        t.innerText
-          .replace(/\s+/g," ")
-          .trim()
-          .startsWith(
-            robberTerrain
-          )
-    );
-
-  if(!target){
+    box.innerHTML =
+      "點擊棋盤上的城市查看資料。";
 
     return;
 
   }
 
-  const rect =
-    target.getBoundingClientRect();
 
-  const mapRect =
-    $("gameMap")
-      .getBoundingClientRect();
-
-  const x =
-    (
-      (rect.left+
-       rect.width/2-
-       mapRect.left)
-      /
-      mapRect.width
-    )*100;
-
-  const y =
-    (
-      (rect.top+
-       rect.height/2-
-       mapRect.top)
-      /
-      mapRect.height
-    )*100;
-
-  $("robber").style.left =
-    x+"%";
-
-  $("robber").style.top =
-    y+"%";
-
-  $("robberLocation").textContent =
-    robberTerrain;
-
-}
+  const property =
+    properties[
+      selectedProperty
+    ];
 
 
-/* =========================================================
-   BUTTON STATE
-========================================================= */
-
-function enableButtons(){
-
-  $("rollButton").disabled =
-    !gameStarted ||
-    !isMyTurn() ||
-    diceRolledThisTurn;
-
-}
+  const owner =
+    owners[
+      selectedProperty
+    ];
 
 
-/* =========================================================
-   AUTO JOIN REMEMBERED PLAYER
-========================================================= */
+  let html =
+    "<b>"+
+    property.name+
+    "</b><br><br>";
 
-function restorePlayerName(){
 
-  if(playerName){
+  html +=
+    property.description+
+    "<br><br>";
 
-    $("playerName").value =
-      playerName;
+
+  if(property.price){
+
+    html +=
+      "💷 價格：£"+
+      property.price+
+      "<br>";
+
+    html +=
+      "💰 基本租金：£"+
+      property.rent+
+      "<br>";
 
   }
 
-}
+
+  if(owner!==undefined){
+
+    html +=
+      "👑 擁有者："+
+      players[
+        owner
+      ].name+
+      "<br>";
 
 
-/* =========================================================
-   LOAD CHAT
-========================================================= */
-
-async function loadChat(){
-
-  if(
-    !supabaseConnected ||
-    !supabaseClient
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    const result =
-      await supabaseClient
-        .from("game_chat")
-        .select("*")
-        .eq(
-          "room_code",
-          ROOM_CODE
-        )
-        .order(
-          "created_at",
-          {
-            ascending:true
-          }
-        )
-        .limit(100);
-
-    if(result.error){
-
-      return;
-
-    }
-
-    if(!result.data){
-
-      return;
-
-    }
-
-    const box =
-      $("chat");
-
-    box.innerHTML = "";
-
-    result.data.forEach(row=>{
-
-      chatLog(
-        row.player_name ||
-        "Player",
-        row.message ||
-        "",
-        "#444"
+    html +=
+      "🏰 等級：Lv."+
+      (
+        property.level||
+        1
       );
 
-    });
+  }
+  else if(property.type==="property"){
 
-  }catch(error){
-
-    console.warn(error);
+    html +=
+      "🏠 尚未有人購買";
 
   }
 
-}
 
+  box.innerHTML =
+    html;
 
-/* =========================================================
-   INIT
-========================================================= */
-
-async function init(){
-
-  restorePlayerName();
-
-  loadLocalGame();
-
-  renderAll();
-
-  await initSupabase();
 
   if(
-    supabaseConnected
+    property.type==="property" &&
+    owner===undefined &&
+    currentPlayer===currentPlayer
   ){
 
-    await loadPlayersFromSupabase();
-
-    await loadGameState();
-
-    await loadChat();
-
-  }else{
-
-    loadLocalPlayers();
-
-    renderAll();
+    enableBuy();
 
   }
+  else if(
+    property.type==="property" &&
+    owner===currentPlayer
+  ){
 
-  /*
-    如果之前已加入過，
-    不需要重新輸入名字。
-  */
+    enableUpgrade();
+
+  }
 
 }
 
 
-/* =========================================================
-   KEYBOARD SHORTCUT
-========================================================= */
+/* =====================================================
+   BUTTONS
+===================================================== */
 
-document.addEventListener(
-  "keydown",
+function enableBuy(){
+
+  const button =
+    document.getElementById(
+      "buyButton"
+    );
+
+
+  const property =
+    properties[
+      selectedProperty
+    ];
+
+
+  if(
+    owners[
+      selectedProperty
+    ]===undefined &&
+    players[
+      currentPlayer
+    ].money>=property.price
+  ){
+
+    button.disabled=false;
+
+  }
+
+}
+
+
+function enableUpgrade(){
+
+  const button =
+    document.getElementById(
+      "upgradeButton"
+    );
+
+
+  button.disabled=false;
+
+}
+
+
+function disableActions(){
+
+  document.getElementById(
+    "buyButton"
+  ).disabled=true;
+
+
+  document.getElementById(
+    "upgradeButton"
+  ).disabled=true;
+
+}
+
+
+/* =====================================================
+   NODE CLICK / RAYCAST
+===================================================== */
+
+const raycaster =
+  new THREE.Raycaster();
+
+
+const mouse =
+  new THREE.Vector2();
+
+
+canvas.addEventListener(
+  "pointerdown",
   event=>{
 
-    if(
-      event.key==="Escape"
-    ){
+    const rect =
+      canvas.getBoundingClientRect();
 
-      closeTradeModal();
+
+    mouse.x =
+      (
+        event.clientX-
+        rect.left
+      ) /
+      rect.width*
+      2-1;
+
+
+    mouse.y =
+      -(
+        event.clientY-
+        rect.top
+      ) /
+      rect.height*
+      2+1;
+
+
+    raycaster.setFromCamera(
+      mouse,
+      camera
+    );
+
+
+    const hits =
+      raycaster.intersectObjects(
+        tileMeshes
+      );
+
+
+    if(hits.length){
+
+      const index =
+        hits[0]
+          .object
+          .userData
+          .index;
+
+
+      selectedProperty =
+        index;
+
+
+      updatePropertyInfo();
+
+
+      log(
+        "🗺️ 查看 "+
+        properties[index].name
+      );
 
     }
 
@@ -4580,11 +2920,189 @@ document.addEventListener(
 );
 
 
-/* =========================================================
-   START
-========================================================= */
+/* =====================================================
+   CHAT
+===================================================== */
 
-init();
+function sendChat(){
+
+  const input =
+    document.getElementById(
+      "message"
+    );
+
+
+  const message =
+    input.value.trim();
+
+
+  if(!message){
+    return;
+  }
+
+
+  const chat =
+    document.getElementById(
+      "chat"
+    );
+
+
+  const player =
+    players[
+      currentPlayer
+    ];
+
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.textContent =
+    player.icon+
+    " "+
+    player.name+
+    ": "+
+    message;
+
+
+  chat.appendChild(div);
+
+
+  input.value="";
+
+
+  chat.scrollTop =
+    chat.scrollHeight;
+
+}
+
+
+/* =====================================================
+   LOG
+===================================================== */
+
+function log(message){
+
+  const box =
+    document.getElementById(
+      "log"
+    );
+
+
+  box.innerHTML =
+    message+
+    "<br>"+
+    box.innerHTML;
+
+}
+
+
+/* =====================================================
+   WAIT
+===================================================== */
+
+function wait(ms){
+
+  return new Promise(
+    resolve=>
+      setTimeout(
+        resolve,
+        ms
+      )
+  );
+
+}
+
+
+/* =====================================================
+   RESIZE
+===================================================== */
+
+window.addEventListener(
+  "resize",
+  ()=>{
+
+    const width =
+      container.clientWidth;
+
+
+    const height =
+      container.clientHeight;
+
+
+    camera.aspect =
+      width/height;
+
+
+    camera.updateProjectionMatrix();
+
+
+    renderer.setSize(
+      width,
+      height
+    );
+
+  }
+);
+
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+function animate(){
+
+  requestAnimationFrame(
+    animate
+  );
+
+
+  controls.update();
+
+
+  /* castle animation */
+
+  castleGroup.rotation.y +=
+    0.0008;
+
+
+  /* player idle */
+
+  playerMeshes.forEach(
+    (mesh,index)=>{
+
+      mesh.position.y =
+        Math.sin(
+          Date.now()*.003+
+          index
+        )*.04;
+
+    }
+  );
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+
+}
+
+
+animate();
+
+
+/* =====================================================
+   INITIAL UI
+===================================================== */
+
+updateUI();
+
+log(
+  "🎮 遊戲開始！King 先擲骰。"
+);
 
 </script>
 

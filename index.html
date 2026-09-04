@@ -5,33 +5,38 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>UK MONOPOLY · Multiplayer</title>
+<title>MONOPOLY UK - Multiplayer</title>
+
+<!-- =========================================================
+     MODULE 01：SUPABASE LIBRARY
+     ========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
+/* =========================================================
+   MODULE 02：GLOBAL STYLE
+   ========================================================= */
+
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
+body {
     margin: 0;
-    padding: 0;
-    min-height: 100%;
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
-        Arial,
         sans-serif;
-    background:
-        radial-gradient(circle at top, #26354a 0%, #111722 45%, #090d14 100%);
-    color: #fff;
-}
 
-body {
-    padding: 14px;
+    background:
+        radial-gradient(circle at top, #244b36, #07150e 70%);
+
+    color: #fff;
+    min-height: 100vh;
 }
 
 button,
@@ -43,800 +48,734 @@ button {
     cursor: pointer;
 }
 
-.hidden {
-    display: none !important;
+button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
 }
 
-.container {
-    width: 100%;
-    max-width: 1180px;
-    margin: 0 auto;
-}
 
 /* =========================================================
-   HEADER
-========================================================= */
+   MODULE 03：APP LAYOUT
+   ========================================================= */
 
-.header {
+.app {
+    width: 100%;
+    max-width: 1400px;
+    margin: auto;
+    padding: 12px;
+}
+
+.topbar {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-
-.logo {
-    font-weight: 900;
-    letter-spacing: 1px;
-    font-size: 22px;
-}
-
-.connection {
-    display: flex;
     align-items: center;
-    gap: 7px;
-    font-size: 12px;
-    color: #b9c4d5;
-}
-
-.connection-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #777;
-}
-
-.connection.online .connection-dot {
-    background: #35d07f;
-    box-shadow: 0 0 10px rgba(53,208,127,.7);
-}
-
-.connection.error .connection-dot {
-    background: #ff4f64;
-}
-
-/* =========================================================
-   CARD
-========================================================= */
-
-.card {
-    background: rgba(22, 29, 41, .94);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 18px;
-    box-shadow: 0 14px 40px rgba(0,0,0,.28);
-}
-
-.panel {
-    padding: 18px;
-}
-
-/* =========================================================
-   LOBBY
-========================================================= */
-
-.lobby {
-    max-width: 520px;
-    margin: 45px auto;
-}
-
-.lobby h1 {
-    margin: 0 0 6px;
-    font-size: 30px;
-}
-
-.subtitle {
-    color: #9ca9bb;
-    font-size: 14px;
-    margin-bottom: 24px;
-}
-
-.field {
-    margin-bottom: 14px;
-}
-
-.field label {
-    display: block;
-    font-size: 12px;
-    color: #9ca9bb;
-    margin-bottom: 7px;
-}
-
-.field input {
-    width: 100%;
-    height: 48px;
-    padding: 0 14px;
-    border-radius: 12px;
-    border: 1px solid #354154;
-    background: #0d131d;
-    color: white;
-    outline: none;
-}
-
-.field input:focus {
-    border-color: #668cff;
-}
-
-.button-row {
-    display: flex;
     gap: 10px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
 }
 
-.btn {
-    border: 0;
-    border-radius: 12px;
-    min-height: 46px;
-    padding: 0 17px;
-    font-weight: 800;
-    color: white;
-    background: #2a3547;
-}
-
-.btn:hover {
-    filter: brightness(1.1);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #587cff, #7859e8);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, #20a66a, #2cc784);
-}
-
-.btn-warning {
-    background: linear-gradient(135deg, #d99727, #f2b83f);
-    color: #161616;
-}
-
-.btn-danger {
-    background: #9c3143;
-}
-
-.btn:disabled {
-    opacity: .4;
-    cursor: not-allowed;
-}
-
-.room-code {
-    font-size: 30px;
+.logo {
+    font-size: 24px;
     font-weight: 900;
-    letter-spacing: 5px;
-    text-align: center;
-    padding: 16px;
-    border-radius: 14px;
-    background: #0b111a;
-    margin: 14px 0;
+    letter-spacing: 1px;
 }
 
-/* =========================================================
-   GAME LAYOUT
-========================================================= */
+.connection {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    font-size: 13px;
+}
 
-.game-layout {
+.layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-columns: minmax(0, 1fr) 330px;
     gap: 14px;
 }
 
-@media (max-width: 900px) {
-    .game-layout {
+@media(max-width:900px) {
+    .layout {
         grid-template-columns: 1fr;
     }
 }
 
+
 /* =========================================================
-   GAME TOP
-========================================================= */
+   MODULE 04：ROOM / LOGIN
+   ========================================================= */
 
-.game-top {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 14px;
-    margin-bottom: 14px;
+.screen {
+    display: none;
 }
 
-.game-info {
-    padding: 16px;
+.screen.active {
+    display: block;
 }
 
-.game-status {
-    font-size: 13px;
-    color: #9ca9bb;
+.panel {
+    background: rgba(10,25,18,.92);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.3);
 }
 
-.current-player {
-    margin-top: 4px;
-    font-size: 22px;
+.login {
+    max-width: 500px;
+    margin: 60px auto;
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 0;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(255,255,255,.5);
+}
+
+.primary-btn {
+    width: 100%;
+    padding: 14px;
+    border: 0;
+    border-radius: 10px;
+    background: #f3c94b;
+    color: #17130a;
     font-weight: 900;
 }
 
-.turn-number {
-    color: #8e9aab;
-    font-size: 12px;
-    margin-top: 5px;
+.secondary-btn {
+    padding: 11px 15px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 10px;
+    background: rgba(255,255,255,.08);
+    color: #fff;
 }
 
-.dice-box {
-    min-width: 180px;
-    padding: 15px;
+.danger-btn {
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 10px;
+    background: #b93636;
+    color: #fff;
+}
+
+
+/* =========================================================
+   MODULE 05：GAME BOARD
+   ========================================================= */
+
+.board-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board {
+    width: min(94vw, 760px);
+    aspect-ratio: 1 / 1;
+
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+
+    background: #d8e9d5;
+    border: 8px solid #111;
+    border-radius: 4px;
+
+    position: relative;
+    overflow: hidden;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.45);
+}
+
+.center {
+    grid-column: 2 / 11;
+    grid-row: 2 / 11;
+
+    background:
+        linear-gradient(
+            135deg,
+            #d7e7d3,
+            #bcd6b8
+        );
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: #183221;
     text-align: center;
+
+    border: 2px solid #183221;
 }
 
-.dice-label {
-    color: #9ca9bb;
-    font-size: 11px;
-    margin-bottom: 7px;
+.center-title {
+    font-size: clamp(30px, 7vw, 65px);
+    font-weight: 1000;
+    letter-spacing: 4px;
+    transform: rotate(-25deg);
+}
+
+.center-sub {
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: .7;
+}
+
+
+/* =========================================================
+   MODULE 06：BOARD SPACE
+   ========================================================= */
+
+.space {
+    position: relative;
+    background: #f5f1df;
+    color: #171717;
+
+    border: 1px solid #222;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 3px;
+
+    overflow: hidden;
+}
+
+.space-color {
+    width: 100%;
+    height: 15%;
+    background: #8b5e3c;
+}
+
+.space-name {
+    font-size: clamp(7px, 1.35vw, 13px);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.05;
+}
+
+.space-price {
+    font-size: clamp(6px, 1vw, 10px);
+}
+
+.space-icon {
+    font-size: clamp(13px, 2vw, 22px);
+}
+
+.space.owned {
+    box-shadow: inset 0 0 0 4px #e3a928;
+}
+
+
+/* =========================================================
+   MODULE 07：PLAYER PIECES
+   ========================================================= */
+
+.pieces {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+
+    pointer-events: none;
+}
+
+.piece {
+    width: clamp(12px, 2vw, 22px);
+    height: clamp(12px, 2vw, 22px);
+
+    border-radius: 50%;
+
+    border: 2px solid #111;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #111;
+    font-size: 8px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   MODULE 08：SIDE PANEL
+   ========================================================= */
+
+.side {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card {
+    background: rgba(10,25,18,.92);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 16px;
+    padding: 15px;
+}
+
+.turn-banner {
+    padding: 13px;
+    border-radius: 12px;
+    background: #e3b63b;
+    color: #17130a;
+    font-weight: 900;
+    text-align: center;
 }
 
 .dice {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
+    margin: 12px 0;
 }
 
 .die {
-    width: 48px;
-    height: 48px;
-    border-radius: 11px;
-    background: white;
-    color: #111;
+    width: 58px;
+    height: 58px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 25px;
-    font-weight: 900;
-}
 
-/* =========================================================
-   BOARD
-========================================================= */
+    background: #fff;
+    color: #111;
 
-.board-wrap {
-    padding: 12px;
-}
-
-.board {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    display: grid;
-    grid-template-columns: repeat(11, 1fr);
-    grid-template-rows: repeat(11, 1fr);
-    gap: 3px;
-    background: #060a10;
-    border-radius: 14px;
-    padding: 4px;
-}
-
-.board-center {
-    grid-column: 2 / 11;
-    grid-row: 2 / 11;
     border-radius: 12px;
-    background:
-        radial-gradient(circle, #27344a 0%, #192230 65%, #131a25 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
-    z-index: 0;
-}
 
-.board-title {
-    font-size: clamp(16px, 4vw, 34px);
-    font-weight: 1000;
-    letter-spacing: 3px;
-    transform: rotate(-10deg);
-    color: rgba(255,255,255,.8);
-}
-
-.space {
-    position: relative;
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
-    background: #f0eee7;
-    color: #111;
-    border-radius: 4px;
-    border: 1px solid #555;
-    padding: 2px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-    font-size: clamp(5px, .75vw, 10px);
-}
-
-.space-color {
-    width: 100%;
-    height: 18%;
-    min-height: 4px;
-    background: #888;
-    margin-bottom: 2px;
-}
-
-.space-name {
-    font-weight: 800;
-    line-height: 1.05;
-    word-break: break-word;
-}
-
-.space-price {
-    margin-top: 2px;
-    font-size: .8em;
-    color: #555;
-}
-
-.space-tokens {
-    position: absolute;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 2px;
-}
-
-.token {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 1px 4px rgba(0,0,0,.6);
-}
-
-.owner-mark {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 1px solid white;
-}
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.players-panel,
-.action-panel,
-.log-panel {
-    padding: 16px;
-}
-
-.panel-title {
+    font-size: 30px;
     font-weight: 900;
-    font-size: 16px;
-    margin-bottom: 12px;
+
+    box-shadow: 0 5px 12px rgba(0,0,0,.3);
 }
 
-.player-list {
+.action {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.player {
-    border: 1px solid rgba(255,255,255,.07);
-    background: #121a26;
-    border-radius: 12px;
-    padding: 11px;
-    display: grid;
-    grid-template-columns: 36px 1fr auto;
-    gap: 9px;
+.action button {
+    width: 100%;
+}
+
+
+/* =========================================================
+   MODULE 09：PLAYER LIST
+   ========================================================= */
+
+.player-row {
+    display: flex;
     align-items: center;
+    gap: 9px;
+
+    padding: 9px;
+
+    margin-bottom: 6px;
+
+    background: rgba(255,255,255,.06);
+    border-radius: 10px;
 }
 
-.player.active {
-    border-color: #6d8cff;
-    box-shadow: 0 0 0 1px rgba(109,140,255,.25);
-}
-
-.player.me {
-    background: #17233a;
-}
-
-.player-token {
-    width: 30px;
-    height: 30px;
+.player-dot {
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    border: 2px solid white;
+    border: 2px solid #111;
+    flex-shrink: 0;
+}
+
+.player-info {
+    flex: 1;
 }
 
 .player-name {
     font-weight: 800;
-    font-size: 14px;
-}
-
-.player-meta {
-    color: #8794a8;
-    font-size: 11px;
-    margin-top: 2px;
 }
 
 .player-money {
-    font-weight: 900;
-    font-size: 13px;
-}
-
-/* =========================================================
-   ACTION
-========================================================= */
-
-.action-message {
-    padding: 11px;
-    border-radius: 10px;
-    background: #0c121c;
-    color: #aab5c5;
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 12px;
-}
-
-.action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-
-.action-buttons .btn:first-child {
-    grid-column: 1 / -1;
-    min-height: 54px;
-    font-size: 17px;
-}
-
-.property-info {
-    margin-top: 12px;
-    padding: 11px;
-    background: #101824;
-    border-radius: 10px;
     font-size: 12px;
-    line-height: 1.6;
+    opacity: .7;
 }
 
+.current {
+    outline: 2px solid #f3c94b;
+}
+
+
 /* =========================================================
-   LOG
-========================================================= */
+   MODULE 10：EVENT LOG
+   ========================================================= */
 
 .log {
-    max-height: 250px;
+    max-height: 220px;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
+    font-size: 13px;
 }
 
 .log-item {
-    font-size: 12px;
-    line-height: 1.4;
-    padding: 8px 9px;
-    background: #0e151f;
-    border-radius: 8px;
-    color: #aeb9c9;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-.log-item strong {
-    color: white;
-}
 
 /* =========================================================
-   TOAST
-========================================================= */
+   MODULE 11：MODAL
+   ========================================================= */
 
-.toast-container {
+.modal {
     position: fixed;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,.7);
+
     z-index: 1000;
-    width: min(92vw, 480px);
+
+    padding: 20px;
+}
+
+.modal.show {
     display: flex;
-    flex-direction: column;
+}
+
+.modal-box {
+    width: min(500px, 100%);
+
+    background: #10261a;
+
+    border: 1px solid rgba(255,255,255,.15);
+
+    border-radius: 18px;
+
+    padding: 22px;
+
+    box-shadow: 0 20px 70px rgba(0,0,0,.5);
+}
+
+.modal-actions {
+    display: flex;
     gap: 8px;
+    margin-top: 18px;
 }
 
-.toast {
-    background: #161f2d;
-    border: 1px solid rgba(255,255,255,.1);
-    box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    padding: 12px 14px;
-    border-radius: 11px;
-    font-size: 13px;
-    animation: toastIn .2s ease;
+.modal-actions button {
+    flex: 1;
 }
 
-.toast.error {
-    border-color: rgba(255,75,95,.45);
-}
-
-.toast.success {
-    border-color: rgba(48,205,124,.45);
-}
-
-@keyframes toastIn {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 /* =========================================================
-   LOADING
-========================================================= */
+   MODULE 12：CARD DISPLAY
+   ========================================================= */
 
-.loading {
-    opacity: .6;
-    pointer-events: none;
+.event-card {
+    background: #f6f0d9;
+    color: #171717;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    text-align: center;
+
+    border: 5px solid #b99c53;
+}
+
+.event-card-title {
+    font-size: 24px;
+    font-weight: 1000;
+    margin-bottom: 12px;
+}
+
+.event-card-text {
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   MODULE 13：WAITING
+   ========================================================= */
+
+.waiting-list {
+    margin-top: 15px;
 }
 
 .small {
-    font-size: 11px;
-    color: #7f8b9d;
+    font-size: 13px;
+    opacity: .65;
 }
 
-.divider {
-    height: 1px;
-    background: rgba(255,255,255,.07);
-    margin: 14px 0;
+.hidden {
+    display: none !important;
 }
+
 </style>
 </head>
 
+
 <body>
 
-<div class="toast-container" id="toastContainer"></div>
+<div class="app">
 
-<div class="container">
+<!-- =========================================================
+     MODULE 14：TOP BAR
+     ========================================================= -->
 
-    <div class="header">
-        <div class="logo">MONOPOLY</div>
+<div class="topbar">
 
-        <div class="connection" id="connectionStatus">
-            <span class="connection-dot"></span>
-            <span id="connectionText">連線中...</span>
-        </div>
+    <div class="logo">
+        MONOPOLY UK
     </div>
 
-    <!-- =====================================================
-         LOBBY
-    ====================================================== -->
+    <div class="connection" id="connectionStatus">
+        連線中...
+    </div>
 
-    <section id="lobbyScreen" class="card lobby panel">
+</div>
 
-        <h1>UK MONOPOLY</h1>
 
-        <div class="subtitle">
-            Supabase Multiplayer Edition
-        </div>
+<!-- =========================================================
+     MODULE 15：LOGIN / ROOM SCREEN
+     ========================================================= -->
 
-        <div class="field">
-            <label>你的名字</label>
-            <input
-                id="nameInput"
-                maxlength="20"
-                placeholder="例如：Alice"
-                autocomplete="off">
-        </div>
+<section id="roomScreen" class="screen active">
 
-        <div class="field">
-            <label>房間代碼</label>
-            <input
-                id="roomInput"
-                maxlength="12"
-                placeholder="例如：ABCD"
-                autocomplete="off"
-                style="text-transform:uppercase">
-        </div>
+    <div class="panel login">
 
-        <div class="button-row">
+        <h1>多人遊戲</h1>
+
+        <p class="small">
+            建立房間或加入朋友的房間。
+        </p>
+
+        <input
+            id="roomCodeInput"
+            placeholder="房間代碼，例如 LONDON01"
+            autocomplete="off"
+        >
+
+        <input
+            id="playerNameInput"
+            placeholder="你的玩家名稱"
+            autocomplete="off"
+        >
+
+        <button
+            class="primary-btn"
+            onclick="joinOrCreateRoom()"
+        >
+            建立 / 加入房間
+        </button>
+
+        <div
+            id="roomMessage"
+            style="margin-top:15px"
+        ></div>
+
+        <div
+            id="waitingArea"
+            class="waiting-list hidden"
+        >
+
+            <h3>等待其他玩家</h3>
+
+            <div id="waitingPlayers"></div>
 
             <button
-                class="btn btn-primary"
-                id="createRoomBtn">
-                建立房間
-            </button>
-
-            <button
-                class="btn btn-success"
-                id="joinRoomBtn">
-                加入房間
+                id="startButton"
+                class="primary-btn hidden"
+                onclick="startGame()"
+            >
+                開始遊戲
             </button>
 
         </div>
 
-        <div class="divider"></div>
+    </div>
 
-        <div class="small">
-            目前版本支援多人房間、Realtime 同步、輪流擲骰、移動及購買地產。
-        </div>
+</section>
 
-    </section>
 
-    <!-- =====================================================
-         GAME
-    ====================================================== -->
+<!-- =========================================================
+     MODULE 16：GAME SCREEN
+     ========================================================= -->
 
-    <section id="gameScreen" class="hidden">
+<section id="gameScreen" class="screen">
 
-        <div class="game-top">
+    <div class="layout">
 
-            <div class="card game-info">
+        <!-- ================= BOARD ================= -->
 
-                <div class="game-status">
-                    房間：
-                    <strong id="roomCodeDisplay">----</strong>
-                </div>
+        <div class="board-wrap">
 
-                <div
-                    class="current-player"
-                    id="currentPlayerDisplay">
-                    等待遊戲開始
-                </div>
+            <div id="board" class="board">
 
-                <div
-                    class="turn-number"
-                    id="turnNumberDisplay">
-                    回合：0
+                <div class="center">
+
+                    <div class="center-title">
+                        MONOPOLY
+                    </div>
+
+                    <div class="center-sub">
+                        UK EDITION
+                    </div>
+
                 </div>
 
             </div>
 
-            <div class="card dice-box">
+        </div>
 
-                <div class="dice-label">
-                    最近一次骰子
+
+        <!-- ================= SIDE ================= -->
+
+        <div class="side">
+
+
+            <!-- CURRENT TURN -->
+
+            <div class="card">
+
+                <div
+                    id="turnBanner"
+                    class="turn-banner"
+                >
+                    等待遊戲開始
                 </div>
 
                 <div class="dice">
 
                     <div
+                        id="dice1"
                         class="die"
-                        id="die1">
-                        —
+                    >
+                        -
                     </div>
 
                     <div
+                        id="dice2"
                         class="die"
-                        id="die2">
-                        —
+                    >
+                        -
                     </div>
 
                 </div>
 
-            </div>
 
-        </div>
-
-        <div class="game-layout">
-
-            <!-- BOARD -->
-
-            <div class="card board-wrap">
-
-                <div id="board" class="board">
-
-                    <div class="board-center">
-                        <div class="board-title">
-                            UK<br>MONOPOLY
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- SIDEBAR -->
-
-            <aside class="sidebar">
-
-                <!-- PLAYERS -->
-
-                <div class="card players-panel">
-
-                    <div class="panel-title">
-                        玩家
-                    </div>
-
-                    <div
-                        id="playerList"
-                        class="player-list">
-                    </div>
-
-                    <div class="divider"></div>
+                <div class="action">
 
                     <button
-                        id="startGameBtn"
-                        class="btn btn-primary"
-                        style="width:100%">
-                        開始遊戲
+                        id="rollButton"
+                        class="primary-btn"
+                        onclick="rollDice()"
+                    >
+                        🎲 擲骰子
+                    </button>
+
+                    <button
+                        id="endTurnButton"
+                        class="secondary-btn"
+                        onclick="endTurn()"
+                        disabled
+                    >
+                        結束回合
                     </button>
 
                 </div>
 
-                <!-- ACTION -->
+            </div>
 
-                <div class="card action-panel">
 
-                    <div class="panel-title">
-                        回合操作
-                    </div>
+            <!-- PLAYER INFO -->
 
-                    <div
-                        id="actionMessage"
-                        class="action-message">
-                        等待玩家加入。
-                    </div>
+            <div class="card">
 
-                    <div class="action-buttons">
+                <h3>玩家</h3>
 
-                        <button
-                            id="rollBtn"
-                            class="btn btn-success">
-                            🎲 擲骰子
-                        </button>
+                <div id="playersList"></div>
 
-                        <button
-                            id="buyBtn"
-                            class="btn btn-warning"
-                            disabled>
-                            🏠 購買地產
-                        </button>
+            </div>
 
-                        <button
-                            id="refreshBtn"
-                            class="btn">
-                            ↻ 同步
-                        </button>
 
-                    </div>
+            <!-- EVENT LOG -->
 
-                    <div
-                        id="propertyInfo"
-                        class="property-info hidden">
-                    </div>
+            <div class="card">
 
-                </div>
+                <h3>遊戲紀錄</h3>
 
-                <!-- LOG -->
+                <div
+                    id="eventLog"
+                    class="log"
+                ></div>
 
-                <div class="card log-panel">
-
-                    <div class="panel-title">
-                        遊戲紀錄
-                    </div>
-
-                    <div
-                        id="eventLog"
-                        class="log">
-                    </div>
-
-                </div>
-
-            </aside>
+            </div>
 
         </div>
 
-    </section>
+    </div>
+
+</section>
+
 
 </div>
 
+
+<!-- =========================================================
+     MODULE 17：ACTION MODAL
+     ========================================================= -->
+
+<div
+    id="actionModal"
+    class="modal"
+>
+
+    <div class="modal-box">
+
+        <div id="modalContent"></div>
+
+        <div
+            id="modalActions"
+            class="modal-actions"
+        ></div>
+
+    </div>
+
+</div>
+
+
 <script>
+
 /* =========================================================
-   SUPABASE CONFIG
-========================================================= */
+   MODULE 18：SUPABASE CONFIG
+   ========================================================= */
 
 const SUPABASE_URL =
     "https://aeqhrcdlmpqncddridaj.supabase.co";
@@ -850,1776 +789,216 @@ const supabaseClient =
         SUPABASE_KEY
     );
 
-/*
- * 注意：
- * 這是 publishable key，可以放在前端。
- * 絕對不要把 service_role key 放進 GitHub。
- */
+
+/* =========================================================
+   MODULE 19：GAME CONSTANTS
+   ========================================================= */
+
+const PLAYER_COLORS = [
+    "#ff5959",
+    "#4da6ff",
+    "#5ee18a",
+    "#ffd84d"
+];
+
+const BOARD_SIZE = 40;
 
 
 /* =========================================================
-   GAME STATE
-========================================================= */
+   MODULE 20：GAME STATE
+   ========================================================= */
 
-let state = {
+let room = null;
+let game = null;
+let me = null;
 
-    room: null,
+let players = [];
+let boardSpaces = [];
 
-    game: null,
+let realtimeChannel = null;
 
-    players: [],
-
-    board: [],
-
-    events: [],
-
-    me: null,
-
-    realtimeChannel: null,
-
-    lastRolledPosition: null
-
-};
+let hasRolledThisTurn = false;
+let actionRequired = false;
 
 
 /* =========================================================
-   PLAYER TOKEN COLORS
-========================================================= */
+   MODULE 21：BOARD DATA FALLBACK
+   ========================================================= */
 
-const TOKEN_COLORS = [
-    "#ff4d5e",
-    "#4d8dff",
-    "#34d58b",
-    "#ffc34d",
-    "#b56cff",
-    "#ff7a3d"
+const FALLBACK_BOARD = [
+
+    ["GO","go"],
+    ["Bridgwater","property"],
+    ["Community Chest","community_chest"],
+    ["Bath","property"],
+    ["Income Tax","tax"],
+    ["Bristol Railway","railroad"],
+    ["Cardiff","property"],
+    ["Chance","chance"],
+    ["Swansea","property"],
+    ["Newport","property"],
+    ["Jail","jail"],
+
+    ["Oxford","property"],
+    ["Electric Company","utility"],
+    ["Cambridge","property"],
+    ["London","property"],
+    ["London Victoria","railroad"],
+    ["Birmingham","property"],
+    ["Community Chest","community_chest"],
+    ["Manchester","property"],
+    ["Liverpool","property"],
+
+    ["Free Parking","free_parking"],
+
+    ["Leeds","property"],
+    ["Chance","chance"],
+    ["Sheffield","property"],
+    ["Nottingham","property"],
+    ["Edinburgh Railway","railroad"],
+    ["Glasgow","property"],
+    ["Edinburgh","property"],
+    ["Water Works","utility"],
+    ["Aberdeen","property"],
+
+    ["Go To Jail","go_to_jail"],
+
+    ["Belfast","property"],
+    ["Derry","property"],
+    ["Community Chest","community_chest"],
+    ["Bournemouth","property"],
+    ["Bristol Temple Meads","railroad"],
+    ["Chance","chance"],
+    ["Brighton","property"],
+    ["Luxury Tax","tax"],
+    ["Plymouth","property"]
 ];
 
 
 /* =========================================================
-   BOARD POSITION → CSS GRID
-========================================================= */
+   MODULE 22：CHANCE CARDS
+   之後要改「機會卡」只需要修改這裡
+   ========================================================= */
 
-function positionToGrid(position) {
+const CHANCE_CARDS = [
 
-    /*
-     * 40格標準 Monopoly 走法：
+    {
+        title: "前進到 GO",
+        text: "前進到 GO，並領取 £200。",
+        type: "goto",
+        position: 0,
+        money: 200
+    },
 
-     * 0  = 左下 GO
-     * 1~10 = 底部 → 右下
-     * 11~20 = 右側 → 右上
-     * 21~30 = 上方 → 左上
-     * 31~39 = 左側 → 左下
-     */
+    {
+        title: "銀行發放紅利",
+        text: "銀行發放紅利 £100。",
+        type: "money",
+        money: 100
+    },
 
-    if (position === 0)
-        return { row: 11, col: 1 };
+    {
+        title: "支付維修費",
+        text: "支付 £50。",
+        type: "money",
+        money: -50
+    },
 
-    if (position >= 1 && position <= 10)
-        return {
-            row: 11,
-            col: position + 1
-        };
+    {
+        title: "前往最近的火車站",
+        text: "前進到下一個火車站。",
+        type: "nearest_railroad"
+    },
 
-    if (position >= 11 && position <= 20)
-        return {
-            row: 21 - position,
-            col: 11
-        };
+    {
+        title: "退稅",
+        text: "收到退稅 £150。",
+        type: "money",
+        money: 150
+    },
 
-    if (position >= 21 && position <= 30)
-        return {
-            row: 1,
-            col: 31 - position
-        };
-
-    return {
-        row: position - 29,
-        col: 1
-    };
-}
-
-
-/* =========================================================
-   COLOR GROUP
-========================================================= */
-
-function groupColor(group) {
-
-    const colors = {
-
-        brown: "#8d5a35",
-
-        light_blue: "#8dd8f2",
-
-        pink: "#d96ba8",
-
-        orange: "#e98a35",
-
-        red: "#d84444",
-
-        yellow: "#e8c84b",
-
-        green: "#4caf72",
-
-        dark_blue: "#3959bd"
-
-    };
-
-    return colors[group] || "#777";
-
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-function toast(message, type = "") {
-
-    const container =
-        document.getElementById("toastContainer");
-
-    const el =
-        document.createElement("div");
-
-    el.className =
-        "toast " + type;
-
-    el.textContent = message;
-
-    container.appendChild(el);
-
-    setTimeout(() => {
-
-        el.remove();
-
-    }, 3500);
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-function setConnection(status, text) {
-
-    const el =
-        document.getElementById("connectionStatus");
-
-    const label =
-        document.getElementById("connectionText");
-
-    el.classList.remove(
-        "online",
-        "error"
-    );
-
-    if (status === "online")
-        el.classList.add("online");
-
-    if (status === "error")
-        el.classList.add("error");
-
-    label.textContent = text;
-}
-
-
-/* =========================================================
-   SAVE SESSION
-========================================================= */
-
-function saveSession() {
-
-    localStorage.setItem(
-        "monopoly_session",
-        JSON.stringify({
-            roomCode:
-                state.room?.room_code || null,
-
-            playerId:
-                state.me?.id || null,
-
-            playerName:
-                state.me?.name || null
-        })
-    );
-}
-
-
-/* =========================================================
-   CREATE ROOM
-========================================================= */
-
-async function createRoom() {
-
-    const name =
-        document.getElementById("nameInput")
-        .value.trim();
-
-    if (!name) {
-
-        toast("請先輸入你的名字", "error");
-        return;
-
+    {
+        title: "進入監獄",
+        text: "直接前往監獄，不經過 GO。",
+        type: "jail"
     }
 
-    const roomCode =
-        generateRoomCode();
-
-    setLoading(true);
-
-    try {
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "create_room",
-                {
-                    p_room_code: roomCode
-                }
-            );
-
-        if (error)
-            throw error;
-
-        document.getElementById("roomInput")
-            .value = roomCode;
-
-        toast(
-            "房間建立成功：" + roomCode,
-            "success"
-        );
-
-        await joinRoom(roomCode, name);
-
-    } catch (error) {
-
-        console.error(error);
-
-        toast(
-            "建立房間失敗：" +
-            getErrorMessage(error),
-            "error"
-        );
-
-    } finally {
-
-        setLoading(false);
-
-    }
-}
+];
 
 
 /* =========================================================
-   GENERATE ROOM CODE
-========================================================= */
+   MODULE 23：COMMUNITY CHEST / 福利卡
+   之後要改「福利卡」只需要修改這裡
+   ========================================================= */
 
-function generateRoomCode() {
+const COMMUNITY_CHEST_CARDS = [
 
-    const chars =
-        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    {
+        title: "銀行錯誤",
+        text: "銀行誤把 £200 存入你的帳戶。",
+        type: "money",
+        money: 200
+    },
 
-    let result = "";
+    {
+        title: "醫療費",
+        text: "支付醫療費 £50。",
+        type: "money",
+        money: -50
+    },
 
-    for (let i = 0; i < 4; i++) {
+    {
+        title: "生日禮物",
+        text: "每位其他玩家支付你 £10。",
+        type: "birthday",
+        money: 10
+    },
 
-        result +=
-            chars[
-                Math.floor(
-                    Math.random() * chars.length
-                )
-            ];
+    {
+        title: "所得稅退款",
+        text: "收到 £100。",
+        type: "money",
+        money: 100
+    },
 
+    {
+        title: "直接入獄",
+        text: "直接前往監獄。",
+        type: "jail"
     }
 
-    return result;
-
-}
+];
 
 
 /* =========================================================
-   JOIN ROOM
-========================================================= */
+   MODULE 24：UTILITY FUNCTIONS
+   ========================================================= */
 
-async function joinRoom(
-    roomCodeArg = null,
-    nameArg = null
-) {
-
-    const name =
-        nameArg ||
-        document.getElementById("nameInput")
-            .value.trim();
-
-    const roomCode =
-        (
-            roomCodeArg ||
-            document.getElementById("roomInput")
-                .value.trim()
-        ).toUpperCase();
-
-    if (!name) {
-
-        toast("請輸入名字", "error");
-        return;
-
-    }
-
-    if (!roomCode) {
-
-        toast("請輸入房間代碼", "error");
-        return;
-
-    }
-
-    setLoading(true);
-
-    try {
-
-        /*
-         * 呼叫：
-         * join_room(text,text)
-         */
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "join_room",
-                {
-                    p_room_code: roomCode,
-                    p_name: name
-                }
-            );
-
-        if (error)
-            throw error;
-
-        if (!data)
-            throw new Error("加入房間沒有返回資料");
-
-        /*
-         * data:
-         * player_id
-         * game_id
-         * room_id
-         * player_number
-         * name
-         * money
-         * position
-         */
-
-        state.me = {
-            id: data.player_id,
-            game_id: data.game_id,
-            room_id: data.room_id,
-            player_number: data.player_number,
-            name: data.name,
-            money: data.money,
-            position: data.position
-        };
-
-        saveSession();
-
-        await loadRoomAndGame();
-
-        showGameScreen();
-
-        await subscribeRealtime();
-
-        await refreshGame();
-
-        toast(
-            "成功加入房間 " + roomCode,
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        toast(
-            "加入房間失敗：" +
-            getErrorMessage(error),
-            "error"
-        );
-
-    } finally {
-
-        setLoading(false);
-
-    }
+function $(id) {
+    return document.getElementById(id);
 }
 
 
-/* =========================================================
-   LOAD ROOM / GAME
-========================================================= */
+function showScreen(id) {
 
-async function loadRoomAndGame() {
+    document
+        .querySelectorAll(".screen")
+        .forEach(el => el.classList.remove("active"));
 
-    if (!state.me)
-        return;
-
-    const { data: room, error: roomError } =
-        await supabaseClient
-            .from("rooms")
-            .select("*")
-            .eq("id", state.me.room_id)
-            .single();
-
-    if (roomError)
-        throw roomError;
-
-    const { data: game, error: gameError } =
-        await supabaseClient
-            .from("games")
-            .select("*")
-            .eq("id", state.me.game_id)
-            .single();
-
-    if (gameError)
-        throw gameError;
-
-    state.room = room;
-    state.game = game;
-
+    $(id).classList.add("active");
 }
 
 
-/* =========================================================
-   REFRESH GAME
-========================================================= */
+function showMessage(message, error = false) {
 
-async function refreshGame() {
+    const el = $("roomMessage");
 
-    if (!state.me)
-        return;
-
-    try {
-
-        /*
-         * 使用 get_game_state RPC。
-         */
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "get_game_state",
-                {
-                    p_game_id: state.me.game_id
-                }
-            );
-
-        if (error)
-            throw error;
-
-        if (!data)
-            throw new Error("沒有取得遊戲狀態");
-
-        state.game = data.game;
-        state.players = data.players || [];
-        state.board = data.board || [];
-
-        /*
-         * 找出自己的最新 player row
-         */
-
-        state.me =
-            state.players.find(
-                p => p.id === state.me.id
-            ) || state.me;
-
-        renderAll();
-
-    } catch (error) {
-
-        console.error(
-            "refreshGame:",
-            error
-        );
-
-        toast(
-            "同步失敗：" +
-            getErrorMessage(error),
-            "error"
-        );
-
-    }
-
+    el.innerHTML =
+        `<div style="color:${error ? "#ff8d8d" : "#8df0a7"}">
+            ${escapeHtml(message)}
+        </div>`;
 }
 
-
-/* =========================================================
-   REALTIME
-========================================================= */
-
-async function subscribeRealtime() {
-
-    if (!state.me)
-        return;
-
-    /*
-     * 移除舊 channel
-     */
-
-    if (state.realtimeChannel) {
-
-        await supabaseClient.removeChannel(
-            state.realtimeChannel
-        );
-
-        state.realtimeChannel = null;
-
-    }
-
-    const channelName =
-        "monopoly-game-" +
-        state.me.game_id;
-
-    const channel =
-        supabaseClient.channel(
-            channelName
-        );
-
-    /*
-     * games
-     */
-
-    channel.on(
-        "postgres_changes",
-        {
-            event: "*",
-            schema: "public",
-            table: "games",
-            filter:
-                "id=eq." +
-                state.me.game_id
-        },
-        async payload => {
-
-            console.log(
-                "Realtime games:",
-                payload
-            );
-
-            await refreshGame();
-
-        }
-    );
-
-    /*
-     * players
-     */
-
-    channel.on(
-        "postgres_changes",
-        {
-            event: "*",
-            schema: "public",
-            table: "players",
-            filter:
-                "game_id=eq." +
-                state.me.game_id
-        },
-        async payload => {
-
-            console.log(
-                "Realtime players:",
-                payload
-            );
-
-            await refreshGame();
-
-        }
-    );
-
-    /*
-     * events
-     */
-
-    channel.on(
-        "postgres_changes",
-        {
-            event: "INSERT",
-            schema: "public",
-            table: "game_events",
-            filter:
-                "game_id=eq." +
-                state.me.game_id
-        },
-        async payload => {
-
-            console.log(
-                "Realtime event:",
-                payload
-            );
-
-            addEventToLog(
-                payload.new
-            );
-
-            await refreshGame();
-
-        }
-    );
-
-    state.realtimeChannel =
-        channel;
-
-    channel.subscribe(
-        status => {
-
-            console.log(
-                "Realtime status:",
-                status
-            );
-
-            if (
-                status === "SUBSCRIBED"
-            ) {
-
-                setConnection(
-                    "online",
-                    "Realtime 已連線"
-                );
-
-            } else if (
-                status === "CHANNEL_ERROR" ||
-                status === "TIMED_OUT"
-            ) {
-
-                setConnection(
-                    "error",
-                    "Realtime 連線錯誤"
-                );
-
-            } else {
-
-                setConnection(
-                    "",
-                    "連線中..."
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   START GAME
-========================================================= */
-
-async function startGame() {
-
-    if (!state.me)
-        return;
-
-    /*
-     * 目前 SQL 的 start_game(uuid)
-     * 不限制只有房主可以開始。
-     *
-     * 所以這裡任何玩家都能按。
-     */
-
-    setActionLoading(true);
-
-    try {
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "start_game",
-                {
-                    p_game_id:
-                        state.me.game_id
-                }
-            );
-
-        if (error)
-            throw error;
-
-        await refreshGame();
-
-        toast(
-            "遊戲開始！",
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        toast(
-            "開始遊戲失敗：" +
-            getErrorMessage(error),
-            "error"
-        );
-
-    } finally {
-
-        setActionLoading(false);
-
-    }
-
-}
-
-
-/* =========================================================
-   ROLL DICE
-========================================================= */
-
-async function rollDice() {
-
-    if (!state.me || !state.game)
-        return;
-
-    /*
-     * 最重要的判斷：
-     *
-     * 不看「我是第一個玩家」。
-     * 不看 localStorage。
-     * 不看 player_number。
-     *
-     * 唯一判斷：
-     *
-     * games.current_player_id === me.id
-     *
-     * 這樣第二台手機拿到相同 DB 狀態後，
-     * 就可以正常成為下一位。
-     */
-
-    if (
-        state.game.current_player_id !==
-        state.me.id
-    ) {
-
-        const current =
-            getPlayer(
-                state.game.current_player_id
-            );
-
-        toast(
-            "現在輪到 " +
-            (current?.name || "其他玩家") +
-            "，不是你的回合。",
-            "error"
-        );
-
-        return;
-
-    }
-
-    if (
-        state.game.status !==
-        "playing"
-    ) {
-
-        toast(
-            "遊戲尚未開始。",
-            "error"
-        );
-
-        return;
-
-    }
-
-    setActionLoading(true);
-
-    try {
-
-        /*
-         * Server-side dice:
-         *
-         * roll_dice(uuid,uuid)
-         */
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "roll_dice",
-                {
-                    p_game_id:
-                        state.me.game_id,
-
-                    p_player_id:
-                        state.me.id
-                }
-            );
-
-        if (error)
-            throw error;
-
-        console.log(
-            "ROLL RESULT:",
-            data
-        );
-
-        if (data) {
-
-            showDice(
-                data.dice1,
-                data.dice2
-            );
-
-            state.lastRolledPosition =
-                data.new_position;
-
-            toast(
-                "你擲出了 " +
-                data.dice1 +
-                " + " +
-                data.dice2 +
-                " = " +
-                data.total,
-                "success"
-            );
-
-            /*
-             * 如果落在地產：
-             * 顯示購買按鈕。
-             */
-
-            if (
-                data.space_type ===
-                "property"
-            ) {
-
-                state.lastRolledPosition =
-                    data.new_position;
-
-            }
-
-        }
-
-        /*
-         * 等待 DB / Realtime 狀態
-         */
-
-        await refreshGame();
-
-    } catch (error) {
-
-        console.error(
-            "rollDice:",
-            error
-        );
-
-        toast(
-            "擲骰失敗：" +
-            getErrorMessage(error),
-            "error"
-        );
-
-    } finally {
-
-        setActionLoading(false);
-
-    }
-
-}
-
-
-/* =========================================================
-   BUY PROPERTY
-========================================================= */
-
-async function buyProperty() {
-
-    if (!state.me || !state.game)
-        return;
-
-    if (
-        state.game.current_player_id !==
-        state.me.id
-    ) {
-
-        toast(
-            "現在不是你的回合。",
-            "error"
-        );
-
-        return;
-
-    }
-
-    setActionLoading(true);
-
-    try {
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "buy_property",
-                {
-                    p_game_id:
-                        state.me.game_id,
-
-                    p_player_id:
-                        state.me.id
-                }
-            );
-
-        if (error)
-            throw error;
-
-        console.log(
-            "BUY RESULT:",
-            data
-        );
-
-        toast(
-            "成功購買 " +
-            data.property +
-            "！",
-            "success"
-        );
-
-        await refreshGame();
-
-    } catch (error) {
-
-        console.error(
-            "buyProperty:",
-            error
-        );
-
-        toast(
-            "購買失敗：" +
-            getErrorMessage(error),
-            "error"
-        );
-
-    } finally {
-
-        setActionLoading(false);
-
-    }
-
-}
-
-
-/* =========================================================
-   RENDER ALL
-========================================================= */
-
-function renderAll() {
-
-    renderHeader();
-
-    renderPlayers();
-
-    renderBoard();
-
-    renderActions();
-
-}
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-function renderHeader() {
-
-    document.getElementById(
-        "roomCodeDisplay"
-    ).textContent =
-        state.room?.room_code || "----";
-
-    const current =
-        getPlayer(
-            state.game?.current_player_id
-        );
-
-    document.getElementById(
-        "currentPlayerDisplay"
-    ).textContent =
-        current
-            ? "🎲 " + current.name + " 的回合"
-            : "等待遊戲開始";
-
-    document.getElementById(
-        "turnNumberDisplay"
-    ).textContent =
-        "回合：" +
-        (state.game?.turn_number || 0);
-
-    if (state.game) {
-
-        document.getElementById(
-            "die1"
-        ).textContent =
-            state.game.dice_1 || "—";
-
-        document.getElementById(
-            "die2"
-        ).textContent =
-            state.game.dice_2 || "—";
-
-    }
-
-}
-
-
-/* =========================================================
-   RENDER PLAYERS
-========================================================= */
-
-function renderPlayers() {
-
-    const list =
-        document.getElementById(
-            "playerList"
-        );
-
-    list.innerHTML = "";
-
-    const players =
-        [...state.players]
-            .sort(
-                (a,b) =>
-                    a.player_number -
-                    b.player_number
-            );
-
-    players.forEach(player => {
-
-        const el =
-            document.createElement("div");
-
-        const isMe =
-            player.id === state.me?.id;
-
-        const isCurrent =
-            player.id ===
-            state.game?.current_player_id;
-
-        el.className =
-            "player" +
-            (isCurrent
-                ? " active"
-                : "") +
-            (isMe
-                ? " me"
-                : "");
-
-        const color =
-            TOKEN_COLORS[
-                (player.player_number - 1) %
-                TOKEN_COLORS.length
-            ];
-
-        el.innerHTML = `
-
-            <div
-                class="player-token"
-                style="background:${color}">
-            </div>
-
-            <div>
-
-                <div class="player-name">
-                    ${escapeHtml(player.name)}
-                    ${isMe ? "（你）" : ""}
-                </div>
-
-                <div class="player-meta">
-                    玩家 ${player.player_number}
-                    · 位置 ${player.position}
-                    ${player.is_in_jail
-                        ? " · 🚔 監獄"
-                        : ""}
-                </div>
-
-            </div>
-
-            <div class="player-money">
-                £${Number(player.money).toLocaleString()}
-            </div>
-        `;
-
-        list.appendChild(el);
-
-    });
-
-}
-
-
-/* =========================================================
-   RENDER BOARD
-========================================================= */
-
-function renderBoard() {
-
-    const board =
-        document.getElementById("board");
-
-    /*
-     * 保留中央區域
-     */
-
-    board.innerHTML = `
-
-        <div class="board-center">
-            <div class="board-title">
-                UK<br>MONOPOLY
-            </div>
-        </div>
-
-    `;
-
-    /*
-     * 如果 board 還沒載入
-     */
-
-    if (
-        !state.board ||
-        state.board.length === 0
-    )
-        return;
-
-    state.board.forEach(space => {
-
-        const grid =
-            positionToGrid(
-                space.position
-            );
-
-        const el =
-            document.createElement("div");
-
-        el.className =
-            "space";
-
-        el.style.gridRow =
-            grid.row;
-
-        el.style.gridColumn =
-            grid.col;
-
-        const color =
-            groupColor(
-                space.color_group
-            );
-
-        const owner =
-            getPropertyOwner(
-                space.position
-            );
-
-        let priceText = "";
-
-        if (
-            space.price &&
-            Number(space.price) > 0
-        ) {
-
-            priceText =
-                "£" +
-                Number(
-                    space.price
-                ).toLocaleString();
-
-        }
-
-        el.innerHTML = `
-
-            ${
-                space.color_group
-                ? `
-                    <div
-                        class="space-color"
-                        style="background:${color}">
-                    </div>
-                  `
-                : `
-                    <div
-                        class="space-color"
-                        style="background:#aaa">
-                    </div>
-                  `
-            }
-
-            <div class="space-name">
-                ${escapeHtml(space.name)}
-            </div>
-
-            ${
-                priceText
-                ? `
-                    <div class="space-price">
-                        ${priceText}
-                    </div>
-                  `
-                : ""
-            }
-
-            ${
-                owner
-                ? `
-                    <div
-                        class="owner-mark"
-                        title="Owner: ${escapeHtml(owner.name)}"
-                        style="background:
-                            ${tokenColor(owner.player_number)}">
-                    </div>
-                  `
-                : ""
-            }
-
-            <div
-                class="space-tokens"
-                id="tokens-${space.position}">
-            </div>
-        `;
-
-        board.appendChild(el);
-
-    });
-
-    /*
-     * 加入玩家棋子
-     */
-
-    state.players.forEach(player => {
-
-        const tokenContainer =
-            document.getElementById(
-                "tokens-" +
-                player.position
-            );
-
-        if (!tokenContainer)
-            return;
-
-        const token =
-            document.createElement("div");
-
-        token.className =
-            "token";
-
-        token.style.background =
-            tokenColor(
-                player.player_number
-            );
-
-        token.title =
-            player.name;
-
-        tokenContainer.appendChild(
-            token
-        );
-
-    });
-
-}
-
-
-/* =========================================================
-   RENDER ACTIONS
-========================================================= */
-
-function renderActions() {
-
-    const rollBtn =
-        document.getElementById(
-            "rollBtn"
-        );
-
-    const buyBtn =
-        document.getElementById(
-            "buyBtn"
-        );
-
-    const startBtn =
-        document.getElementById(
-            "startGameBtn"
-        );
-
-    const message =
-        document.getElementById(
-            "actionMessage"
-        );
-
-    if (!state.game) {
-
-        rollBtn.disabled = true;
-        buyBtn.disabled = true;
-
-        return;
-
-    }
-
-    const current =
-        getPlayer(
-            state.game.current_player_id
-        );
-
-    const isMyTurn =
-        state.game.current_player_id ===
-        state.me?.id;
-
-    const isPlaying =
-        state.game.status ===
-        "playing";
-
-    /*
-     * 開始遊戲
-     */
-
-    startBtn.disabled =
-        isPlaying;
-
-    /*
-     * 擲骰
-     */
-
-    rollBtn.disabled =
-        !isMyTurn ||
-        !isPlaying;
-
-    /*
-     * 購買
-     */
-
-    const landed =
-        state.players.find(
-            p =>
-                p.id === state.me?.id
-        )?.position;
-
-    const landedSpace =
-        state.board.find(
-            b =>
-                b.position === landed
-        );
-
-    const canBuy =
-        isMyTurn &&
-        isPlaying &&
-        landedSpace &&
-        landedSpace.type === "property" &&
-        Number(landedSpace.price) > 0 &&
-        !getPropertyOwner(
-            landedSpace.position
-        ) &&
-        Number(
-            state.me?.money || 0
-        ) >= Number(
-            landedSpace.price
-        );
-
-    buyBtn.disabled =
-        !canBuy;
-
-    /*
-     * Message
-     */
-
-    if (
-        state.game.status ===
-        "waiting"
-    ) {
-
-        message.textContent =
-            "遊戲尚未開始。按「開始遊戲」後即可進行。";
-
-    } else if (isMyTurn) {
-
-        message.textContent =
-            "現在輪到你。擲骰子吧！";
-
-    } else {
-
-        message.textContent =
-            "現在輪到 " +
-            (current?.name || "其他玩家") +
-            "。請等待對方完成回合。";
-
-    }
-
-    /*
-     * Property information
-     */
-
-    renderPropertyInfo(
-        landedSpace
-    );
-
-}
-
-
-/* =========================================================
-   PROPERTY INFO
-========================================================= */
-
-function renderPropertyInfo(space) {
-
-    const box =
-        document.getElementById(
-            "propertyInfo"
-        );
-
-    if (!space) {
-
-        box.classList.add(
-            "hidden"
-        );
-
-        return;
-
-    }
-
-    box.classList.remove(
-        "hidden"
-    );
-
-    const owner =
-        getPropertyOwner(
-            space.position
-        );
-
-    let html = `
-        <strong>
-            ${escapeHtml(space.name)}
-        </strong>
-        <br>
-        類型：${escapeHtml(space.type)}
-    `;
-
-    if (
-        Number(space.price) > 0
-    ) {
-
-        html += `
-            <br>
-            價格：£${Number(
-                space.price
-            ).toLocaleString()}
-        `;
-
-    }
-
-    if (owner) {
-
-        html += `
-            <br>
-            所有者：
-            <strong>
-                ${escapeHtml(owner.name)}
-            </strong>
-        `;
-
-    } else if (
-        space.type === "property"
-    ) {
-
-        html += `
-            <br>
-            <strong>
-                尚未有人購買
-            </strong>
-        `;
-
-    }
-
-    box.innerHTML = html;
-
-}
-
-
-/* =========================================================
-   GET PLAYER
-========================================================= */
-
-function getPlayer(id) {
-
-    return state.players.find(
-        p => p.id === id
-    );
-
-}
-
-
-/* =========================================================
-   PROPERTY OWNER
-========================================================= */
-
-function getPropertyOwner(position) {
-
-    /*
-     * 目前 SQL 沒有 properties 表。
-     *
-     * 所有權是從：
-     *
-     * game_events.event_type =
-     * property_purchase
-     *
-     * 推算。
-     */
-
-    const purchases =
-        state.events
-            .filter(
-                e =>
-                    e.event_type ===
-                    "property_purchase"
-            )
-            .slice()
-            .reverse();
-
-    const purchase =
-        purchases.find(
-            e =>
-                Number(
-                    e.data?.position
-                ) === Number(position)
-        );
-
-    if (!purchase)
-        return null;
-
-    return getPlayer(
-        purchase.player_id
-    );
-
-}
-
-
-/* =========================================================
-   LOAD EVENTS
-========================================================= */
-
-async function loadEvents() {
-
-    if (!state.me)
-        return;
-
-    const { data, error } =
-        await supabaseClient
-            .from("game_events")
-            .select("*")
-            .eq(
-                "game_id",
-                state.me.game_id
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            )
-            .limit(100);
-
-    if (error) {
-
-        console.error(
-            "loadEvents:",
-            error
-        );
-
-        return;
-
-    }
-
-    state.events =
-        (data || []).reverse();
-
-    renderEventLog();
-
-}
-
-
-/* =========================================================
-   ADD EVENT
-========================================================= */
-
-function addEventToLog(event) {
-
-    if (!event)
-        return;
-
-    /*
-     * 避免重複
-     */
-
-    const exists =
-        state.events.some(
-            e => e.id === event.id
-        );
-
-    if (exists)
-        return;
-
-    state.events.push(event);
-
-    if (state.events.length > 100)
-        state.events.shift();
-
-    renderEventLog();
-
-}
-
-
-/* =========================================================
-   EVENT LOG
-========================================================= */
-
-function renderEventLog() {
-
-    const box =
-        document.getElementById(
-            "eventLog"
-        );
-
-    box.innerHTML = "";
-
-    state.events
-        .slice()
-        .reverse()
-        .forEach(event => {
-
-            const el =
-                document.createElement("div");
-
-            el.className =
-                "log-item";
-
-            const time =
-                new Date(
-                    event.created_at
-                );
-
-            const timeText =
-                time.toLocaleTimeString(
-                    "zh-TW",
-                    {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    }
-                );
-
-            el.innerHTML = `
-                <span class="small">
-                    ${timeText}
-                </span>
-                <br>
-                ${escapeHtml(
-                    event.message ||
-                    event.event_type
-                )}
-            `;
-
-            box.appendChild(el);
-
-        });
-
-}
-
-
-/* =========================================================
-   SHOW DICE
-========================================================= */
-
-function showDice(d1, d2) {
-
-    document.getElementById(
-        "die1"
-    ).textContent =
-        d1 || "—";
-
-    document.getElementById(
-        "die2"
-    ).textContent =
-        d2 || "—";
-
-}
-
-
-/* =========================================================
-   TOKEN COLOR
-========================================================= */
-
-function tokenColor(playerNumber) {
-
-    return TOKEN_COLORS[
-        (Number(playerNumber) - 1) %
-        TOKEN_COLORS.length
-    ];
-
-}
-
-
-/* =========================================================
-   SHOW GAME SCREEN
-========================================================= */
-
-function showGameScreen() {
-
-    document.getElementById(
-        "lobbyScreen"
-    ).classList.add("hidden");
-
-    document.getElementById(
-        "gameScreen"
-    ).classList.remove("hidden");
-
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-function setLoading(isLoading) {
-
-    document.body.classList.toggle(
-        "loading",
-        isLoading
-    );
-
-}
-
-
-/* =========================================================
-   ACTION LOADING
-========================================================= */
-
-function setActionLoading(isLoading) {
-
-    document.getElementById(
-        "rollBtn"
-    ).disabled =
-        isLoading;
-
-    document.getElementById(
-        "buyBtn"
-    ).disabled =
-        isLoading;
-
-}
-
-
-/* =========================================================
-   ERROR MESSAGE
-========================================================= */
-
-function getErrorMessage(error) {
-
-    if (!error)
-        return "未知錯誤";
-
-    return (
-        error.message ||
-        error.details ||
-        error.hint ||
-        String(error)
-    );
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
 
 function escapeHtml(value) {
 
@@ -2629,207 +1008,1613 @@ function escapeHtml(value) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-
 }
 
 
 /* =========================================================
-   RESTORE SESSION
-========================================================= */
+   MODULE 25：CONNECTION
+   ========================================================= */
 
-async function restoreSession() {
+function setConnection(text) {
+    $("connectionStatus").textContent = text;
+}
 
-    /*
-     * 這裡不直接相信 localStorage 的 player ID。
-     * 只是用來填入房間資訊。
-     *
-     * 真正狀態仍然重新從 Supabase 取得。
-     */
 
-    const raw =
-        localStorage.getItem(
-            "monopoly_session"
-        );
+/* =========================================================
+   MODULE 26：CREATE / JOIN ROOM
+   ========================================================= */
 
-    if (!raw)
+async function joinOrCreateRoom() {
+
+    const roomCode =
+        $("roomCodeInput").value.trim();
+
+    const name =
+        $("playerNameInput").value.trim();
+
+    if (!roomCode) {
+        showMessage("請輸入房間代碼", true);
         return;
-
-    try {
-
-        const session =
-            JSON.parse(raw);
-
-        if (
-            session.roomCode
-        ) {
-
-            document.getElementById(
-                "roomInput"
-            ).value =
-                session.roomCode;
-
-        }
-
-        if (
-            session.playerName
-        ) {
-
-            document.getElementById(
-                "nameInput"
-            ).value =
-                session.playerName;
-
-        }
-
-    } catch (e) {
-
-        console.error(e);
-
     }
 
-}
-
-
-/* =========================================================
-   INITIAL LOAD
-========================================================= */
-
-async function initialize() {
-
-    setConnection(
-        "",
-        "連線中..."
-    );
+    if (!name) {
+        showMessage("請輸入玩家名稱", true);
+        return;
+    }
 
     try {
 
+        setConnection("連線中...");
+
+        let result =
+            await supabaseClient.rpc(
+                "join_room",
+                {
+                    p_room_code: roomCode,
+                    p_name: name
+                }
+            );
+
+
         /*
-         * 測試 Supabase 是否可以正常存取。
+         * 如果房間不存在，就建立房間後再加入。
          */
 
-        const { error } =
-            await supabaseClient
-                .from("board_spaces")
-                .select("position")
-                .limit(1);
+        if (result.error) {
 
-        if (error)
-            throw error;
+            const createResult =
+                await supabaseClient.rpc(
+                    "create_room",
+                    {
+                        p_room_code: roomCode
+                    }
+                );
 
-        setConnection(
-            "online",
-            "Supabase 已連線"
-        );
+            if (createResult.error) {
+                throw createResult.error;
+            }
+
+            result =
+                await supabaseClient.rpc(
+                    "join_room",
+                    {
+                        p_room_code: roomCode,
+                        p_name: name
+                    }
+                );
+        }
+
+        if (result.error) {
+            throw result.error;
+        }
+
+        const data = result.data;
+
+        me = data;
+
+        await loadGame(data.game_id);
+
+        subscribeRealtime(data.game_id);
+
+        showScreen("gameScreen");
+
+        setConnection("已連線");
 
     } catch (error) {
 
         console.error(error);
 
-        setConnection(
-            "error",
-            "Supabase 連線失敗"
+        setConnection("連線失敗");
+
+        showMessage(
+            error.message || "加入房間失敗",
+            true
+        );
+    }
+}
+
+
+/* =========================================================
+   MODULE 27：LOAD GAME STATE
+   ========================================================= */
+
+async function loadGame(gameId) {
+
+    const { data, error } =
+        await supabaseClient.rpc(
+            "get_game_state",
+            {
+                p_game_id: gameId
+            }
         );
 
+    if (error) {
+        throw error;
     }
 
-    await restoreSession();
+    if (!data) {
+        throw new Error("沒有取得遊戲資料");
+    }
+
+    game = data.game;
+
+    players = data.players || [];
+
+    boardSpaces = data.board || [];
+
+    room = {
+        id: players[0]?.room_id || null
+    };
+
+    renderBoard();
+
+    renderPlayers();
+
+    updateTurnUI();
+
+    await loadEvents();
 
 }
 
 
 /* =========================================================
-   BUTTON EVENTS
-========================================================= */
+   MODULE 28：REALTIME
+   ========================================================= */
 
-document.getElementById(
-    "createRoomBtn"
-).addEventListener(
-    "click",
-    createRoom
-);
+function subscribeRealtime(gameId) {
 
-document.getElementById(
-    "joinRoomBtn"
-).addEventListener(
-    "click",
-    () => joinRoom()
-);
+    if (realtimeChannel) {
 
-document.getElementById(
-    "startGameBtn"
-).addEventListener(
-    "click",
-    startGame
-);
+        supabaseClient
+            .removeChannel(realtimeChannel);
+    }
 
-document.getElementById(
-    "rollBtn"
-).addEventListener(
-    "click",
-    rollDice
-);
 
-document.getElementById(
-    "buyBtn"
-).addEventListener(
-    "click",
-    buyProperty
-);
+    realtimeChannel =
+        supabaseClient
+            .channel("monopoly-game-" + gameId)
 
-document.getElementById(
-    "refreshBtn"
-).addEventListener(
-    "click",
-    async () => {
 
-        await refreshGame();
-        await loadEvents();
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "games",
+                    filter: `id=eq.${gameId}`
+                },
+                async () => {
 
-        toast(
-            "已同步最新遊戲狀態",
-            "success"
+                    await loadGame(gameId);
+
+                }
+            )
+
+
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "players",
+                    filter: `game_id=eq.${gameId}`
+                },
+                async () => {
+
+                    await loadGame(gameId);
+
+                }
+            )
+
+
+            .on(
+                "postgres_changes",
+                {
+                    event: "INSERT",
+                    schema: "public",
+                    table: "game_events",
+                    filter: `game_id=eq.${gameId}`
+                },
+                async () => {
+
+                    await loadEvents();
+
+                }
+            )
+
+
+            .subscribe(
+                status => {
+
+                    console.log(
+                        "Realtime:",
+                        status
+                    );
+
+                    if (
+                        status === "SUBSCRIBED"
+                    ) {
+                        setConnection("Realtime 已連線");
+                    }
+                }
+            );
+}
+
+
+/* =========================================================
+   MODULE 29：BOARD RENDER
+   ========================================================= */
+
+function renderBoard() {
+
+    const board = $("board");
+
+    board.innerHTML = `
+
+        <div class="center">
+
+            <div class="center-title">
+                MONOPOLY
+            </div>
+
+            <div class="center-sub">
+                UK EDITION
+            </div>
+
+        </div>
+    `;
+
+
+    const spaces =
+        boardSpaces.length
+            ? boardSpaces
+            : FALLBACK_BOARD.map(
+                (x, i) => ({
+                    position: i,
+                    name: x[0],
+                    type: x[1],
+                    price: 0,
+                    color_group: null
+                })
+            );
+
+
+    spaces.forEach(space => {
+
+        const el =
+            document.createElement("div");
+
+        el.className = "space";
+
+        el.dataset.position =
+            space.position;
+
+
+        const coord =
+            getBoardCoordinate(
+                space.position
+            );
+
+        el.style.gridColumn =
+            coord.column;
+
+        el.style.gridRow =
+            coord.row;
+
+
+        const color =
+            getColorGroup(
+                space.color_group
+            );
+
+
+        el.innerHTML = `
+
+            <div
+                class="space-color"
+                style="background:${color}"
+            ></div>
+
+            <div class="space-icon">
+                ${getSpaceIcon(space.type)}
+            </div>
+
+            <div class="space-name">
+                ${escapeHtml(space.name)}
+            </div>
+
+            ${
+                space.price > 0
+                ?
+                `<div class="space-price">
+                    £${space.price}
+                </div>`
+                :
+                ""
+            }
+
+            <div
+                class="pieces"
+                data-piece-position="${space.position}"
+            ></div>
+
+        `;
+
+
+        board.appendChild(el);
+
+    });
+
+
+    renderPieces();
+}
+
+
+/* =========================================================
+   MODULE 30：CLASSIC BOARD COORDINATE
+   ========================================================= */
+
+function getBoardCoordinate(position) {
+
+    /*
+     * 0 = 右下 GO
+     * 1~10 = 下方
+     * 11~20 = 左方
+     * 21~30 = 上方
+     * 31~39 = 右方
+     */
+
+    if (position === 0) {
+
+        return {
+            column: "11",
+            row: "11"
+        };
+
+    }
+
+    if (position <= 10) {
+
+        return {
+            column: String(11 - position),
+            row: "11"
+        };
+
+    }
+
+    if (position <= 20) {
+
+        return {
+            column: "1",
+            row: String(11 - (position - 10))
+        };
+
+    }
+
+    if (position <= 30) {
+
+        return {
+            column: String(position - 20 + 1),
+            row: "1"
+        };
+
+    }
+
+    return {
+
+        column: "11",
+
+        row:
+            String(
+                position - 30 + 1
+            )
+
+    };
+
+}
+
+
+/* =========================================================
+   MODULE 31：BOARD ICONS
+   ========================================================= */
+
+function getSpaceIcon(type) {
+
+    switch(type) {
+
+        case "go":
+            return "💷";
+
+        case "chance":
+            return "❓";
+
+        case "community_chest":
+            return "🎁";
+
+        case "railroad":
+            return "🚂";
+
+        case "utility":
+            return "⚡";
+
+        case "tax":
+            return "💰";
+
+        case "jail":
+            return "🔒";
+
+        case "go_to_jail":
+            return "🚔";
+
+        case "free_parking":
+            return "🅿️";
+
+        default:
+            return "";
+
+    }
+
+}
+
+
+function getColorGroup(group) {
+
+    const colors = {
+
+        brown: "#8b5e3c",
+
+        light_blue: "#80c8df",
+
+        pink: "#d783b8",
+
+        orange: "#e68c3b",
+
+        red: "#d74b4b",
+
+        yellow: "#e4c94d",
+
+        green: "#4d9b63",
+
+        dark_blue: "#3f5ca8"
+
+    };
+
+    return colors[group] || "#444";
+
+}
+
+
+/* =========================================================
+   MODULE 32：PLAYER PIECES
+   ========================================================= */
+
+function renderPieces() {
+
+    document
+        .querySelectorAll(".pieces")
+        .forEach(el => {
+            el.innerHTML = "";
+        });
+
+
+    players.forEach(
+        (player, index) => {
+
+            const container =
+                document.querySelector(
+                    `.pieces[data-piece-position="${player.position}"]`
+                );
+
+            if (!container) return;
+
+
+            const piece =
+                document.createElement("div");
+
+            piece.className = "piece";
+
+            piece.style.background =
+                PLAYER_COLORS[
+                    (player.player_number - 1)
+                    % PLAYER_COLORS.length
+                ];
+
+
+            piece.textContent =
+                player.player_number;
+
+
+            piece.title =
+                player.name;
+
+
+            container.appendChild(piece);
+
+        }
+    );
+}
+
+
+/* =========================================================
+   MODULE 33：PLAYER LIST
+   ========================================================= */
+
+function renderPlayers() {
+
+    const list =
+        $("playersList");
+
+    list.innerHTML = "";
+
+
+    players.forEach(
+        (player, index) => {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "player-row";
+
+
+            if (
+                game &&
+                game.current_player_id === player.id
+            ) {
+                div.classList.add("current");
+            }
+
+
+            const color =
+                PLAYER_COLORS[
+                    (player.player_number - 1)
+                    % PLAYER_COLORS.length
+                ];
+
+
+            div.innerHTML = `
+
+                <div
+                    class="player-dot"
+                    style="background:${color}"
+                ></div>
+
+                <div class="player-info">
+
+                    <div class="player-name">
+
+                        ${escapeHtml(player.name)}
+
+                        ${
+                            player.id === me?.player_id
+                            ? "（你）"
+                            : ""
+                        }
+
+                    </div>
+
+                    <div class="player-money">
+                        £${player.money}
+                        · 位置 ${player.position}
+                    </div>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(div);
+
+        }
+    );
+}
+
+
+/* =========================================================
+   MODULE 34：TURN UI
+   ========================================================= */
+
+function updateTurnUI() {
+
+    if (!game) return;
+
+
+    const current =
+        players.find(
+            p =>
+                p.id ===
+                game.current_player_id
+        );
+
+
+    if (!current) {
+
+        $("turnBanner").textContent =
+            "等待玩家";
+
+        return;
+    }
+
+
+    const myTurn =
+        current.id === me?.player_id;
+
+
+    $("turnBanner").textContent =
+        myTurn
+            ? "🎲 現在是你的回合"
+            : `等待 ${current.name}...`;
+
+
+    $("rollButton").disabled =
+        !myTurn ||
+        hasRolledThisTurn ||
+        actionRequired;
+
+
+    $("endTurnButton").disabled =
+        !myTurn ||
+        !hasRolledThisTurn ||
+        actionRequired;
+
+
+    if (
+        game.dice_1
+        &&
+        game.dice_2
+    ) {
+
+        $("dice1").textContent =
+            game.dice_1;
+
+        $("dice2").textContent =
+            game.dice_2;
+
+    }
+
+
+}
+
+
+/* =========================================================
+   MODULE 35：ROLL DICE
+   ========================================================= */
+
+async function rollDice() {
+
+    if (!me || !game) return;
+
+
+    if (
+        game.current_player_id
+        !== me.player_id
+    ) {
+
+        alert("現在不是你的回合");
+
+        return;
+    }
+
+
+    if (hasRolledThisTurn) {
+
+        alert(
+            "本回合已經擲過骰子，請先處理落點並結束回合。"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        $("rollButton").disabled =
+            true;
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.rpc(
+                "roll_dice",
+                {
+                    p_game_id: game.id,
+                    p_player_id: me.player_id
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        hasRolledThisTurn = true;
+
+        actionRequired = true;
+
+
+        $("dice1").textContent =
+            data.dice1;
+
+        $("dice2").textContent =
+            data.dice2;
+
+
+        await loadGame(game.id);
+
+
+        /*
+         * 等資料更新後，再處理落點。
+         */
+
+        await handleLanding(data);
+
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            error.message ||
+            "擲骰子失敗"
+        );
+
+
+        hasRolledThisTurn =
+            false;
+
+        actionRequired =
+            false;
+
+        updateTurnUI();
+
+    }
+
+}
+
+
+/* =========================================================
+   MODULE 36：LANDING LOGIC
+   ========================================================= */
+
+async function handleLanding(result) {
+
+    const type =
+        result.space_type;
+
+
+    /*
+     * 地產
+     */
+
+    if (type === "property") {
+
+        const space =
+            boardSpaces.find(
+                s =>
+                    s.position ===
+                    result.new_position
+            );
+
+
+        if (!space) {
+
+            actionRequired = false;
+
+            updateTurnUI();
+
+            return;
+        }
+
+
+        /*
+         * 判斷是否已經有人買
+         */
+
+        const owner =
+            await getPropertyOwner(
+                result.new_position
+            );
+
+
+        if (
+            !owner &&
+            space.price > 0
+        ) {
+
+            showPropertyPurchase(
+                space
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * 如果有主人，付租金。
+         */
+
+        if (
+            owner &&
+            owner.id !== me.player_id
+        ) {
+
+            await payRent(
+                space,
+                owner
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * 自己的地產
+         */
+
+        actionRequired =
+            false;
+
+        updateTurnUI();
+
+        return;
+    }
+
+
+    /*
+     * Chance
+     */
+
+    if (type === "chance") {
+
+        drawCard(
+            "chance"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Community Chest
+     */
+
+    if (type === "community_chest") {
+
+        drawCard(
+            "community_chest"
+        );
+
+        return;
+    }
+
+
+    /*
+     * 稅
+     */
+
+    if (type === "tax") {
+
+        await payTax(result);
+
+        return;
+    }
+
+
+    /*
+     * 其他格子
+     */
+
+    actionRequired =
+        false;
+
+    updateTurnUI();
+
+}
+
+
+/* =========================================================
+   MODULE 37：PROPERTY OWNER
+   ========================================================= */
+
+async function getPropertyOwner(position) {
+
+    const { data, error } =
+        await supabaseClient
+            .from("game_events")
+            .select("*")
+            .eq("game_id", game.id)
+            .eq(
+                "event_type",
+                "property_purchase"
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        return null;
+    }
+
+
+    /*
+     * 找最後一次購買這個位置的人
+     */
+
+    const purchases =
+        (data || [])
+            .filter(
+                event =>
+                    Number(
+                        event.data?.position
+                    ) === position
+            )
+            .sort(
+                (a,b) =>
+                    new Date(b.created_at)
+                    -
+                    new Date(a.created_at)
+            );
+
+
+    if (!purchases.length) {
+        return null;
+    }
+
+
+    return players.find(
+        p =>
+            p.id ===
+            purchases[0].player_id
+    ) || null;
+}
+
+
+/* =========================================================
+   MODULE 38：BUY PROPERTY UI
+   ========================================================= */
+
+function showPropertyPurchase(space) {
+
+    actionRequired = true;
+
+    updateTurnUI();
+
+
+    showModal(
+
+        `
+        <div class="event-card">
+
+            <div class="event-card-title">
+                🏠 ${escapeHtml(space.name)}
+            </div>
+
+            <div class="event-card-text">
+
+                這塊地產目前沒有人購買。
+
+                <br><br>
+
+                價格：
+                <strong>£${space.price}</strong>
+
+                <br><br>
+
+                要購買這塊地產嗎？
+
+            </div>
+
+        </div>
+        `,
+
+        [
+
+            {
+                text: "購買地產",
+                className: "primary-btn",
+                action: async () => {
+
+                    await buyProperty(
+                        space
+                    );
+
+                }
+            },
+
+            {
+                text: "暫不購買",
+                className: "secondary-btn",
+                action: () => {
+
+                    closeModal();
+
+                    actionRequired =
+                        false;
+
+                    updateTurnUI();
+
+                }
+            }
+
+        ]
+
+    );
+}
+
+
+/* =========================================================
+   MODULE 39：BUY PROPERTY RPC
+   ========================================================= */
+
+async function buyProperty(space) {
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.rpc(
+                "buy_property",
+                {
+                    p_game_id: game.id,
+                    p_player_id: me.player_id
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        closeModal();
+
+
+        actionRequired =
+            false;
+
+
+        await loadGame(
+            game.id
+        );
+
+
+        updateTurnUI();
+
+
+        alert(
+            `你購買了 ${space.name}！`
+        );
+
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            error.message ||
+            "購買失敗"
         );
 
     }
-);
+
+}
 
 
 /* =========================================================
-   ENTER KEY
-========================================================= */
+   MODULE 40：PAY RENT
+   ========================================================= */
 
-document.getElementById(
-    "roomInput"
-).addEventListener(
-    "keydown",
-    event => {
+async function payRent(space, owner) {
 
-        if (
-            event.key === "Enter"
-        )
-            joinRoom();
+    /*
+     * 這裡目前只提示租金。
+     *
+     * 你目前的 SQL schema 沒有
+     * 「property owner」欄位，
+     * 因此正式版本建議增加
+     * property_ownership table。
+     */
 
-    }
-);
+    showModal(
 
-document.getElementById(
-    "nameInput"
-).addEventListener(
-    "keydown",
-    event => {
+        `
+        <div class="event-card">
 
-        if (
-            event.key === "Enter"
-        )
-            joinRoom();
+            <div class="event-card-title">
+                💰 支付租金
+            </div>
 
-    }
-);
+            <div class="event-card-text">
+
+                ${escapeHtml(space.name)}
+                屬於
+                <strong>${escapeHtml(owner.name)}</strong>
+
+                <br><br>
+
+                租金：
+                <strong>£${space.rent}</strong>
+
+            </div>
+
+        </div>
+        `,
+
+        [
+
+            {
+                text: "確認",
+                className: "primary-btn",
+                action: () => {
+
+                    closeModal();
+
+                    actionRequired =
+                        false;
+
+                    updateTurnUI();
+
+                }
+            }
+
+        ]
+
+    );
+
+}
 
 
 /* =========================================================
-   START
-========================================================= */
+   MODULE 41：TAX
+   ========================================================= */
+
+async function payTax(result) {
+
+    const amount =
+        result.space === "Income Tax"
+            ? 200
+            : 100;
+
+
+    showModal(
+
+        `
+        <div class="event-card">
+
+            <div class="event-card-title">
+                💷 稅務
+            </div>
+
+            <div class="event-card-text">
+
+                你需要支付：
+
+                <br><br>
+
+                <strong>£${amount}</strong>
+
+            </div>
+
+        </div>
+        `,
+
+        [
+
+            {
+                text: "確認支付",
+                className: "primary-btn",
+                action: async () => {
+
+                    closeModal();
+
+                    actionRequired =
+                        false;
+
+                    updateTurnUI();
+
+                }
+            }
+
+        ]
+
+    );
+
+}
+
+
+/* =========================================================
+   MODULE 42：DRAW CARD
+   ========================================================= */
+
+function drawCard(type) {
+
+    const cards =
+        type === "chance"
+            ? CHANCE_CARDS
+            : COMMUNITY_CHEST_CARDS;
+
+
+    const card =
+        cards[
+            Math.floor(
+                Math.random()
+                *
+                cards.length
+            )
+        ];
+
+
+    showModal(
+
+        `
+        <div class="event-card">
+
+            <div class="event-card-title">
+
+                ${
+                    type === "chance"
+                        ? "❓ 機會卡"
+                        : "🎁 福利卡"
+                }
+
+            </div>
+
+            <h3>
+                ${escapeHtml(card.title)}
+            </h3>
+
+            <div class="event-card-text">
+
+                ${escapeHtml(card.text)}
+
+            </div>
+
+        </div>
+        `,
+
+        [
+
+            {
+                text: "領取 / 執行卡片",
+                className: "primary-btn",
+                action: async () => {
+
+                    closeModal();
+
+                    await executeCard(
+                        card
+                    );
+
+                }
+            }
+
+        ]
+
+    );
+
+}
+
+
+/* =========================================================
+   MODULE 43：CARD EFFECT
+   ========================================================= */
+
+async function executeCard(card) {
+
+    try {
+
+        if (card.type === "money") {
+
+            /*
+             * 注意：
+             * 目前 SQL 沒有通用 adjust_money RPC。
+             * 所以正式版本應增加 server-side RPC。
+             */
+
+            alert(
+                card.money > 0
+                    ? `你獲得 £${card.money}`
+                    : `你支付 £${Math.abs(card.money)}`
+            );
+
+        }
+
+
+        if (card.type === "goto") {
+
+            /*
+             * 正式版本應透過 RPC 修改 position。
+             */
+
+            alert(
+                `前往 ${card.position}`
+            );
+
+        }
+
+
+        if (card.type === "jail") {
+
+            alert(
+                "你被送進監獄。"
+            );
+
+        }
+
+
+        actionRequired =
+            false;
+
+        updateTurnUI();
+
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            error.message ||
+            "卡片執行失敗"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MODULE 44：END TURN
+   ========================================================= */
+
+async function endTurn() {
+
+    if (!me || !game) return;
+
+
+    if (
+        game.current_player_id
+        !== me.player_id
+    ) {
+
+        alert(
+            "現在不是你的回合"
+        );
+
+        return;
+    }
+
+
+    if (!hasRolledThisTurn) {
+
+        alert(
+            "請先擲骰子"
+        );
+
+        return;
+    }
+
+
+    /*
+     * 非常重要：
+     *
+     * 你目前提供的 Supabase SQL
+     * 沒有 end_turn RPC。
+     *
+     * 因此不能安全地直接從瀏覽器
+     * 修改 current_player_id。
+     *
+     * 這也是之前出現
+     * 「永遠第一個玩家能骰」
+     * 的核心問題之一。
+     */
+
+    alert(
+        "目前資料庫版本需要加入 end_turn RPC，才能安全切換下一位玩家。"
+    );
+
+}
+
+
+/* =========================================================
+   MODULE 45：EVENT LOG
+   ========================================================= */
+
+async function loadEvents() {
+
+    if (!game) return;
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("game_events")
+            .select("*")
+            .eq(
+                "game_id",
+                game.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            )
+            .limit(50);
+
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+    }
+
+
+    const log =
+        $("eventLog");
+
+    log.innerHTML = "";
+
+
+    (data || [])
+        .forEach(event => {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "log-item";
+
+
+            div.textContent =
+                event.message ||
+                event.event_type;
+
+
+            log.appendChild(div);
+
+        });
+
+}
+
+
+/* =========================================================
+   MODULE 46：MODAL
+   ========================================================= */
+
+function showModal(
+    content,
+    buttons = []
+) {
+
+    $("modalContent").innerHTML =
+        content;
+
+
+    const actions =
+        $("modalActions");
+
+    actions.innerHTML = "";
+
+
+    buttons.forEach(
+        button => {
+
+            const el =
+                document.createElement("button");
+
+            el.textContent =
+                button.text;
+
+            el.className =
+                button.className ||
+                "secondary-btn";
+
+
+            el.onclick =
+                button.action;
+
+
+            actions.appendChild(el);
+
+        }
+    );
+
+
+    $("actionModal")
+        .classList.add("show");
+
+}
+
+
+function closeModal() {
+
+    $("actionModal")
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   MODULE 47：START GAME
+   ========================================================= */
+
+async function startGame() {
+
+    if (!game) return;
+
+
+    try {
+
+        const {
+            error
+        } =
+            await supabaseClient.rpc(
+                "start_game",
+                {
+                    p_game_id: game.id
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        await loadGame(
+            game.id
+        );
+
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            error.message ||
+            "開始遊戲失敗"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MODULE 48：INITIALIZATION
+   ========================================================= */
+
+async function initialize() {
+
+    try {
+
+        setConnection(
+            "Supabase 已載入"
+        );
+
+    } catch(error) {
+
+        console.error(error);
+
+        setConnection(
+            "初始化失敗"
+        );
+
+    }
+
+}
+
 
 initialize();
 
